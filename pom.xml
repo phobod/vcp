@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>java.study</groupId>
+  <groupId>com.phobod.study</groupId>
   <artifactId>vcp</artifactId>
   <packaging>war</packaging>
   <version>0.0.1-SNAPSHOT</version>
@@ -13,6 +13,25 @@
   </build>
   
   <dependencies>
-  
+	<dependency>
+		<groupId>org.springframework.data</groupId>
+		<artifactId>spring-data-mongodb</artifactId>
+		<version>1.9.1.RELEASE</version>
+	</dependency>
+	<dependency>
+		<groupId>org.springframework</groupId>
+		<artifactId>spring-context-support</artifactId>
+		<version>4.2.5.RELEASE</version>
+	</dependency>
+	<dependency>
+		<groupId>ch.qos.logback</groupId>
+		<artifactId>logback-classic</artifactId>
+		<version>1.1.7</version>
+	</dependency>
+	<dependency>
+		<groupId>org.jcodec</groupId>
+		<artifactId>jcodec-javase</artifactId>
+		<version>0.1.9</version>
+	</dependency>
   </dependencies>
 </project>
