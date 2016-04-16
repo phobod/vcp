@@ -25,7 +25,6 @@ public class Video {
 		super();
 	}
 
-
 	public Video(String title, String description, String thumbnailUrl, String videoUrl, int views, User owner) {
 		super();
 		this.title = title;
@@ -35,7 +34,6 @@ public class Video {
 		this.views = views;
 		this.owner = owner;
 	}
-
 
 	public String getId() {
 		return id;
@@ -85,14 +83,41 @@ public class Video {
 		this.videoUrl = videoUrl;
 	}
 
-
 	public User getOwner() {
 		return owner;
 	}
-
 
 	public void setOwner(User owner) {
 		this.owner = owner;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Video other = (Video) obj;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return String.format("Video [id=%s, title=%s]", id, title);
+	}
 }
