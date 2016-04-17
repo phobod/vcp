@@ -4,7 +4,7 @@ angular.module('app-controllers', [ 'ngRoute' ]).config(
 				templateUrl : 'static/html/main.html',
 				controller : 'videoListController'
 			});
-			$routeProvider.when('/video/:videoId', {
+			$routeProvider.when('/video/:videoId/:userId', {
 				templateUrl : 'static/html/single.html',
 				controller : 'videoController'
 			});
@@ -19,13 +19,15 @@ angular.module('app-controllers', [ 'ngRoute' ]).config(
 		
 		.controller('videoListController',
 		[ '$scope', 'videoListService', function($scope, videoListService) {
+			$scope.videoPopularList = videoListService.listPopular();			
 			$scope.videoPage = videoListService.listAll();
 		} ])
 		
 		.controller('videoController',
 		[ '$scope', '$routeParams', 'videoService', function($scope, $routeParams, videoService) {
-			console.log($routeParams, $routeParams.videoId);
-			$scope.video = videoService.videoById($routeParams.videoId);
+			console.log($routeParams, $routeParams.videoId, $routeParams.userId);
+			$scope.currentVideo = videoService.videoById($routeParams.videoId);
+			$scope.videoListCurrentUser = videoService.videoListByUser($routeParams.userId);
 		} ])
 
 		.controller('uploadController',

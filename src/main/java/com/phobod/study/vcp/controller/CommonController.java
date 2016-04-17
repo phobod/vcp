@@ -18,17 +18,27 @@ public class CommonController {
 	@Autowired
 	private CommonService commonService;
 
-	@RequestMapping(value = "/main", method = RequestMethod.GET)
-	public @ResponseBody Page<Video> listAllVideos(@PageableDefault(size = 10) Pageable pageable) {
+	@RequestMapping(value = "/popular", method = RequestMethod.GET)
+	public @ResponseBody Page<Video> listPopularVideos(@PageableDefault(size = 3) Pageable pageable) {
+		Page<Video> videos = commonService.listPopularVideos(pageable);
+		return videos;
+	}
+
+	@RequestMapping(value = "/all", method = RequestMethod.GET)
+	public @ResponseBody Page<Video> listAllVideos(@PageableDefault(size = 20) Pageable pageable) {
 		Page<Video> videos = commonService.listAllVideos(pageable);
 		return videos;
 	}
 
-
-	@RequestMapping(value = "/video/{videoId}", method = RequestMethod.GET)
+	@RequestMapping(value = "/currentvideo/{videoId}", method = RequestMethod.GET)
 	public @ResponseBody Video videoById(@PathVariable String videoId) {
-		System.out.println(videoId);
 		Video videos = commonService.videoById(videoId);
+		return videos;
+	}
+
+	@RequestMapping(value = "/videobyuser/{userId}", method = RequestMethod.GET)
+	public @ResponseBody Page<Video> videoListByUser(@PageableDefault(size = 3) Pageable pageable, @PathVariable String userId) {
+		Page<Video> videos = commonService.videoListByUser(pageable, userId);
 		return videos;
 	}
 }

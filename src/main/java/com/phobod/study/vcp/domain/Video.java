@@ -34,6 +34,12 @@ public class Video {
 		this.views = views;
 		this.owner = owner;
 	}
+	/* Test Constructor, not for production*/
+	public Video(String thumbnailUrl, String videoUrl) {
+		super();
+		this.thumbnailUrl = thumbnailUrl;
+		this.videoUrl = videoUrl;
+	}
 
 	public String getId() {
 		return id;
@@ -82,6 +88,7 @@ public class Video {
 	public void setVideoUrl(String videoUrl) {
 		this.videoUrl = videoUrl;
 	}
+
 
 	public User getOwner() {
 		return owner;

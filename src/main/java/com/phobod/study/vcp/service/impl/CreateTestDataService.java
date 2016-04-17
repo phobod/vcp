@@ -1,40 +1,39 @@
-package com.phobod.study.vcp.generator;
+package com.phobod.study.vcp.service.impl;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
-import java.util.UUID;
 
-import javax.imageio.ImageIO;
+import javax.annotation.PostConstruct;
 
-import org.jcodec.api.FrameGrab;
-import org.jcodec.api.JCodecException;
-import org.jcodec.common.FileChannelWrapper;
-import org.jcodec.common.model.Picture;
-import org.jcodec.scale.AWTUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import com.phobod.study.vcp.config.MongoConfig;
 import com.phobod.study.vcp.domain.Company;
 import com.phobod.study.vcp.domain.Role;
 import com.phobod.study.vcp.domain.User;
 import com.phobod.study.vcp.domain.Video;
+import com.phobod.study.vcp.service.VideoService;
 
-public class TestDataGenerator {
-	private static final Logger LOGGER = LoggerFactory.getLogger(TestDataGenerator.class);
+@Service
+public class CreateTestDataService {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(CreateTestDataService.class);
+	private static final Random RANDOM = new Random();
+
 	private static final String[] VIDEO_URLS = {
 			"https://www.dropbox.com/s/gaqcdten0i3c57w/Piggy%20Tales_%20Pigs%20at%20Work%20-%20Lights%20Out.mp4?dl=1",
 			"https://www.dropbox.com/s/g81nkv1b48eixpx/Piggy%20Tales_%20Pigs%20at%20Work%20-%20Lunch%20Break.mp4?dl=1",
@@ -159,53 +158,84 @@ public class TestDataGenerator {
 			"Join us courtside as one athletic piggy shows off his ball skillz! Hopefully nothing puts him off his aim...",
 			"You know that feeling when a super fun party is over and it's time to clean up everything and go home? Well, I guess even piggies can get a bit emotional at times like that.",
 			"What food do piggies love almost as much as eggs? When a couple of hungry hogs find a jam jar, they’ll do anything to get it open." };
-	private static final Random RANDOM = new Random();
 
-	public static void main(String[] args) throws Exception {
-		try (AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext()) {
-			ctx.register(MongoConfig.class);
-			ctx.refresh();
+	@Autowired
+	private MongoTemplate mongoTemplate;
 
-			MongoOperations mongoOps = ctx.getBean(MongoOperations.class);
+	@Autowired
+	private VideoService videoService;
 
-			mongoOps.remove(new Query(), User.class);
-			mongoOps.remove(new Query(), Company.class);
-			mongoOps.remove(new Query(), Video.class);
+	@Value("${media.dir}")
+	private String mediaDir;
 
-			clearMediaSubFolders();
+	@Value("${mongo.recreate.db}")
+	private boolean mongoRecreateDb;
 
-			List<Company> companies = buildCompanies();
-			for (Company company : companies) {
-				mongoOps.insert(company);
+	@PostConstruct
+	public void createTestDataIfNecessary() {
+		String reason = "mongo.recreate.db=true";
+		boolean createTestData = mongoRecreateDb;
+		if (!createTestData) {
+			if (mongoTemplate.count(null, Company.class) == 0) {
+				createTestData = true;
+				reason = "Collection company not found";
+			} else if (mongoTemplate.count(null, User.class) == 0) {
+				createTestData = true;
+				reason = "Collection user not found";
+			} else if (mongoTemplate.count(null, Video.class) == 0) {
+				createTestData = true;
+				reason = "Collection video not found";
 			}
-			List<User> users = buildUsers(companies);
-			for (User user : users) {
-				mongoOps.insert(user);
-			}
-			List<Video> videos = buildVideos(users);
-			mongoOps.insert(videos, Video.class);
-			LOGGER.info("Insert completed successful");
 		}
+		if (createTestData) {
+			LOGGER.info("Detected create test data command: " + reason);
+			createTestData();
+		} else {
+			LOGGER.info("Mongo db exists");
+		}
+
 	}
 
-	private static void clearMediaSubFolders() {
-		for (File f : new File("src/main/webapp/media/thumbnail").listFiles()) {
+	private void createTestData() {
+		clearMediaSubFolders();
+		clearCollection();
+		List<Company> companies = createCompanies();
+		List<User> users = createUsers(companies);
+		createVideos(users);
+		LOGGER.info("Insert completed successful");
+	}
+
+	private void clearMediaSubFolders() {
+		for (File f : new File(mediaDir + "/thumbnail").listFiles()) {
 			f.delete();
 		}
-		for (File f : new File("src/main/webapp/media/video").listFiles()) {
+		for (File f : new File(mediaDir + "/video").listFiles()) {
 			f.delete();
 		}
 		LOGGER.info("Media sub folders cleared");
 	}
 
-	private static List<Company> buildCompanies() {
-		return Arrays.asList(new Company("Coca-Cola", "Atlanta, USA", "info@coca-cola.com", "+1-800-438-2653"),
-				new Company("Microsoft", "Redmond, USA", "info@microsoft.com", "+1-800-882-8080"),
-				new Company("Google", "Mountain View, USA", "info@google.com", "+1-650-253-0000"));
+	private void clearCollection() {
+		mongoTemplate.remove(new Query(), User.class);
+		mongoTemplate.remove(new Query(), Company.class);
+		mongoTemplate.remove(new Query(), Video.class);
+		LOGGER.info("clearCollection()");
 	}
 
-	private static List<User> buildUsers(List<Company> companies) {
-		return Arrays.asList(
+	private List<Company> createCompanies() {
+		List<Company> companies = Arrays.asList(
+				new Company("Coca-Cola", "Atlanta, USA", "info@coca-cola.com", "+1-800-438-2653"),
+				new Company("Microsoft", "Redmond, USA", "info@microsoft.com", "+1-800-882-8080"),
+				new Company("Google", "Mountain View, USA", "info@google.com", "+1-650-253-0000"));
+		for (Company company : companies) {
+			mongoTemplate.insert(company);
+		}
+		LOGGER.info("Created {} test companies", companies.size());
+		return companies;
+	}
+
+	private List<User> createUsers(List<Company> companies) {
+		List<User> users = Arrays.asList(
 				new User("Tom", "Anderson", "Admin01", "sjdSDb34", "tomas@mail.ru",
 						companies.get(RANDOM.nextInt(companies.size())), Role.ADMIN,
 						"http://www.radfaces.com/images/avatars/ickis.jpg"),
@@ -218,39 +248,95 @@ public class TestDataGenerator {
 				new User("Steve", "Macleod", "duncan", "lsdb2HG", "duncan@mail.ru",
 						companies.get(RANDOM.nextInt(companies.size())), Role.USER,
 						"http://www.radfaces.com/images/avatars/oblina.jpg"));
+		for (User user : users) {
+			mongoTemplate.insert(user);
+		}
+		LOGGER.info("Created {} test users", users.size());
+		return users;
 	}
 
-	private static List<Video> buildVideos(List<User> users) throws IOException, JCodecException {
+	private void createVideos(List<User> users){
 		List<Video> videos = new ArrayList<Video>();
 		int count = 0;
 		for (String videoUrl : VIDEO_URLS) {
-			String uid = UUID.randomUUID().toString() + ".mp4";
-			File destVideo = new File("src/main/webapp/media/video", uid);
-			try (InputStream in = new URL(videoUrl).openStream()) {
-				Files.copy(in, Paths.get(destVideo.getAbsolutePath()));
-			}
-			double sec = count > 20 ? 3d : 6d;
-			videos.add(new Video(VIDEO_TITLES[count], VIDEO_DESCRIPTION[count], createThumbnail(destVideo,sec),
-					"/media/video/" + uid, RANDOM.nextInt(1000), users.get(RANDOM.nextInt(users.size()))));
+			Video video = videoService.processVideo(new URLMultipartFile(videoUrl));
+			video.setTitle(VIDEO_TITLES[count]);
+			video.setDescription(VIDEO_DESCRIPTION[count]);
+			video.setViews(RANDOM.nextInt(5000));
+			video.setOwner(users.get(RANDOM.nextInt(users.size())));
+			videos.add(video);
 			count++;
-			LOGGER.info("Video {} processed", destVideo.getName());
 		}
-		return videos;
+		mongoTemplate.insert(videos, Video.class);
+		LOGGER.info("Created {} video files", videos.size());
+//		addVideosToUsers(users, videos);
 	}
+//
+//	private void addVideosToUsers(List<User> users, List<Video> videos) {
+//		for (Video video : videos) {
+//			for (User user : users) {
+//				if (user.getId().equals(video.getOwnerId())) {
+//					user.addVideo(video);
+//				}
+//			}
+//		}
+//		for (User user : users) {
+//			Update update = new Update().set("videos", user.getVideos());
+//			mongoTemplate.updateFirst(Query.query(Criteria.where("id").is(user.getId())), update, User.class);
+//		}
+//		LOGGER.info("Updated users data");
+//	}
 
-	private static String createThumbnail(File destVideo, double sec) throws IOException, JCodecException {
-		String thumbnail = null;
-		FrameGrab grab = new FrameGrab(
-				new FileChannelWrapper(FileChannel.open(Paths.get(destVideo.getAbsolutePath()))));
-		Picture frame = grab.seekToSecondPrecise(sec).getNativeFrame();
-		if (frame != null) {
-			BufferedImage img = AWTUtil.toBufferedImage(frame);
-			String uid = UUID.randomUUID() + ".jpg";
-			ImageIO.write(img, "jpg", new File("src/main/webapp/media/thumbnail", uid));
-			thumbnail = "/media/thumbnail/" + uid;
+	private static class URLMultipartFile implements MultipartFile {
+		private final String url; 
+
+		public URLMultipartFile(String url) {
+			super();
+			this.url = url;
 		}
-		LOGGER.info("Created thumbnail for video {}", destVideo.getName());
-		return thumbnail;
+
+		@Override
+		public byte[] getBytes() throws IOException {
+			return null;
+		}
+
+		@Override
+		public String getContentType() {
+			return null;
+		}
+
+		@Override
+		public InputStream getInputStream() throws IOException {
+			return null;
+		}
+
+		@Override
+		public String getName() {
+			return null;
+		}
+
+		@Override
+		public String getOriginalFilename() {
+			return null;
+		}
+
+		@Override
+		public long getSize() {
+			return 0;
+		}
+
+		@Override
+		public boolean isEmpty() {
+			return false;
+		}
+
+		@Override
+		public void transferTo(File dest) throws IOException, IllegalStateException {
+			try (InputStream in = new URL(url).openStream()) {
+				Files.copy(in, Paths.get(dest.getAbsolutePath()));
+			}
+		}
+
 	}
 
 }

@@ -5,9 +5,9 @@
 				<h3>Popular Videos</h3>
 			</div>
 			<div class="col-md-4 resent-grid recommended-grid slider-top-grids"
-				ng-repeat="video in videoPage.content">
+				ng-repeat="video in videoPopularList.content">
 				<div class="resent-grid-img recommended-grid-img">
-					<a href="#/video/{{video.id}}"><img
+					<a href="#/video/{{video.id}}/{{video.owner.id}}"><img
 						ng-src="{{video.thumbnailUrl}}" alt="{{video.title}}" /></a>
 					<div class="time">
 						<p>3:04</p>
@@ -18,7 +18,7 @@
 				</div>
 				<div class="resent-grid-info recommended-grid-info">
 					<h3>
-						<a href="#/video/{{video.id}}" class="title title-info">{{video.title}}</a>
+						<a href="#/video/{{video.id}}/{{video.owner.id}}" class="title title-info">{{video.title}}</a>
 					</h3>
 
 					<p class="descr descr-info">{{video.description}}</p>
@@ -42,7 +42,7 @@
 				<div class="col-md-3 resent-grid recommended-grid"
 					ng-repeat="video in videoPage.content">
 					<div class="resent-grid-img recommended-grid-img">
-						<a href="#/video/{{video.id}}"><img
+						<a href="#/video/{{video.id}}/{{video.owner.id}}"><img
 							ng-src="{{video.thumbnailUrl}}" alt="{{video.title}}" /></a>
 						<div class="time small-time">
 							<p>2:34</p>
@@ -53,7 +53,7 @@
 					</div>
 					<div class="resent-grid-info recommended-grid-info video-info-grid">
 						<h5>
-							<a href="#/video/{{video.id}}" class="title">{{video.title}}</a>
+							<a href="#/video/{{video.id}}/{{video.owner.id}}" class="title">{{video.title}}</a>
 						</h5>
 						<p class="descr descr-info">{{video.description}}</p>
 						<ul>
@@ -69,37 +69,6 @@
 			</div>
 		</div>
 		<div class="clearfix"></div>
-		<div class="recommended">
-			<div class="recommended-grids">
-				<div class="col-md-3 resent-grid recommended-grid"
-					ng-repeat="video in videoPage.content">
-					<div class="resent-grid-img recommended-grid-img">
-						<a href="#/video/{{video.id}}"><img
-							ng-src="{{video.thumbnailUrl}}" alt="{{video.title}}" /></a>
-						<div class="time small-time">
-							<p>2:34</p>
-						</div>
-						<div class="clck small-clck">
-							<span class="glyphicon glyphicon-time" aria-hidden="true"></span>
-						</div>
-					</div>
-					<div class="resent-grid-info recommended-grid-info video-info-grid">
-						<h5>
-							<a href="#/video/{{video.id}}" class="title">{{video.title}}</a>
-						</h5>
-						<p class="descr descr-info">{{video.description}}</p>
-						<ul>
-							<li><p class="author author-info">
-									<a href="#" class="author">{{video.owner.name}}</a>
-								</p></li>
-							<li class="right-list"><p class="views views-info">{{video.views}}
-									views</p></li>
-						</ul>
-					</div>
-				</div>
-				<div class="clearfix"></div>
-			</div>
-		</div>
 	</div>
 </div>
 <div class="clearfix"></div>

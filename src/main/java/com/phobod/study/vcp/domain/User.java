@@ -1,8 +1,5 @@
 package com.phobod.study.vcp.domain;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.index.TextIndexed;
@@ -28,8 +25,6 @@ public class User {
 	private Role role;
 	@Field("avatar-url")
 	private String avatarUrl;
-	@DBRef
-	private List<Video> videos;
 
 	public User() {
 		super();
@@ -46,7 +41,6 @@ public class User {
 		this.company = company;
 		this.role = role;
 		this.avatarUrl = avatarUrl;
-		this.videos = new ArrayList<>();
 	}
 
 	public String getId() {
@@ -105,14 +99,6 @@ public class User {
 		this.company = company;
 	}
 
-	public List<Video> getVideos() {
-		return videos;
-	}
-
-	public void setVideos(List<Video> videos) {
-		this.videos = videos;
-	}
-
 	public Role getRole() {
 		return role;
 	}
@@ -127,10 +113,6 @@ public class User {
 
 	public void setAvatarUrl(String avatarUrl) {
 		this.avatarUrl = avatarUrl;
-	}
-
-	public void addVideo(Video video) {
-		videos.add(video);
 	}
 
 	@Override
