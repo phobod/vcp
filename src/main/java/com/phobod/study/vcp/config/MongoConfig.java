@@ -20,12 +20,12 @@ public class MongoConfig {
 	@Value("${mongo.port}")
 	private int mongoPort;
 	
-	public @Bean MongoClient mongo() throws UnknownHostException {
+	public @Bean MongoClient mongoClient() throws UnknownHostException {
 		return new MongoClient(mongoHost, mongoPort);
 	}
 
 	public @Bean MongoTemplate mongoTemplate(@Value("${mongo.db}") String mongoDb) throws Exception {
-		MongoTemplate mongoTemplate = new MongoTemplate(mongo(), mongoDb);
+		MongoTemplate mongoTemplate = new MongoTemplate(mongoClient(), mongoDb);
 		return mongoTemplate;
 	}
 }

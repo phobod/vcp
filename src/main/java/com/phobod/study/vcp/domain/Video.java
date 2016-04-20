@@ -34,7 +34,16 @@ public class Video {
 		this.views = views;
 		this.owner = owner;
 	}
-	/* Test Constructor, not for production*/
+	
+	
+	public Video(String title, String description, String thumbnailUrl, String videoUrl) {
+		super();
+		this.title = title;
+		this.description = description;
+		this.thumbnailUrl = thumbnailUrl;
+		this.videoUrl = videoUrl;
+	}
+
 	public Video(String thumbnailUrl, String videoUrl) {
 		super();
 		this.thumbnailUrl = thumbnailUrl;

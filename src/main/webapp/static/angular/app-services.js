@@ -1,21 +1,29 @@
 angular.module('app-services', [ 'ngResource' ])
-.service("videoListService",[ '$resource', function($resource) {
+.service("popularListVideoService",[ '$resource', function($resource) {
 	return {
-		listAll : function() {
-			return $resource('/all').get();
-		}, 
-		listPopular : function() {
-			return $resource('/popular').get();
+		listPopularVideos : function() {
+			return $resource('/video/popular').query();
+		} 
+	}
+} ])
+.service("allListVideoService",[ '$resource', function($resource) {
+	return {
+		listAllVideosByPage : function(page) {
+			return $resource('/video/all/:pageNum',{pageNum:page}).get();
+		} 
+	}
+} ])
+.service("chosenVideoService", [ '$resource', function($resource) {
+	return {
+		findVideoById : function(id) {
+			return $resource('/video/:videoId',{videoId:id}).get();
 		}
 	}
 } ])
-.service("videoService", [ '$resource', function($resource) {
+.service("listVideoByUserService",['$resource', function($resource){
 	return {
-		videoById : function(id) {
-			return $resource('/currentvideo/:videoId',{videoId:id}).get();
-		},
-		videoListByUser : function(id) {
-			return $resource('/videobyuser/:userId',{userId:id}).get();
+		listVideosByUserByPage : function(id,page){
+			return $resource('/user/:userId/video/:pageNum',{userId:id,pageNum:page}).get();
+		}
 	}
-	}
-} ]);
+}]);

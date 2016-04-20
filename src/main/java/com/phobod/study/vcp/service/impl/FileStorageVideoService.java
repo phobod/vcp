@@ -30,15 +30,28 @@ public class FileStorageVideoService implements VideoService{
 	@Override
 	public Video processVideo(MultipartFile videoFile) {
 		try {
-			String uid = UUID.randomUUID().toString() + ".mp4";
-			Path destVideo = Paths.get(mediaDir + "/video/" + uid);
-			videoFile.transferTo(destVideo.toFile());
-			String thumbnail = thumbnailService.createThumbnail(destVideo);
-			LOGGER.info("New video {} uploaded", destVideo.getFileName());
-			return new Video(thumbnail, "/media/video/" + uid);
+			return processVidoeInternal(videoFile);
 		} catch (IOException e) {
 			throw new ApplicationException("save video failed: " + e.getMessage(), e);
 		}
+	}
+
+	private Video processVidoeInternal(MultipartFile multipartVideoFile) throws IOException {
+		String uniqueVideoFileName = generateUniqueVideoFileName();
+		Path videoFilePath = saveMultipartFile(multipartVideoFile, uniqueVideoFileName);
+		String thumbnail = thumbnailService.createThumbnail(videoFilePath);
+		LOGGER.info("New video {} uploaded", videoFilePath.getFileName());
+		return new Video(thumbnail, "/media/video/" + uniqueVideoFileName);
+	}
+
+	private Path saveMultipartFile(MultipartFile multipartVideoFile, String uniqueVideoFileName) throws IOException {
+		Path videoFilePath = Paths.get(mediaDir + "/video/" + uniqueVideoFileName);
+		multipartVideoFile.transferTo(videoFilePath.toFile());
+		return videoFilePath;
+	}
+
+	private String generateUniqueVideoFileName() {
+		return UUID.randomUUID().toString() + ".mp4";
 	}
 
 }

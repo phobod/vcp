@@ -1,13 +1,14 @@
 package com.phobod.study.vcp.service;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 import com.phobod.study.vcp.domain.Video;
 
 public interface CommonService {
-	Page<Video> listAllVideos(Pageable pageable);
-	Video videoById(String id);
-	Page<Video> listPopularVideos(Pageable pageable);
-	Page<Video> videoListByUser(Pageable pageable, String userId);
+	List<Video> listPopularVideos();
+	Page<Video> listAllVideos(int pageNumber);
+	Video findVideoById(String id);
+	Page<Video> listVideosByUser(String userId, int pageNumber);
 }

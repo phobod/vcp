@@ -9,7 +9,7 @@
 	<url>http://maven.apache.org</url>
 
 	<build>
-		<finalName>vcp</finalName>
+		<finalName>ROOT</finalName>
 		<pluginManagement>
  			<plugins>
  				<plugin>

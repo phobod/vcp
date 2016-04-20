@@ -1,14 +1,13 @@
 
-<div class="main">
+<div class="main clearfix">
 	<div class="show-top-grids">
-		<div class="col-sm-7 col-sm-offset-1 single-left">
+		<div class="col-sm-7 col-sm-offset-1 single-left clearfix">
 			<div class="song">
 				<div class="song-info">
 					<h3>{{currentVideo.title}}</h3>
 				</div>
 				<div class="video-grid">
-					<video class="html5-video-content" ng-src="{{currentVideo.videoUrl}}" ng-attr-poster="{{video.thumbnailUrl}}" controls="controls"></video>
-					<!-- iframe ng-src="{{currentVideo.videoUrl}}" allowfullscreen></iframe-->
+					<video class="html5-video-content" ng-src="{{currentVideo.videoUrl | trusted}}" ng-attr-poster="{{currentVideo.thumbnailUrl}}" controls="controls"></video>
 				</div>
 				<div class="caption">
  					<div class="media">
@@ -23,30 +22,26 @@
  					<hr/>
  				</div>
 			</div>
-			<div class="clearfix"></div>
 		</div>
-		<div class="col-md-3 single-right">
-			<h3>Up Next</h3>
-			<div class="single-grid-right" ng-repeat="video in videoListCurrentUser.content">
+		<div class="col-md-3 single-right clearfix"  ng-controller="listVideosByUserController">
+			<h3>Next video</h3>
+			<div class="single-grid-right clearfix" ng-repeat="video in listVideosByUser">
 				<div class="single-right-grids">
 					<div class="col-md-4 single-right-grid-left">
-						<a href="#/video/{{video.id}}/{{video.owner.id}}"><img
-							ng-src="{{video.thumbnailUrl}}"
-							alt="{{video.title}}" /></a>
+						<a href="#/video/{{video.id}}/{{video.owner.id}}"><img ng-src="{{video.thumbnailUrl}}" alt="{{video.title}}" /></a>
 					</div>
-					<div class="col-md-8 single-right-grid-right">
+					<div class="col-md-8 single-right-grid-right clearfix">
 						<a href="#/video/{{video.id}}/{{video.owner.id}}" class="title">{{video.title}}</a>
-						<p class="descr descr-info">{{video.description}}</p>
-						<p class="author">
-							<a href="#" class="author">{{video.owner.name}}</a>
-						</p>
+						<p class="author"> <a href="#" class="author">{{video.owner.name}}</a></p>
 						<p class="views">{{video.views}} views</p>
 					</div>
-					<div class="clearfix"></div>
 				</div>
 			</div>
+			<div class="clearfix"> </div>
+			<div class="load-more" id="wrapper">
+       			<button class="load-more-button" href="#" ng-click="showMore()" ng-hide="hideButton">Show more...</button>
+			</div>
+			<div class="clearfix"> </div>			
 		</div>
-		<div class="clearfix"></div>
 	</div>
 </div>
-<div class="clearfix"></div>

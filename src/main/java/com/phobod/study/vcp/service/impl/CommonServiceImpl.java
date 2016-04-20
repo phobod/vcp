@@ -4,8 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.phobod.study.vcp.domain.Video;
@@ -19,28 +18,23 @@ public class CommonServiceImpl implements CommonService {
 	private VideoRepository videoRepository;
 
 	@Override
-	public Page<Video> listAllVideos(Pageable pageable) {
-		Page<Video> page = videoRepository.findAll(pageable);
-		return page;
-	}
-
-	@Override
-	public Page<Video> listPopularVideos(Pageable pageable) {
-		List<Video> list = videoRepository.findTop3ByOrderByViewsDesc();
-		return new PageImpl<>(list, pageable, 3);
+	public List<Video> listPopularVideos() {
+		return videoRepository.findTop3ByOrderByViewsDesc();
 	}
 	
 	@Override
-	public Video videoById(String id) {
-		Video video = videoRepository.findOne(id);
-		return video;
+	public Page<Video> listAllVideos(int pageNumber) {
+		return videoRepository.findAll(new PageRequest(pageNumber, 12));
+	}
+
+	@Override
+	public Video findVideoById(String id) {
+		return videoRepository.findOne(id);
 	}
 	
 	@Override
-	public Page<Video> videoListByUser(Pageable pageable, String userId) {
-		List<Video> list = videoRepository.findAllByOwnerId(userId);
-		return new PageImpl<>(list, pageable, 10);
+	public Page<Video> listVideosByUser(String userId, int pageNumber) {
+		return videoRepository.findAllByOwnerIdOrderByViewsDesc(new PageRequest(pageNumber, 10), userId);
 	}
-
 
 }
