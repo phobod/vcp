@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.phobod.study.vcp.domain.Video;
@@ -23,8 +23,8 @@ public class CommonServiceImpl implements CommonService {
 	}
 	
 	@Override
-	public Page<Video> listAllVideos(int pageNumber) {
-		return videoRepository.findAll(new PageRequest(pageNumber, 12));
+	public Page<Video> listAllVideos(Pageable pageable) {
+		return videoRepository.findAll(pageable);
 	}
 
 	@Override
@@ -33,8 +33,8 @@ public class CommonServiceImpl implements CommonService {
 	}
 	
 	@Override
-	public Page<Video> listVideosByUser(String userId, int pageNumber) {
-		return videoRepository.findAllByOwnerIdOrderByViewsDesc(new PageRequest(pageNumber, 10), userId);
+	public Page<Video> listVideosByUser(Pageable pageable, String excludedVideoId, String userId) {
+		return videoRepository.findByIdNotAndOwnerIdOrderByViewsDesc(pageable, excludedVideoId, userId); 
 	}
 
 }

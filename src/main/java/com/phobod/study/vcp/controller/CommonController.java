@@ -4,6 +4,10 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedResources;
+import org.springframework.hateoas.Resource;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -24,22 +28,22 @@ public class CommonController {
 		return  videos;
 	}
 
-	@RequestMapping(value = "/video/all/{pageNumber}", method = RequestMethod.GET)
-	public @ResponseBody Page<Video> listAllVideos(@PathVariable int pageNumber) {
-		Page<Video> videos = commonService.listAllVideos(pageNumber);
-		return videos;
+	@RequestMapping(value = "/video/all", method = RequestMethod.GET)
+	public @ResponseBody PagedResources<Resource<Video>> listAllVideos(Pageable pageable, PagedResourcesAssembler<Video> assembler) {
+		Page<Video> videos = commonService.listAllVideos(pageable);
+		return assembler.toResource(videos);
 	}
-
+	
 	@RequestMapping(value = "/video/{videoId}", method = RequestMethod.GET)
 	public @ResponseBody Video findVideoById(@PathVariable String videoId) {
 		Video video = commonService.findVideoById(videoId);
 		return video;
 	}
 
-	@RequestMapping(value = "/user/{userId}/video/{pageNumber}", method = RequestMethod.GET)
-	public @ResponseBody Page<Video> listVideosByUser(@PathVariable String userId, @PathVariable int pageNumber) {
-		Page<Video> videos = commonService.listVideosByUser(userId, pageNumber);
-		return videos;
+	@RequestMapping(value = "/user/{userId}/video/{excludedVideoId}", method = RequestMethod.GET)
+	public @ResponseBody PagedResources<Resource<Video>> listVideosByUser(@PathVariable String userId, @PathVariable String excludedVideoId,Pageable pageable, PagedResourcesAssembler<Video> assembler) {
+		Page<Video> videos = commonService.listVideosByUser(pageable, excludedVideoId, userId);
+		return assembler.toResource(videos);
 	}
 
 }

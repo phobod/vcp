@@ -7,10 +7,12 @@
 <link rel="stylesheet" href="/static/css/bootstrap.css">
 <link rel="stylesheet" href="/static/css/bootstrap-theme.css">
 <link rel="stylesheet" href="/static/css/dashboard.css">
-<link rel='stylesheet' href="/static/css/style.css" type='text/css' media="all" />
+<link rel="stylesheet" href="/static/css/style.css" type='text/css' media="all" />
 <link rel="stylesheet" href="/static/css/app.css">
+
+
 </head>
-<body>
+<body ng-cloak>
 
 	<nav class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container-fluid">
@@ -21,7 +23,7 @@
 					<span class="icon-bar"></span> 
 					<span class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="#/main"><h1><img src="/static/img/logo.png" alt="" /></h1></a>
+				<a class="navbar-brand" ng-href="#/main"><h1><img src="/static/img/logo.png" alt="" /></h1></a>
 			</div>
 			<div id="navbar" class="navbar-collapse collapse">
 				<div class="top-search">
@@ -32,7 +34,7 @@
 				</div>
 				<div class="header-top-right">
 					<div class="file">
-						<a href="#/upload">Upload</a>
+						<a ng-href="#/upload">Upload</a>
 					</div>
 					<div class="signin">
 						<a href="#" class="play-icon popup-with-zoom-anim">Sign Up</a>
@@ -50,7 +52,7 @@
 	<div class="clearfix"> </div>
 	<ng-view></ng-view>
 
-	
+
 	<script type="text/javascript" src="/static/js/jquery-1.11.1.min.js"></script>
 	<script type="text/javascript" src="/static/js/angular.js"></script>
 	<script type="text/javascript" src="/static/js/angular-route.js"></script>
@@ -58,7 +60,9 @@
 	<script type="text/javascript" src="/static/angular/app-filters.js"></script>
 	<script type="text/javascript" src="/static/angular/app-controllers.js"></script>
 	<script type="text/javascript" src="/static/angular/app-services.js"></script>
+	<script type="text/javascript" src="/static/angular/app-directives.js"></script>
 	<script type="text/javascript" src="/static/angular/app.js"></script>
 	<script type="text/javascript" src="/static/js/bootstrap.js"></script>
+  
 </body>
 </html>

@@ -1,1 +1,1 @@
-angular.module('app', ['app-services', 'app-controllers', 'app-filters']);
+angular.module('app', ['app-services', 'app-controllers', 'app-filters', 'app-directives']);

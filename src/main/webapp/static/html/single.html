@@ -1,10 +1,10 @@
 
-<div class="main clearfix">
+<div class="main">
 	<div class="show-top-grids">
-		<div class="col-sm-7 col-sm-offset-1 single-left clearfix">
+		<div class="col-sm-7 col-sm-offset-1 single-left">
 			<div class="song">
 				<div class="song-info">
-					<h3>{{currentVideo.title}}</h3>
+					<h3 ng-bind="currentVideo.title"></h3>
 				</div>
 				<div class="video-grid">
 					<video class="html5-video-content" ng-src="{{currentVideo.videoUrl | trusted}}" ng-attr-poster="{{currentVideo.thumbnailUrl}}" controls="controls"></video>
@@ -15,33 +15,43 @@
  							<img class="media-object small-avatar thumbnail" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" ng-src="{{currentVideo.owner.avatarUrl}}" alt="avatar">
  						</div>
  						<div class="media-body">
- 							<h4 class="media-heading">{{currentVideo.owner.name}}</h4>
- 							<p class="descr descr-info">{{currentVideo.description}}</p>
+ 							<h4 class="media-heading" ng-bind="currentVideo.owner.name"></h4>
+ 							<p class="descr descr-info" ng-bind="currentVideo.description"></p>
  						</div>
+	 					<div>
+							<p class="views views-info">{{currentVideo.views}} views</p>
+						</div> 						
  					</div>
  					<hr/>
  				</div>
 			</div>
+			<div class="clearfix"> </div>	
 		</div>
-		<div class="col-md-3 single-right clearfix"  ng-controller="listVideosByUserController">
+		<div class="col-md-3 single-right"  ng-controller="listVideosByUserController">
 			<h3>Next video</h3>
-			<div class="single-grid-right clearfix" ng-repeat="video in listVideosByUser">
+			<div class="single-grid-right" ng-repeat="video in videos" ng-show="loadedVideosId.indexOf(video.id) !== -1">
 				<div class="single-right-grids">
 					<div class="col-md-4 single-right-grid-left">
-						<a href="#/video/{{video.id}}/{{video.owner.id}}"><img ng-src="{{video.thumbnailUrl}}" alt="{{video.title}}" /></a>
+						<a ng-href="#/user/{{video.owner.id}}/video/{{video.id}}"><img ng-src="{{video.thumbnailUrl}}" alt="{{video.title}}" imageonload="updateLoadingSpinner()"/></a>
 					</div>
-					<div class="col-md-8 single-right-grid-right clearfix">
-						<a href="#/video/{{video.id}}/{{video.owner.id}}" class="title">{{video.title}}</a>
-						<p class="author"> <a href="#" class="author">{{video.owner.name}}</a></p>
+					<div class="col-md-8 single-right-grid-right">
+						<a ng-href="#/user/{{video.owner.id}}/video/{{video.id}}" class="title" ng-bind="video.title"></a>
+						<p class="author"> <a href="#" class="author" ng-bind="video.owner.name"></a></p>
 						<p class="views">{{video.views}} views</p>
 					</div>
+					<div class="clearfix"> </div>
 				</div>
 			</div>
-			<div class="clearfix"> </div>
+			
 			<div class="load-more" id="wrapper">
-       			<button class="load-more-button" href="#" ng-click="showMore()" ng-hide="hideButton">Show more...</button>
+       			<button class="load-more-button" href="#" ng-click="showMore()" ng-show="showMoreButton">Show more...</button>
+       			<div class="row-fluid ui-corner-all" ng-show="loadingSpinner" >
+					<p><img alt="Loading  Content" class="img-responsive center-block" src="/static/img/ajax-loader.gif" /></p>
+			    </div>
 			</div>
 			<div class="clearfix"> </div>			
 		</div>
+		<div class="clearfix"> </div>	
 	</div>
 </div>
+<div class="clearfix"> </div>	

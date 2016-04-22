@@ -10,5 +10,5 @@ import com.phobod.study.vcp.domain.Video;
 
 public interface VideoRepository extends PagingAndSortingRepository<Video, String>{
 	List<Video> findTop3ByOrderByViewsDesc();
-	Page<Video> findAllByOwnerIdOrderByViewsDesc(Pageable pageable, String userId);
+	Page<Video> findByIdNotAndOwnerIdOrderByViewsDesc(Pageable pageable, String excludedVideoId, String userId);
 }

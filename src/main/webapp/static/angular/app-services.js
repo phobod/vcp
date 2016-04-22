@@ -1,29 +1,17 @@
 angular.module('app-services', [ 'ngResource' ])
-.service("popularListVideoService",[ '$resource', function($resource) {
+.service("videoService",[ '$resource', function($resource) {
 	return {
 		listPopularVideos : function() {
 			return $resource('/video/popular').query();
-		} 
-	}
-} ])
-.service("allListVideoService",[ '$resource', function($resource) {
-	return {
+		},
 		listAllVideosByPage : function(page) {
-			return $resource('/video/all/:pageNum',{pageNum:page}).get();
-		} 
-	}
-} ])
-.service("chosenVideoService", [ '$resource', function($resource) {
-	return {
-		findVideoById : function(id) {
-			return $resource('/video/:videoId',{videoId:id}).get();
-		}
-	}
-} ])
-.service("listVideoByUserService",['$resource', function($resource){
-	return {
-		listVideosByUserByPage : function(id,page){
-			return $resource('/user/:userId/video/:pageNum',{userId:id,pageNum:page}).get();
+			return $resource('/video/all?page=' + page + '&size=12&sort=type,desc').get();
+		},
+		findVideoById : function(videoId) {
+			return $resource('/video/:videoId',{videoId:videoId}).get();
+		},
+		listVideosByUserByPage : function(userId, excludedVideoId, page){
+			return $resource('/user/:userId/video/:excludedVideoId?page=' + page + '&size=10&sort=type,desc',{userId:userId,excludedVideoId:excludedVideoId}).get();
 		}
 	}
 }]);
