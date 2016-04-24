@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +25,7 @@ import com.phobod.study.vcp.domain.Video;
 public class CreateTestDataService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CreateTestDataService.class);
 	private static final Random RANDOM = new Random();
+	private static User testUser;
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
@@ -36,6 +38,17 @@ public class CreateTestDataService {
 
 	private String reason = "mongo.recreate.db=true";
 	
+	
+	
+	public static User getTestUser() {
+		return testUser;
+	}
+
+	public void setTestUser() {
+		Query query = new Query(Criteria.where("name").is("Jack"));
+		CreateTestDataService.testUser = mongoTemplate.findOne(query, User.class);
+	}
+
 	@PostConstruct
 	public void createTestDataIfNecessary() {
 		if (shouldTestDataBeCreated()) {
@@ -44,6 +57,7 @@ public class CreateTestDataService {
 		} else {
 			LOGGER.info("Mongo db exists");
 		}
+		setTestUser();
 	}
 
 	private boolean shouldTestDataBeCreated() {

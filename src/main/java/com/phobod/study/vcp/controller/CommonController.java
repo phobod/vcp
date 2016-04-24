@@ -40,10 +40,4 @@ public class CommonController {
 		return video;
 	}
 
-	@RequestMapping(value = "/user/{userId}/video/{excludedVideoId}", method = RequestMethod.GET)
-	public @ResponseBody PagedResources<Resource<Video>> listVideosByUser(@PathVariable String userId, @PathVariable String excludedVideoId,Pageable pageable, PagedResourcesAssembler<Video> assembler) {
-		Page<Video> videos = commonService.listVideosByUser(pageable, excludedVideoId, userId);
-		return assembler.toResource(videos);
-	}
-
 }

@@ -1,4 +1,4 @@
-angular.module('app-controllers', ['ngRoute'])
+angular.module('app-controllers', ['ngRoute', 'ngFileUpload'])
 		.config(function($routeProvider) {
 			$routeProvider.when('/main', {
 				templateUrl : 'static/html/main.html',
@@ -7,6 +7,10 @@ angular.module('app-controllers', ['ngRoute'])
 			$routeProvider.when('/user/:userId/video/:videoId', {
 				templateUrl : 'static/html/single.html',
 				controller : 'listVideosByUserController'
+			});
+			$routeProvider.when('/user/:userId/video', {
+				templateUrl : 'static/html/uservideo.html',
+				controller : 'allListVideoByUserController'
 			});
 			$routeProvider.when('/upload', {
 				templateUrl : 'static/html/upload.html',
@@ -17,88 +21,66 @@ angular.module('app-controllers', ['ngRoute'])
 			});
 		})
 		
-		.controller('allListVideoController',
-		[ '$scope', 'videoService', function($scope, videoService) {
-			$scope.videoPopularList = videoService.listPopularVideos();
-			var nextPage = 0;
-			var totalImages = 0;
-			var loadedImages = 0;
-			var lastPage = false;
-			var countLoadedImages = 0;
-			$scope.showMoreButton = false;
-			$scope.loadingSpinner = false;
-			$scope.loadedVideosId = [];
-			$scope.videos = [];
-			$scope.updateLoadingSpinner = function() {
-				loadedImages++;
-				if(loadedImages == totalImages){
-					$scope.loadingSpinner = false;
-					for(var i = countLoadedImages; i < loadedImages; i++){
-						$scope.loadedVideosId[i] = $scope.videos[i].id;
-					}
-					countLoadedImages = loadedImages;
-					if(!lastPage){
-						$scope.showMoreButton = true;
-					}
+		.factory('controllersFactory',function(){
+			return{
+				createPaginationController : function(scope, service){
+					scope.videos = service.getData(0);
+					scope.loading = false;
+					scope.showMore = function (){
+						scope.loading = true;
+						var nextPage = scope.videos.page.number + 1;
+						service.getData(nextPage).$promise.then(function (value) {
+							value.content = scope.videos.content.concat(value.content);
+							scope.videos = value;
+							scope.loading = false;
+						});
+					};
 				}
-			};
-			$scope.showMore = function(){
-				$scope.loadingSpinner = true;
-				$scope.showMoreButton = false;		
-				videoService.listAllVideosByPage(nextPage).$promise.then(function(value){
-					totalImages += value.content.length;
-					Array.prototype.push.apply($scope.videos, value.content);
-					nextPage++;
-					if(nextPage == value.page.totalPages){
-						lastPage = true;
-					}
-				});
-			};
-			$scope.showMore();
+			}
+		})
+		
+		.controller('allListVideoController',
+		[ '$scope', 'videoService', 'controllersFactory', function($scope, videoService, controllersFactory) {
+			$scope.videoPopularList = videoService.listPopularVideos();
+			controllersFactory.createPaginationController($scope, {getData : videoService.listAllVideosByPage});
 		} ])
 		
 		.controller('listVideosByUserController',
-		[ '$scope', '$routeParams', 'videoService', function($scope, $routeParams, videoService) {
+		[ '$scope', '$routeParams', 'videoService', 'controllersFactory', function($scope, $routeParams, videoService, controllersFactory) {
 			$scope.currentVideo = videoService.findVideoById($routeParams.videoId);
-			var nextPage = 0;
-			var totalImages = 0;
-			var loadedImages = 0;
-			var lastPage = false;
-			var countLoadedImages = 0;
-			$scope.showMoreButton = false;
-			$scope.loadingSpinner = false;
-			$scope.loadedVideosId = [];
-			$scope.videos = [];
-			$scope.updateLoadingSpinner = function() {
-				loadedImages++;
-				if(loadedImages == totalImages){
-					$scope.loadingSpinner = false;
-					for(var i = countLoadedImages; i < loadedImages; i++){
-						$scope.loadedVideosId[i] = $scope.videos[i].id;
-					}
-					countLoadedImages = loadedImages;
-					if(!lastPage){
-						$scope.showMoreButton = true;
-					}
+			controllersFactory.createPaginationController($scope, {
+				getData : function(page){
+					return videoService.listVideosByUserByPage($routeParams.userId, $routeParams.videoId, page); 
 				}
-			};			
-			$scope.showMore = function(){
-				$scope.loadingSpinner = true;
-				$scope.showMoreButton = false;		
-				videoService.listVideosByUserByPage($routeParams.userId, $routeParams.videoId, nextPage).$promise.then(function(value){
-					totalImages += value.content.length;
-					Array.prototype.push.apply($scope.videos, value.content);
-					nextPage++;
-					if(nextPage == value.page.totalPages){
-						lastPage = true;
-					}
-				});
-			};
-			$scope.showMore();
+			});				
 		} ])
 
-		.controller('uploadController',
-		[ '$scope', function($scope) {
-			
-		} ]);
+		.controller('allListVideoByUserController',
+		[ '$scope', '$routeParams', 'videoService', 'controllersFactory', function($scope, $routeParams, videoService, controllersFactory) {
+			controllersFactory.createPaginationController($scope, {
+				getData : function(page){
+					return videoService.listAllVideosByUserByPage($routeParams.userId, page); 
+				}
+			});	
+		} ])
+		
+		.controller('uploadController', ['$scope', '$window', 'Upload', function ($scope, $window, Upload) {
+			$scope.submit = function(){
+				Upload.upload({
+                    url: 'user/upload',
+                    method: "POST",
+                    data: {'title': $scope.title, 'description': $scope.description, file: $scope.file }
+                }).success(function (data, status, headers, config) {
+                    $scope.title = null;
+                    $scope.description = null;
+                    $scope.file = null;
+                    $window.alert("File upload SUCCESS");
+                }).error(function (data, status) {
+                    $scope.title = null;
+                    $scope.description = null;
+                    $scope.file = null;
+                	$window.alert("File upload FAILED");
+                });
+			};			
+		}]);
 

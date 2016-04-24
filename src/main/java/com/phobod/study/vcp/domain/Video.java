@@ -34,8 +34,13 @@ public class Video {
 		this.views = views;
 		this.owner = owner;
 	}
-	
-	
+
+
+
+	public Video(String title, String description, String thumbnailUrl, String videoUrl, User owner) {
+		this(title, description, thumbnailUrl, videoUrl, 0, owner);
+	}
+
 	public Video(String title, String description, String thumbnailUrl, String videoUrl) {
 		super();
 		this.title = title;

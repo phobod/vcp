@@ -32,9 +32,4 @@ public class CommonServiceImpl implements CommonService {
 		return videoRepository.findOne(id);
 	}
 	
-	@Override
-	public Page<Video> listVideosByUser(Pageable pageable, String excludedVideoId, String userId) {
-		return videoRepository.findByIdNotAndOwnerIdOrderByViewsDesc(pageable, excludedVideoId, userId); 
-	}
-
 }

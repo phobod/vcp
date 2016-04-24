@@ -2,6 +2,10 @@ package com.phobod.study.vcp.service;
 
 import java.nio.file.Path;
 
+import javax.annotation.Nonnull;
+
+import com.phobod.study.vcp.exception.CantProcessMediaContentException;
+
 public interface ThumbnailService {
-	String createThumbnail(Path videoFilePath);
+	@Nonnull byte[] createThumbnail(@Nonnull Path videoFilePath) throws CantProcessMediaContentException;
 }

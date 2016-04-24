@@ -1,9 +1,11 @@
 package com.phobod.study.vcp.service;
 
-import org.springframework.web.multipart.MultipartFile;
+import java.nio.file.Path;
 
-import com.phobod.study.vcp.domain.Video;
+import javax.annotation.Nonnull;
+
+import com.phobod.study.vcp.exception.CantProcessMediaContentException;
 
 public interface VideoService {
-	Video processVideo(MultipartFile videoFile);
+	@Nonnull String saveVideo(@Nonnull Path tempFilePath) throws CantProcessMediaContentException;
 }

@@ -12,6 +12,9 @@ angular.module('app-services', [ 'ngResource' ])
 		},
 		listVideosByUserByPage : function(userId, excludedVideoId, page){
 			return $resource('/user/:userId/video/:excludedVideoId?page=' + page + '&size=10&sort=type,desc',{userId:userId,excludedVideoId:excludedVideoId}).get();
+		},
+		listAllVideosByUserByPage : function(userId, page){
+			return $resource('/user/:userId/video?page=' + page + '&size=12&sort=type,desc',{userId:userId}).get();
 		}
 	}
 }]);

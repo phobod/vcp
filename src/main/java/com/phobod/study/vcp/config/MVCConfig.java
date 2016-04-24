@@ -2,11 +2,14 @@ package com.phobod.study.vcp.config;
 
 import java.util.List;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.multipart.MultipartResolver;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
@@ -29,4 +32,8 @@ public class MVCConfig extends WebMvcConfigurerAdapter{
 		converters.add(new MappingJackson2HttpMessageConverter());
 	}
 
+	@Bean
+	public MultipartResolver multipartResolver(){
+		return new CommonsMultipartResolver();
+	}
 }
