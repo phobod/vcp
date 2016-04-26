@@ -89,6 +89,12 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-elasticsearch</artifactId>
+			<version>2.0.1.RELEASE</version>
+		</dependency>
+
+		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context-support</artifactId>
 			<version>4.2.5.RELEASE</version>
@@ -141,5 +147,6 @@
 			<artifactId>jsr305</artifactId>
 			<version>3.0.1</version>
 		</dependency>
+		
 	</dependencies>
 </project>

@@ -16,6 +16,10 @@ angular.module('app-controllers', ['ngRoute', 'ngFileUpload'])
 				templateUrl : 'static/html/upload.html',
 				controller : 'uploadController'
 			});
+			$routeProvider.when('/video/search', {
+				templateUrl : 'static/html/video.html',
+				controller : 'searchResultController'
+			});
 			$routeProvider.otherwise({
 				redirectTo : '/main'
 			});
@@ -64,6 +68,16 @@ angular.module('app-controllers', ['ngRoute', 'ngFileUpload'])
 			});	
 		} ])
 		
+		.controller('searchResultController',
+		[ '$scope', '$location', 'videoService', 'controllersFactory', function($scope, $location, videoService, controllersFactory) {
+			$scope.textQuery = $location.search().query;
+			controllersFactory.createPaginationController($scope, {
+				getData : function(page){
+					return videoService.listBySearchQuery($scope.textQuery, page); 
+				}
+			});	
+		} ])
+		
 		.controller('uploadController', ['$scope', '$window', 'Upload', function ($scope, $window, Upload) {
 			$scope.submit = function(){
 				Upload.upload({
@@ -71,16 +85,30 @@ angular.module('app-controllers', ['ngRoute', 'ngFileUpload'])
                     method: "POST",
                     data: {'title': $scope.title, 'description': $scope.description, file: $scope.file }
                 }).success(function (data, status, headers, config) {
-                    $scope.title = null;
-                    $scope.description = null;
-                    $scope.file = null;
+                	$scope.clearData();
                     $window.alert("File upload SUCCESS");
                 }).error(function (data, status) {
-                    $scope.title = null;
-                    $scope.description = null;
-                    $scope.file = null;
+                	$scope.clearData();
                 	$window.alert("File upload FAILED");
                 });
-			};			
-		}]);
+			};
+			$scope.clearData = function(){
+                $scope.title = null;
+                $scope.description = null;
+                $scope.file = null;				
+			};
+		}])
+		
+		.controller('searchController',
+		[ '$scope', '$location', function($scope, $location) {
+			$scope.query = '';
+			$scope.find = function(){
+				if($scope.query.trim() != ''){
+					$location.path('/video/search').search({query: $scope.query});
+					$scope.query = '';
+				} else {
+					$location.path('/main');
+				}
+			};
+		} ]);
 

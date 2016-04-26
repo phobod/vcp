@@ -11,6 +11,7 @@ import com.phobod.study.vcp.component.UploadVideoTempStorage;
 import com.phobod.study.vcp.domain.User;
 import com.phobod.study.vcp.domain.Video;
 import com.phobod.study.vcp.form.UploadForm;
+import com.phobod.study.vcp.repository.search.VideoSearchRepository;
 import com.phobod.study.vcp.repository.storage.VideoRepository;
 import com.phobod.study.vcp.service.ImageService;
 import com.phobod.study.vcp.service.ThumbnailService;
@@ -35,6 +36,9 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private UploadVideoTempStorage uploadVideoTempStorage;
 
+	@Autowired
+	private VideoSearchRepository videoSearchRepository;
+
 	@Override
 	public Page<Video> listVideosByUser(Pageable pageable, String userId) {
 		return videoRepository.findByOwnerIdOrderByViewsDesc(pageable, userId); 
@@ -53,6 +57,7 @@ public class UserServiceImpl implements UserService {
 		String thumbnailImageUrl = imageService.saveImageData(thumbnailImageData);
 		Video video = new Video(form.getTitle(), form.getDescription(), thumbnailImageUrl, videoUrl, currentUser);
 		videoRepository.save(video);
+		videoSearchRepository.save(video);
 	}
 
 }

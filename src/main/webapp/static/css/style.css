@@ -132,12 +132,6 @@ form.navbar-form.navbar-right {
 .resent-grid-img{
 	position:relative;
 }
-.popular-grid-img img{
-	max-height: 320px;
-}
-.recommended-grid-img img{
-	max-height: 240px;
-}
 .resent-grid-img a{
 	display:block;
 }
@@ -160,6 +154,11 @@ form.navbar-form.navbar-right {
 }
 .resent-grid-info p.author{
   font-size: 14px;
+  color: #9E9E9E;
+  margin: .5em 0;
+}
+.resent-grid-info p.company{
+  font-size: 12px;
   color: #9E9E9E;
   margin: .5em 0;
 }
@@ -248,6 +247,7 @@ form.navbar-form.navbar-right {
 .resent-grid-info p.descr-info{
     font-size: 12px;
     height: 55px;
+    overflow: hidden;
 }
 .recommended-grid-info {
     box-shadow: 0px 0 2px #C1C1C1 !important;
@@ -312,6 +312,11 @@ form.navbar-form.navbar-right {
     margin: 0 0 .5em 0;
     line-height: 1.5em;
 }
+.media-body p.company{
+  font-size: 12px;
+  color: #9E9E9E;
+  margin: .5em 0;
+}
 .single-grid-right{
 	margin-top:2em;
 }
@@ -334,6 +339,11 @@ form.navbar-form.navbar-right {
 .single-right-grid-right p.author {
   text-decoration: none;
   font-size: 14px;
+  color: #9E9E9E;
+  margin: .5em 0;
+}
+.single-right-grid-right p.company{
+  font-size: 12px;
   color: #9E9E9E;
   margin: .5em 0;
 }

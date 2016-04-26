@@ -9,7 +9,8 @@
   </appender>
    
   <logger name="org.springframework.data.document.mongodb" level="debug"/>
-   
+      
+  <logger name="org.elasticsearch.bootstrap" level="error"/>
  
   <root level="info">
     <appender-ref ref="STDOUT" />

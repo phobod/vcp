@@ -1,16 +1,14 @@
 package com.phobod.study.vcp.domain;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
-import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-@Document
+@org.springframework.data.mongodb.core.mapping.Document
+@org.springframework.data.elasticsearch.annotations.Document(indexName="video")
 public class Video {
 	@Id
 	private String id;
-	@Indexed
 	private String title;
 	private String description;
 	@Field("thumbnail-url")

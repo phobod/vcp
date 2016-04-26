@@ -11,6 +11,7 @@ import org.springframework.hateoas.Resource;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -39,5 +40,11 @@ public class CommonController {
 		Video video = commonService.findVideoById(videoId);
 		return video;
 	}
+	
+	@RequestMapping(value = "/video/search", method = RequestMethod.GET)
+	public @ResponseBody PagedResources<Resource<Video>> findVideos(@RequestParam("query") String query, Pageable pageable, PagedResourcesAssembler<Video> assembler) {
+		Page<Video> videos = commonService.listVideosBySearchQuery(query, pageable);
+		return assembler.toResource(videos);
+	}	
 
 }

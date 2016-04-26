@@ -26,10 +26,10 @@
 				<a class="navbar-brand" ng-href="#/main"><h1><img src="/static/img/logo.png" alt="" /></h1></a>
 			</div>
 			<div id="navbar" class="navbar-collapse collapse">
-				<div class="top-search">
+				<div class="top-search" ng-controller="searchController">
 					<form class="navbar-form navbar-right">
-						<input type="text" class="form-control" placeholder="Search...">
-						<input type="submit" value=" ">
+						<input type="text" class="form-control" placeholder="Search..." ng-model="query" ng-keypress="onEnter($event)">
+						<input type="submit" value=" " ng-click="find()">
 					</form>
 				</div>
 				<div class="header-top-right">

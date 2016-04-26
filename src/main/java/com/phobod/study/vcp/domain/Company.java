@@ -2,14 +2,12 @@ package com.phobod.study.vcp.domain;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.index.TextIndexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document
 public class Company {
 	@Id
 	private String id;
-	@TextIndexed
 	@Indexed(unique = true)
 	private String name;
 	private String address;

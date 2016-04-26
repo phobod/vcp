@@ -1,5 +1,7 @@
 package com.phobod.study.vcp.service.impl;
 
+import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -34,10 +36,20 @@ public class JCodecThumbnailService implements ThumbnailService{
 		if (nativeFrame == null) {
 			throw new CantProcessMediaContentException("Can't create thumbnail for file " + videoFilePath.getFileName());
 		}
-		BufferedImage img = AWTUtil.toBufferedImage(nativeFrame);
+		BufferedImage originalImage = AWTUtil.toBufferedImage(nativeFrame);
+		BufferedImage changedImage = resizeThubnail(originalImage, 640, 360);
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		ImageIO.write(img, "jpg", out);
+		ImageIO.write(changedImage, "jpg", out);
 		return out.toByteArray();
+	}
+
+	private BufferedImage resizeThubnail(BufferedImage originalImage, int width, int height) {
+		Image image = originalImage.getScaledInstance(width, height, Image.SCALE_AREA_AVERAGING);
+        BufferedImage changedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        Graphics2D g2d = changedImage.createGraphics();
+        g2d.drawImage(image, 0, 0, null);
+        g2d.dispose();
+		return changedImage;
 	}
 
 	private Picture getVideoFrameBySecond(Path videoFilePath, double second) throws IOException, JCodecException{

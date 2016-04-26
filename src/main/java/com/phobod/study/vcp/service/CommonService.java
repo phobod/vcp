@@ -13,4 +13,5 @@ public interface CommonService {
 	@Nonnull List<Video> listPopularVideos();
 	@Nonnull Page<Video> listAllVideos(@Nonnull Pageable pageable);
 	@Nonnull Video findVideoById(@Nonnull String id);
+	@Nonnull Page<Video> listVideosBySearchQuery(@Nonnull String query, @Nonnull Pageable pageable);
 }
