@@ -1,12 +1,16 @@
 package com.phobod.study.vcp.domain;
 
+import java.io.Serializable;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 @org.springframework.data.mongodb.core.mapping.Document
 @org.springframework.data.elasticsearch.annotations.Document(indexName="video")
-public class Video {
+public class Video implements Serializable{
+	private static final long serialVersionUID = 4705714831192040100L;
+	
 	@Id
 	private String id;
 	private String title;

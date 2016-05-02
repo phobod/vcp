@@ -1,13 +1,19 @@
 package com.phobod.study.vcp.domain;
 
+import java.io.Serializable;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import com.phobod.study.vcp.Constants.Role;
+
 @Document
-public class User {
+public class User implements Serializable{
+	private static final long serialVersionUID = -6804101990746982838L;
+	
 	@Id
 	private String id;
 	private String name;

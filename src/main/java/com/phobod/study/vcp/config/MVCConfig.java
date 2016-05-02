@@ -26,6 +26,7 @@ public class MVCConfig extends WebMvcConfigurerAdapter{
 		registry.addResourceHandler("/media/**").addResourceLocations("/media/");
 		registry.addResourceHandler("/favicon.ico").addResourceLocations("/favicon.ico");
 		registry.addResourceHandler("/index.html").addResourceLocations("/index.html");
+		registry.addResourceHandler("/login.html").addResourceLocations("/login.html");
 	}
 
 	@Override

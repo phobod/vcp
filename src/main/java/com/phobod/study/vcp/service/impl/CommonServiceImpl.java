@@ -49,12 +49,12 @@ public class CommonServiceImpl implements CommonService {
 		SearchQuery searchQuery = new NativeSearchQueryBuilder()
 				.withQuery(QueryBuilders.multiMatchQuery(query)
 						.field("title")
+						.field("owner.company.name")
 						.field("owner.name")
 						.field("owner.surname")
-						.field("owner.company.name")
 						.type(MultiMatchQueryBuilder.Type.BEST_FIELDS)
 						.fuzziness(Fuzziness.TWO)
-						.operator(Operator.AND))
+						.operator(Operator.OR))
 				.withSort(SortBuilders.fieldSort("views").order(SortOrder.DESC))
 				.build();
 		searchQuery.setPageable(pageable);

@@ -1,5 +1,6 @@
 package com.phobod.study.vcp.controller;
 
+import java.security.Principal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,11 +18,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.phobod.study.vcp.domain.Video;
 import com.phobod.study.vcp.service.CommonService;
+import com.phobod.study.vcp.service.UserService;
 
 @RestController
 public class CommonController {
 	@Autowired
 	private CommonService commonService;
+	
+	@Autowired
+	private UserService userService;
 
 	@RequestMapping(value = "/video/popular", method = RequestMethod.GET)
 	public @ResponseBody List<Video> listPopularVideos() {
@@ -46,5 +51,22 @@ public class CommonController {
 		Page<Video> videos = commonService.listVideosBySearchQuery(query, pageable);
 		return assembler.toResource(videos);
 	}	
-
+	
+	
+	@RequestMapping(value = "/user/{userId}/video", method = RequestMethod.GET)
+	public @ResponseBody PagedResources<Resource<Video>> listVideosByUser(@PathVariable String userId,Pageable pageable, PagedResourcesAssembler<Video> assembler) {
+		Page<Video> videos = userService.listVideosByUser(pageable, userId);
+		return assembler.toResource(videos);
+	}
+	
+	@RequestMapping(value = "/user/{userId}/video/{excludedVideoId}", method = RequestMethod.GET)
+	public @ResponseBody PagedResources<Resource<Video>> listVideosByUserExcludeOne(@PathVariable String userId, @PathVariable String excludedVideoId,Pageable pageable, PagedResourcesAssembler<Video> assembler) {
+		Page<Video> videos = userService.listVideosByUserExcludeOne(pageable, excludedVideoId, userId);
+		return assembler.toResource(videos);
+	}
+	
+	@RequestMapping(value = "/user", method = RequestMethod.GET)
+	public Principal user(Principal user){
+		return user;
+	}
 }

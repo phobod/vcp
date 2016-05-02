@@ -14,44 +14,8 @@
 </head>
 <body ng-cloak>
 
-	<nav class="navbar navbar-inverse navbar-fixed-top">
-		<div class="container-fluid">
-			<div class="navbar-header">
-				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-					<span class="sr-only">Toggle navigation</span> 
-					<span class="icon-bar"></span> 
-					<span class="icon-bar"></span> 
-					<span class="icon-bar"></span>
-				</button>
-				<a class="navbar-brand" ng-href="#/main"><h1><img src="/static/img/logo.png" alt="" /></h1></a>
-			</div>
-			<div id="navbar" class="navbar-collapse collapse">
-				<div class="top-search" ng-controller="searchController">
-					<form class="navbar-form navbar-right">
-						<input type="text" class="form-control" placeholder="Search..." ng-model="query" ng-keypress="onEnter($event)">
-						<input type="submit" value=" " ng-click="find()">
-					</form>
-				</div>
-				<div class="header-top-right">
-					<div class="file">
-						<a ng-href="#/upload">Upload</a>
-					</div>
-					<div class="signin">
-						<a href="#" class="play-icon popup-with-zoom-anim">Sign Up</a>
-						<!-- pop-up-box -->						
-					</div>
-					<div class="signin">
-						<a href="#" class="play-icon popup-with-zoom-anim">Sign In</a>
-					</div>
-					<div class="clearfix"> </div>
-				</div>
-			</div>
-			<div class="clearfix"> </div>
-		</div>
-	</nav>
-	<div class="clearfix"> </div>
+	<div ng-include="'static/html/include/navbar.html'"></div>
 	<ng-view></ng-view>
-
 
 	<script type="text/javascript" src="/static/js/jquery-1.11.1.min.js"></script>
 	<script type="text/javascript" src="/static/js/angular.js"></script>
@@ -61,6 +25,7 @@
 	<script type="text/javascript" src="/static/angular/app-controllers.js"></script>
 	<script type="text/javascript" src="/static/angular/app-services.js"></script>
 	<script type="text/javascript" src="/static/angular/app-directives.js"></script>
+	<script type="text/javascript" src="/static/angular/app-interceptors.js"></script>
 	<script type="text/javascript" src="/static/angular/app.js"></script>
 	<script type="text/javascript" src="/static/js/bootstrap.js"></script>
   	<script type="text/javascript" src="/static/js/ng-file-upload.js"></script>

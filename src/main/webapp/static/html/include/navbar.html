@@ -1,0 +1,34 @@
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+					<span class="sr-only">Toggle navigation</span> 
+					<span class="icon-bar"></span> 
+					<span class="icon-bar"></span> 
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" ng-href="#/main"><h1><img src="/static/img/logo.png" alt="" /></h1></a>
+			</div>
+			<div id="navbar" class="navbar-collapse collapse">
+				<div class="top-search" ng-controller="searchController">
+					<form class="navbar-form navbar-right">
+						<input type="text" class="form-control" placeholder="Search..." ng-model="query" ng-keypress="onEnter($event)">
+						<input type="submit" value=" " ng-click="find()">
+					</form>
+				</div>
+				<div class="header-top-right" ng-controller="loginController">
+					<div class="file">
+						<a ng-href="#/my-account/upload" ng-show="authenticated && !roleAdmin" >Upload</a>
+						<a ng-href="#/admin" ng-show="authenticated && roleAdmin">Admin Panel</a>
+					</div>
+					<div class="signin">
+						<a ng-href="#/login" class="play-icon popup-with-zoom-anim" ng-show="!authenticated" >Sign In</a>
+						<a href="#" class="play-icon popup-with-zoom-anim" ng-show="authenticated" ng-click="logout()">Logout</a>
+					</div>
+					<div class="clearfix"> </div>
+				</div>
+			</div>
+			<div class="clearfix"> </div>
+		</div>
+	</nav>
+	<div class="clearfix"> </div>

@@ -12,12 +12,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.phobod.study.vcp.Constants.Role;
 import com.phobod.study.vcp.domain.Company;
-import com.phobod.study.vcp.domain.Role;
 import com.phobod.study.vcp.domain.User;
 import com.phobod.study.vcp.domain.Video;
 
@@ -25,7 +25,6 @@ import com.phobod.study.vcp.domain.Video;
 public class CreateTestDataService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CreateTestDataService.class);
 	private static final Random RANDOM = new Random();
-	private static User testUser;
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
@@ -38,17 +37,6 @@ public class CreateTestDataService {
 
 	private String reason = "mongo.recreate.db=true";
 	
-	
-	
-	public static User getTestUser() {
-		return testUser;
-	}
-
-	public void setTestUser() {
-		Query query = new Query(Criteria.where("name").is("Jack"));
-		CreateTestDataService.testUser = mongoTemplate.findOne(query, User.class);
-	}
-
 	@PostConstruct
 	public void createTestDataIfNecessary() {
 		if (shouldTestDataBeCreated()) {
@@ -57,7 +45,6 @@ public class CreateTestDataService {
 		} else {
 			LOGGER.info("Mongo db exists");
 		}
-		setTestUser();
 	}
 
 	private boolean shouldTestDataBeCreated() {
@@ -123,17 +110,18 @@ public class CreateTestDataService {
 	}
 
 	private List<User> getTestUsers(List<Company> companies) {
+		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 		return Arrays.asList(
-				new User("Tom", "Anderson", "Admin01", "sjdSDb34", "tomas@mail.ru",
+				new User("Tom", "Anderson", "Admin01", encoder.encode("sjdSDb34"), "tomas@mail.ru",
 						companies.get(RANDOM.nextInt(companies.size())), Role.ADMIN,
 						"http://www.radfaces.com/images/avatars/ickis.jpg"),
-				new User("Jack", "Douu", "jactin", "qwerty123", "jactin@mail.ru",
+				new User("Jack", "Douu", "jactin", encoder.encode("qwerty123"), "jactin@mail.ru",
 						companies.get(RANDOM.nextInt(companies.size())), Role.USER,
 						"http://www.radfaces.com/images/avatars/krumm.jpg"),
-				new User("Rachel", "Stone", "roston", "sdfvsm2d", "roston@mail.ru",
+				new User("Rachel", "Stone", "roston", encoder.encode("sdfvsm2d"), "roston@mail.ru",
 						companies.get(RANDOM.nextInt(companies.size())), Role.USER,
 						"http://www.radfaces.com/images/avatars/jane-lane.jpg"),
-				new User("Steve", "Macleod", "duncan", "lsdb2HG", "duncan@mail.ru",
+				new User("Steve", "Macleod", "duncan", encoder.encode("lsdb2HG"), "duncan@mail.ru",
 						companies.get(RANDOM.nextInt(companies.size())), Role.USER,
 						"http://www.radfaces.com/images/avatars/oblina.jpg"));
 	}

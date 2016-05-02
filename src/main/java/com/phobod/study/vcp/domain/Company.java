@@ -1,11 +1,15 @@
 package com.phobod.study.vcp.domain;
 
+import java.io.Serializable;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document
-public class Company {
+public class Company implements Serializable{
+	private static final long serialVersionUID = 2191784145785106818L;
+	
 	@Id
 	private String id;
 	@Indexed(unique = true)
