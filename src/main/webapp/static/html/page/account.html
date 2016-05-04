@@ -1,0 +1,112 @@
+<div class="main" ng-controller="accountController">
+	<div class="show-top-grids">
+		<div class="col-md-8 col-md-offset-2" >
+			<form class="new-company" name="form">
+				<div class="row">
+					<div class="form-group col-md-4">
+						<label for="inputAvatar">Avatar</label>
+					    <input type="file" accept="image/*" ng-model="avatarFile" id="inputAvatar" preview-class="myImage img-thumbnail" media-preview name="avatarFile" ng-hide="currentAccountId > -1" />
+						<img class="media-object small-avatar thumbnail" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" ng-src="{{avatarFile}}" alt="avatar" ng-show="currentAccountId > -1">
+					    <i ng-show="form.avatarFile.$error.required">*required</i>
+					</div>
+					<div class="form-group col-md-8">
+						<div class="row">
+							<div class="form-group col-md-4">
+								<label for="inputName">Name</label>
+								<input type="text" class="form-control" id="inputName" placeholder="Name" ng-model="name" name="name" required>
+								<i ng-show="form.name.$error.required">*required</i>
+							</div>
+							<div class="form-group col-md-4">
+								<label for="inputSurname">Surname</label>
+								<input type="text" class="form-control" id="inputSurname" placeholder="Surname" ng-model="surname" name="surname" required>
+								<i ng-show="form.surname.$error.required">*required</i>
+							</div>
+							<div class="form-group col-md-4">
+								<label for="inputEmail">Email</label>
+								<input type="text" class="form-control" id="inputEmail" placeholder="Email" ng-model="email" name="email" required>
+								<i ng-show="form.email.$error.required">*required</i>
+							</div>
+						</div>
+						<div class="row">
+							<div class="form-group col-md-6">
+								<label for="inputLogin">Login</label>
+								<input type="text" class="form-control" id="inputLogin" placeholder="Login" ng-model="login" name="login" ng-disabled="currentAccountId > -1" required>
+								<i ng-show="form.login.$error.required">*required</i>
+							</div>
+							<div class="form-group col-md-6">
+								<label for="inputPassword">Password</label>
+								<input type="text" class="form-control" id="inputPassword" placeholder="Password" ng-model="password" name="password" ng-disabled="currentAccountId > -1" required>
+								<i ng-show="form.password.$error.required">*required</i>
+							</div>
+						</div>
+						<div class="row">
+							<div class="form-group col-md-6">
+								<label for="inputCompany">Company</label>
+								<select class="form-control" id="inputCompany" ng-model="company"  name="company" required>
+									<option ng-repeat="company in allCompanies" value="{{company.id}}">{{company.name}}</option>
+								</select>
+								<i ng-show="form.company.$error.required">*required</i>
+							</div>
+							<div class="form-group col-md-6">
+								<label for="inputRole">Role</label>
+								<select class="form-control" id="inputRole" ng-model="role"  name="role" ng-disabled="currentAccountId > -1" required>
+									<option>USER</option>
+									<option>ADMIN</option>
+								</select>
+								<i ng-show="form.role.$error.required">*required</i>
+							</div>
+						</div>
+					</div>
+				</div>
+				<button type="submit" class="btn btn-success" ng-disabled="!form.$valid" ng-click="saveUser()" ng-show="currentAccountId > -1">Save</button>
+				<button type="submit" class="btn btn-success" ng-disabled="!form.$valid" ng-click="addNewUser()" ng-hide="currentAccountId > -1">Add</button>
+			</form>
+		</div>
+		<div class="clearfix"> </div>	
+		<br>
+		<div class="col-md-8 col-md-offset-2">
+			<table class="table table-striped account-table">
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>Name</th>
+						<th>Surname</th>
+						<th>Login</th>
+						<th>Email</th>
+						<th>Company</th>
+						<th>Role</th>
+						<th>Avatar</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="account in records.content">
+						<td>{{$index + 1}}</td>
+						<td>{{account.name}}</td>
+						<td>{{account.surname}}</td>
+						<td>{{account.login}}</td>
+						<td>{{account.email}}</td>
+						<td>{{account.company.name}}</td>
+						<td>{{account.role}}</td>
+						<td><img class="media-object mini-avatar thumbnail" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" ng-src="{{account.avatarUrl | trusted}}" alt="avatar"></td>
+						<td>
+							<div class="btn-group">
+								<button class="btn btn-primary btn-mini" ng-click="editUser($index)">Edit</button>
+								<button class="btn btn-danger btn-mini" ng-click="deleteUser($index)">Delete</button>
+							</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="clearfix"> </div>	
+	</div>
+	<div class="load-more" id="wrapper">
+		<button class="load-more-button" href="#" ng-click="showMore()" ng-hide="records.page.number + 1 >= records.page.totalPages || loading">Show more...</button>
+		<div class="row-fluid ui-corner-all" ng-show="loading" >
+			<p><img alt="Loading  Content" class="img-responsive center-block" src="/static/img/ajax-loader.gif" /></p>
+		</div>
+	</div>
+	<div class="clearfix"> </div>				
+</div>
+<div class="clearfix"> </div>	

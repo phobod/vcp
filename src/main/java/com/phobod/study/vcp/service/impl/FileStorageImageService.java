@@ -8,6 +8,7 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.phobod.study.vcp.exception.CantProcessMediaContentException;
 import com.phobod.study.vcp.service.ImageService;
@@ -36,6 +37,22 @@ public class FileStorageImageService implements ImageService {
 
 	private String generateUniquieThumbnailFileName() {
 		return UUID.randomUUID() + ".jpg";
+	}
+
+	@Override
+	public String saveImageData(MultipartFile multipartFile) throws CantProcessMediaContentException {
+		try {
+			return saveImageDataInternal(multipartFile);
+		} catch (IOException e) {
+			throw new CantProcessMediaContentException("Save image failed: " + e.getMessage(), e);
+		}
+	}
+
+	private String saveImageDataInternal(MultipartFile multipartFile) throws IOException{
+		String uniqueImageFileName = generateUniquieThumbnailFileName();
+		Path path = Paths.get(mediaDir + "/image/" + uniqueImageFileName);
+		multipartFile.transferTo(path.toFile());
+		return "/media/image/" + uniqueImageFileName;
 	}
 	
 }

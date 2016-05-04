@@ -1,0 +1,33 @@
+<div class="main" ng-controller="allListVideoMyAccountController">
+	<div class="show-top-grids" ng-repeat="video in records.content">
+		<div class="col-sm-3 col-sm-offset-2 single-left">
+			<div class="song">
+				<div class="video-grid">
+					<video class="html5-video-content" ng-src="{{video.videoUrl | trusted}}" ng-attr-poster="{{video.thumbnailUrl}}" controls="controls"></video>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-5 single-right detail-info">
+			<div>
+				<p class="title" ng-bind="video.title"></p>
+				<br>
+				<p class="descr" ng-bind="video.description"></p>	
+			</div>
+			<div>
+				<p class="control-button">
+					<a ng-href="#/my-account/video/{{video.id}}" class="btn btn-primary" role="button">Edit</a> 
+					<button type="submit" class="btn btn-danger" role="button" ng-click="deleteVideo($index)">Delete</button>
+				</p>					
+			</div>
+		</div>
+		<div class="clearfix"> </div>	
+	</div>
+	<div class="load-more" id="wrapper">
+		<button class="load-more-button" href="#" ng-click="showMore()" ng-hide="records.page.number + 1 >= records.page.totalPages || loading">Show more...</button>
+		<div class="row-fluid ui-corner-all" ng-show="loading" >
+			<p><img alt="Loading  Content" class="img-responsive center-block" src="/static/img/ajax-loader.gif" /></p>
+		</div>
+	</div>
+	<div class="clearfix"> </div>				
+</div>
+<div class="clearfix"> </div>	

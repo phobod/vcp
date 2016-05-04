@@ -1,0 +1,25 @@
+<div class="main">
+	<div class="show-top-grids">
+		<div class="col-sm-6 col-sm-offset-3 edit-grids">
+		
+			<form ng-controller="editVideoController" name="form">
+				<div class="form-group">
+					<video class="html5-video-content" ng-src="{{currentVideo.videoUrl | trusted}}" ng-attr-poster="{{currentVideo.thumbnailUrl}}" controls="controls"></video>
+				</div>				
+				<div class="form-group">
+					<label for="inputTitle">Title</label> 
+					<input type="text" class="form-control" id="inputTitle" name="title" ng-model="title" required>
+					<i ng-show="form.title.$error.required">*required</i>
+				</div>
+				<div class="form-group">
+					<label for="inputDescription">Description</label> 
+					<textarea rows="5"  class="form-control" id="inputDescription" name="description" ng-model="description" required></textarea>
+					<i ng-show="form.description.$error.required">*required</i>
+				</div>
+				<button type="submit" class="btn btn-success" ng-disabled="!form.$valid" ng-click='saveVideo()'>Save</button>
+			</form>
+			<div class="clearfix"> </div>	
+		</div>	
+	</div>
+</div>
+<div class="clearfix"> </div>	

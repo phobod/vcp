@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.phobod.study.vcp.exception.CantProcessMediaContentException;
-import com.phobod.study.vcp.form.UploadForm;
+import com.phobod.study.vcp.form.VideoUploadForm;
 
 @Aspect
 @Component
@@ -26,7 +26,7 @@ public class UploadVideoTempStorage {
 	
 	@Around("execution(* com.phobod.study.vcp.service.impl.UserServiceImpl.uploadVideo(..))")
 	public Object advice(ProceedingJoinPoint pjp) throws Throwable {
-		UploadForm form = (UploadForm) pjp.getArgs()[1];
+		VideoUploadForm form = (VideoUploadForm) pjp.getArgs()[1];
 		Path tempUploadedVideoPath = null;
 		try {
 			tempUploadedVideoPath = Files.createTempFile("upload", ".video");

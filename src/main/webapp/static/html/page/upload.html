@@ -4,7 +4,7 @@
 	<!-- container -->
 	<div class="container">
 		<div class="upload-grids">
-			<form ng-controller="uploadController" name="form">
+			<form ng-controller="uploadVideoController" name="form">
 				<div class="form-group">
 					<label for="inputTitle">Title</label> 
 					<input type="text" class="form-control" id="inputTitle" name="title" ng-model="title" required>
@@ -18,13 +18,13 @@
 				<div class="form-group">
 					<div class="upload-right">
  						<div ngf-drop ngf-select ng-model="file" class="drop-box" ngf-drag-over-class="'dragover'" ngf-allow-dir="true"
-					        accept="video/*" ngf-pattern="'video/*'" name="file" required>Drop videos here or click to upload</div>
+					        accept="video/*" ngf-pattern="'video/*'" name="file" required><img ng-src="{{file.name}}"/> Drop videos here or click to upload</div>
 					    <div ngf-no-file-drop>File Drag/Drop is not supported for this browser</div>
 					    <i ng-show="form.file.$error.required">*required</i><br>
 					    <div style="font:smaller">{{file.name}}</div>     		
 					</div>
 				</div>
-				<button type="submit" class="btn btn-default" ng-disabled="!form.$valid" ng-click='submit()'>Submit</button>
+				<button type="submit" class="btn btn-success" ng-disabled="!form.$valid" ng-click='submit()'>Submit</button>
 			</form>
 		</div>
 	</div>

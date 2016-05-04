@@ -30,7 +30,7 @@
 		</div>
 		<div class="col-md-3 single-right"  ng-controller="listVideosByUserController">
 			<h3>Next video</h3>
-			<div class="single-grid-right" ng-repeat="video in videos.content">
+			<div class="single-grid-right" ng-repeat="video in records.content">
 				<div class="single-right-grids">
 					<div class="col-md-4 single-right-grid-left">
 						<a ng-href="#/user/{{video.owner.id}}/video/{{video.id}}"><img ng-src="{{video.thumbnailUrl}}" alt="{{video.title}}" imageonload="updateLoadingSpinner()"/></a>
@@ -49,7 +49,7 @@
 			</div>
 			
 			<div class="load-more" id="wrapper">
-       			<button class="load-more-button" href="#" ng-click="showMore()" ng-hide="videos.page.number + 1 >= videos.page.totalPages || loading">Show more...</button>
+       			<button class="load-more-button" href="#" ng-click="showMore()" ng-hide="records.page.number + 1 >= records.page.totalPages || loading">Show more...</button>
        			<div class="row-fluid ui-corner-all" ng-show="loading" >
 					<p><img alt="Loading  Content" class="img-responsive center-block" src="/static/img/ajax-loader.gif" /></p>
 			    </div>

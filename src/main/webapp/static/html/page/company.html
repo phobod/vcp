@@ -1,0 +1,72 @@
+<div class="main" ng-controller="companyController">
+	<div class="show-top-grids">
+		<div class="col-md-6 col-md-offset-3">
+			<form class="new-company" name="form">
+				<div class="form-group">
+					<label for="inputName">Name</label>
+					<input type="text" class="form-control" id="inputName" placeholder="Name" ng-model="name" name="name" ng-disabled="currentCompanyId > -1" required>
+					<i ng-show="form.name.$error.required">*required</i>
+				</div>
+				<div class="form-group">
+					<label for="inputAddress">Address</label>
+					<input type="text" class="form-control" id="inputAddress" placeholder="Address" ng-model="address" name="address" required>
+					<i ng-show="form.address.$error.required">*required</i>
+				</div>
+				<div class="row">
+					<div class="form-group col-md-6">
+						<label for="inputEmail">Email</label>
+						<input type="text" class="form-control" id="inputEmail" placeholder="Email" ng-model="email" name="email" required>
+						<i ng-show="form.email.$error.required">*required</i>
+					</div>
+					<div class="form-group col-md-6">
+						<label for="inputPhone">Phone</label>
+						<input type="text" class="form-control" id="inputPhone" placeholder="Phone" ng-model="phone" name="phone" required>
+	  					<i ng-show="form.phone.$error.required">*required</i>      
+					</div>
+				</div>
+				<button type="submit" class="btn btn-success" ng-disabled="!form.$valid" ng-click="saveCompany()" ng-show="currentCompanyId > -1">Save</button>
+				<button type="submit" class="btn btn-success" ng-disabled="!form.$valid" ng-click="addNewCompany()" ng-hide="currentCompanyId > -1">Add</button>
+			</form>
+		</div>
+		<div class="clearfix"> </div>	
+		<br>	
+		<div class="col-md-8 col-md-offset-2">
+			<table class="table table-striped account-table">
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>Name</th>
+						<th>Address</th>
+						<th>Email</th>
+						<th>Phone</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="company in records.content">
+						<td>{{$index + 1}}</td>
+						<td>{{company.name}}</td>
+						<td>{{company.address}}</td>
+						<td>{{company.email}}</td>
+						<td>{{company.phone}}</td>
+						<td>
+							<div class="btn-group">
+								<button class="btn btn-primary btn-mini" ng-click="editCompany($index)">Edit</button>
+								<button class="btn btn-danger btn-mini" ng-click="deleteCompany($index)">Delete</button>
+							</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="clearfix"> </div>	
+	</div>
+	<div class="load-more" id="wrapper">
+		<button class="load-more-button" href="#" ng-click="showMore()" ng-hide="records.page.number + 1 >= records.page.totalPages || loading">Show more...</button>
+		<div class="row-fluid ui-corner-all" ng-show="loading" >
+			<p><img alt="Loading  Content" class="img-responsive center-block" src="/static/img/ajax-loader.gif" /></p>
+		</div>
+	</div>
+	<div class="clearfix"> </div>				
+</div>
+<div class="clearfix"> </div>	

@@ -2,16 +2,16 @@ package com.phobod.study.vcp.form;
 
 import org.springframework.web.multipart.MultipartFile;
 
-public class UploadForm {
+public class VideoUploadForm {
 	private String title;
 	private String description;
 	private MultipartFile file;
 	
-	public UploadForm() {
+	public VideoUploadForm() {
 		super();
 	}
 
-	public UploadForm(String title, String description, MultipartFile file) {
+	public VideoUploadForm(String title, String description, MultipartFile file) {
 		super();
 		this.title = title;
 		this.description = description;

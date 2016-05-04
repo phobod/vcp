@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import com.phobod.study.vcp.Constants.Role;
 import com.phobod.study.vcp.domain.Company;
+import com.phobod.study.vcp.domain.Token;
 import com.phobod.study.vcp.domain.User;
 import com.phobod.study.vcp.domain.Video;
 
@@ -64,6 +65,7 @@ public class CreateTestDataService {
 	}
 
 	private void createTestData() {
+		createMediaDirsIfNecessary();
 		clearMediaSubFolders();
 		clearCollection();
 		List<Company> companies = createCompanies();
@@ -72,11 +74,30 @@ public class CreateTestDataService {
 		LOGGER.info("Test date created successful");
 	}
 
+	private File[] getMediaDirs(){
+		return new File[] {new File(mediaDir + "/thumbnails"), new File(mediaDir + "/video"), new File(mediaDir + "/image")};
+	}
+	
+	private void createMediaDirsIfNecessary(){
+		for(File dir : getMediaDirs()) {
+			if(!dir.exists()) {
+				if(dir.mkdirs()){
+					LOGGER.info("Created media dir: " + dir.getAbsolutePath());
+				} else {
+					LOGGER.error("Can't create media dir: " + dir.getAbsolutePath());
+				}
+			}
+		}
+	}
+	
 	private void clearMediaSubFolders() {
 		for (File f : new File(mediaDir + "/thumbnail").listFiles()) {
 			f.delete();
 		}
 		for (File f : new File(mediaDir + "/video").listFiles()) {
+			f.delete();
+		}
+		for (File f : new File(mediaDir + "/image").listFiles()) {
 			f.delete();
 		}
 		LOGGER.info("Media sub folders cleared");
@@ -86,6 +107,7 @@ public class CreateTestDataService {
 		mongoTemplate.remove(new Query(), User.class);
 		mongoTemplate.remove(new Query(), Company.class);
 		mongoTemplate.remove(new Query(), Video.class);
+		mongoTemplate.remove(new Query(), Token.class);
 	}
 
 	private List<Company> createCompanies() {

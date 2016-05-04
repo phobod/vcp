@@ -1,4 +1,4 @@
-				<div class="col-md-3 resent-grid recommended-grid" ng-repeat="video in videos.content" >
+				<div class="col-md-3 resent-grid recommended-grid" ng-repeat="video in records.content" >
 					<div class="resent-grid-img recommended-grid-img">
 						<a ng-href="#/user/{{video.owner.id}}/video/{{video.id}}"><img ng-src="{{video.thumbnailUrl}}" alt="{{video.title}}" imageonload="updateLoadingSpinner()"/></a>
 					</div>
@@ -14,7 +14,7 @@
 				</div>
 				<div class="clearfix"> </div>
 				<div class="load-more" id="wrapper">
-       				<button class="load-more-button" href="#" ng-click="showMore()" ng-hide="videos.page.number + 1 >= videos.page.totalPages || loading">Show more...</button>
+       				<button class="load-more-button" href="#" ng-click="showMore()" ng-hide="records.page.number + 1 >= records.page.totalPages || loading">Show more...</button>
 					<div class="row-fluid ui-corner-all" ng-show="loading" >
 						<p><img alt="Loading  Content" class="img-responsive center-block" src="/static/img/ajax-loader.gif" /></p>
 				    </div>

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import com.phobod.study.vcp.component.UploadVideoTempStorage;
 import com.phobod.study.vcp.domain.User;
 import com.phobod.study.vcp.domain.Video;
-import com.phobod.study.vcp.form.UploadForm;
+import com.phobod.study.vcp.form.VideoUploadForm;
 import com.phobod.study.vcp.repository.search.VideoSearchRepository;
 import com.phobod.study.vcp.repository.storage.VideoRepository;
 import com.phobod.study.vcp.service.ImageService;
@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void uploadVideo(User currentUser, UploadForm form) {
+	public void uploadVideo(User currentUser, VideoUploadForm form) {
 		Path tempUploadedVideoPath = uploadVideoTempStorage.getTempUploadedVideoPath();
 		String videoUrl = videoService.saveVideo(tempUploadedVideoPath);
 		byte[] thumbnailImageData = thumbnailService.createThumbnail(tempUploadedVideoPath);
@@ -58,6 +58,27 @@ public class UserServiceImpl implements UserService {
 		Video video = new Video(form.getTitle(), form.getDescription(), thumbnailImageUrl, videoUrl, currentUser);
 		videoRepository.save(video);
 		videoSearchRepository.save(video);
+	}
+
+	@Override
+	public void updateVideo(String videoId, VideoUploadForm form) {
+		Video video = videoRepository.findOne(videoId);
+		video.setTitle(form.getTitle());
+		video.setDescription(form.getDescription());
+		videoRepository.save(video);	
+		videoSearchRepository.save(video);
+	}
+
+	@Override
+	public void deleteVideo(String videoId) {
+		videoRepository.delete(videoId);
+		videoSearchRepository.delete(videoId);
+	}
+
+	@Override
+	public void deleteAllVideosByUser(String userId) {
+		videoRepository.deleteByOwnerId(userId);
+		videoSearchRepository.deleteByOwnerId(userId);
 	}
 
 }
