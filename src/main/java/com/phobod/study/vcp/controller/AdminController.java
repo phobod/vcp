@@ -1,7 +1,5 @@
 package com.phobod.study.vcp.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,15 +7,15 @@ import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.hateoas.Resource;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.phobod.study.vcp.domain.Company;
 import com.phobod.study.vcp.domain.User;
-import com.phobod.study.vcp.form.CompaniesUploadForm;
-import com.phobod.study.vcp.form.UsersUploadForm;
 import com.phobod.study.vcp.service.AdminService;
 
 @RestController
@@ -39,29 +37,14 @@ public class AdminController {
 		return assembler.toResource(users);
 	}
 
-	@RequestMapping(value = "/company/all", method = RequestMethod.GET)
-	public @ResponseBody List<Company> listAllCompanies() {
-		return adminService.listAllCompanies();
-	}
-
 	@RequestMapping(value = "/account", method = RequestMethod.POST)
-	public @ResponseBody User addUser(UsersUploadForm uploadForm) {
-		return adminService.addUser(uploadForm);
+	public @ResponseBody User saveUser(String userJson, MultipartFile file) {
+		return adminService.saveUser(userJson, file);
 	}
 
 	@RequestMapping(value = "/company", method = RequestMethod.POST)
-	public @ResponseBody Company addCompany(CompaniesUploadForm uploadForm) {
-		return adminService.addCompany(uploadForm);
-	}
-
-	@RequestMapping(value = "/account/{userId}", method = RequestMethod.POST)
-	public @ResponseBody User updateUser(@PathVariable String userId, UsersUploadForm uploadForm) {
-		return adminService.updateUser(uploadForm, userId);
-	}
-
-	@RequestMapping(value = "/company/{companyId}", method = RequestMethod.POST)
-	public @ResponseBody Company updateCompany(@PathVariable String companyId, CompaniesUploadForm uploadForm) {
-		return adminService.updateCompany(uploadForm, companyId);
+	public @ResponseBody Company saveCompany(@RequestBody Company company) {
+		return adminService.saveCompany(company);
 	}
 
 	@RequestMapping(value = "/account/{userId}", method = RequestMethod.DELETE)

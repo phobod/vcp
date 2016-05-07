@@ -24,7 +24,7 @@ angular.module('app-services', [ 'ngResource', 'ngFileUpload' ])
 		}
 	}
 }])
-.service("userService", ['Upload', function(Upload){
+.service("userService", ['$resource', 'Upload', function($resource, Upload){
 	return {
 		uploadVideo : function(title, description, file){
 			return Upload.upload({
@@ -34,26 +34,17 @@ angular.module('app-services', [ 'ngResource', 'ngFileUpload' ])
             });
 		},
 		saveVideo : function(videoId, title, description){
-			return Upload.upload({
-	            url: 'my-account/video/' + videoId,
-	            method: "POST",
-	            data: {'title': title, 'description': description}
-	        });
+			return $resource('my-account/video/:videoId',{videoId:videoId}).save({},{'title': title, 'description': description});
 		},
 		deleteVideo : function(videoId){
-			return Upload.upload({
-	            url: 'my-account/video/' + videoId,
-	            method: "DELETE"
-	        });
+			return $resource('my-account/video/:videoId',{videoId:videoId}).delete();
 		}
 	}
 }])
 .service("authService", ['$resource', function($resource){
 	return {
-		getPrincipal : function(){
-			return $resource('user').get();
-		},
-		login : function(data){
+		login : function(credentials, rememberMe){
+			var data = 'username=' + encodeURIComponent(credentials.username) + '&password=' + encodeURIComponent(credentials.password) + '&rememberMe=' + encodeURIComponent(rememberMe);
 			return $resource('login', {}, {
 				login : {
 					method : 'POST',
@@ -63,6 +54,20 @@ angular.module('app-services', [ 'ngResource', 'ngFileUpload' ])
 		},
 		logout : function(){
 			return $resource('logout', {}).save();
+		},
+		isAuthenticated : function(){
+			
+		}
+	}
+}])
+
+.service("recoveryService", ['$resource', function($resource){
+	return {
+		sendRestoreEmail : function(login){
+			return $resource('recovery/:login',{login:login}).save();
+		},
+		restorePassword : function(userId, hash, password){
+			return $resource('recovery/password').save({},{'id': userId, 'hash': hash, 'password': password});
 		}
 	}
 }])
@@ -72,51 +77,24 @@ angular.module('app-services', [ 'ngResource', 'ngFileUpload' ])
 		listAllUsersByPage : function(page) {
 			return $resource('/admin/account?page=:page&size=10&sort=type,desc',{page:page}).get();
 		},
-		listAllCompaniesByPage : function(page) {
-			return $resource('/admin/company?page=:page&size=10&sort=type,desc',{page:page}).get();
+		listAllCompaniesByPage : function(page, size) {
+			return $resource('/admin/company?page=:page&size=:size&sort=type,desc',{page:page,size:size}).get();
 		},
-		listAllCompanies : function() {
-			return $resource('/admin/company/all').query();
-		},
-		addUser : function(name, surname, login, password, email, companyId, role, avatar) {
+		saveUser : function(user, file) {
 			return Upload.upload({
                 url: 'admin/account',
                 method: "POST",
-                data: {'name': name, 'surname': surname, 'login': login, 'password': password, 'email': email, 'companyId': companyId, 'role': role, avatar: avatar }
+                data: {'userJson': Upload.json(user), file: file}
             });
 		},
-		addCompany : function(name, address, email, phone) {
-			return Upload.upload({
-                url: 'admin/company',
-                method: "POST",
-                data: {'name': name, 'address': address, 'email': email, 'phone': phone}
-            });
-		},
-		saveUser : function(userId, name, surname, email, companyId) {
-			return Upload.upload({
-                url: 'admin/account/' + userId,
-                method: "POST",
-                data: {'name': name, 'surname': surname, 'email': email, 'companyId': companyId}
-            });
-		},
-		saveCompany : function(companyId, address, email, phone) {
-			return Upload.upload({
-                url: 'admin/company/' + companyId,
-                method: "POST",
-                data: {'address': address, 'email': email, 'phone': phone}
-            });
+		saveCompany : function(company) {
+			return $resource('admin/company').save({},company);
 		},
 		deleteUser : function(userId) {
-			return Upload.upload({
-                url: 'admin/account/' + userId,
-                method: "DELETE"
-            });
+			return $resource('admin/account/:userId',{userId:userId}).delete();
 		},
 		deleteCompany : function(companyId) {
-			return Upload.upload({
-                url: 'admin/company/' + companyId,
-                method: "DELETE"
-            });
+			return $resource('admin/company/:companyId',{companyId:companyId}).delete();
 		}
 	}
 }]);

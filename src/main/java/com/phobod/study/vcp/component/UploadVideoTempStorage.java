@@ -24,9 +24,9 @@ public class UploadVideoTempStorage {
 		return tempUploadedVideoPathStorage.get();
 	}
 	
-	@Around("execution(* com.phobod.study.vcp.service.impl.UserServiceImpl.uploadVideo(..))")
+	@Around("execution(* com.phobod.study.vcp.service.impl.SimpleVideoProcessorService.processVideo(..))")
 	public Object advice(ProceedingJoinPoint pjp) throws Throwable {
-		VideoUploadForm form = (VideoUploadForm) pjp.getArgs()[1];
+		VideoUploadForm form = (VideoUploadForm) pjp.getArgs()[0];
 		Path tempUploadedVideoPath = null;
 		try {
 			tempUploadedVideoPath = Files.createTempFile("upload", ".video");

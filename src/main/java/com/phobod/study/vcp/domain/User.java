@@ -28,13 +28,13 @@ public class User implements Serializable{
 	private Role role;
 	@Field("avatar-url")
 	private String avatarUrl;
+	private String hash;
 
 	public User() {
 		super();
 	}
 
-	public User(String name, String surname, String login, String password, String email, Company company, Role role,
-			String avatarUrl) {
+	public User(String name, String surname, String login, String password, String email, Company company, Role role, String avatarUrl) {
 		super();
 		this.name = name;
 		this.surname = surname;
@@ -44,6 +44,21 @@ public class User implements Serializable{
 		this.company = company;
 		this.role = role;
 		this.avatarUrl = avatarUrl;
+	}
+
+	
+	private User(String id, String name, String surname, String login, String password, String email, Company company, Role role, String avatarUrl, String hash) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.surname = surname;
+		this.login = login;
+		this.password = password;
+		this.email = email;
+		this.company = company;
+		this.role = role;
+		this.avatarUrl = avatarUrl;
+		this.hash = hash;
 	}
 
 	public String getId() {
@@ -152,5 +167,13 @@ public class User implements Serializable{
 	@Override
 	public String toString() {
 		return String.format("User [id=%s, name=%s, surname=%s, login=%s]", id, name, surname, login);
+	}
+
+	public String getHash() {
+		return hash;
+	}
+
+	public void setHash(String hash) {
+		this.hash = hash;
 	}
 }

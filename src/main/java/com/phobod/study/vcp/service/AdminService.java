@@ -1,25 +1,20 @@
 package com.phobod.study.vcp.service;
 
-import java.util.List;
-
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.phobod.study.vcp.domain.Company;
 import com.phobod.study.vcp.domain.User;
-import com.phobod.study.vcp.form.CompaniesUploadForm;
-import com.phobod.study.vcp.form.UsersUploadForm;
 
 public interface AdminService {
 	@Nonnull Page<User> listAllUsers(@Nonnull Pageable pageable);
 	@Nonnull Page<Company> listAllCompanies(@Nonnull Pageable pageable);
-	@Nonnull List<Company> listAllCompanies();
-	@Nonnull User addUser(@Nonnull UsersUploadForm form);
-	@Nonnull Company addCompany(@Nonnull CompaniesUploadForm form);
-	@Nonnull User updateUser(@Nonnull UsersUploadForm form, @Nonnull String userId);
-	@Nonnull Company updateCompany(@Nonnull CompaniesUploadForm form, @Nonnull String companyId);
+	@Nonnull User saveUser(@Nonnull String userJson, @Nullable MultipartFile avatar);
+	@Nonnull Company saveCompany(@Nonnull Company company);
 	void deleteUser(@Nonnull String userId);
 	void deleteCompany(@Nonnull String companyId);
 }

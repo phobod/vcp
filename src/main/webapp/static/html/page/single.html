@@ -33,7 +33,7 @@
 			<div class="single-grid-right" ng-repeat="video in records.content">
 				<div class="single-right-grids">
 					<div class="col-md-4 single-right-grid-left">
-						<a ng-href="#/user/{{video.owner.id}}/video/{{video.id}}"><img ng-src="{{video.thumbnailUrl}}" alt="{{video.title}}" imageonload="updateLoadingSpinner()"/></a>
+						<a ng-href="#/user/{{video.owner.id}}/video/{{video.id}}"><img ng-src="{{video.thumbnailUrl}}" alt="{{video.title}}" /></a>
 					</div>
 					<div class="col-md-8 single-right-grid-right">
 						<a ng-href="#/user/{{video.owner.id}}/video/{{video.id}}" class="title" ng-bind="video.title"></a>

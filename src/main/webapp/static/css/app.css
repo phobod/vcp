@@ -41,4 +41,6 @@
 .html5-video-content{
 	width: 100%;
 }
-
+input.ng-invalid{
+    border-color: red;
+}

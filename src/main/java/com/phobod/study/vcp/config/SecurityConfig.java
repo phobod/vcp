@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -13,11 +14,9 @@ import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.csrf.CsrfFilter;
-import org.springframework.security.web.csrf.CsrfTokenRepository;
-import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 
 import com.phobod.study.vcp.Constants.Role;
-import com.phobod.study.vcp.security.CsrfHeaderFilter;
+import com.phobod.study.vcp.security.CsrfTokenGeneratorFilter;
 import com.phobod.study.vcp.security.RestAccessDeniedHandler;
 import com.phobod.study.vcp.security.RestAuthenticationFailureHandler;
 import com.phobod.study.vcp.security.RestAuthenticationSuccessHandler;
@@ -30,15 +29,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	private AuthentificationService authentificationService;
 	
 	@Autowired
-    PersistentTokenRepository repository;
+    PersistentTokenRepository tokenRepository;
+
+	@Override
+	public void configure(WebSecurity web) throws Exception {
+		web.ignoring()
+			.antMatchers("/index.html", "/static/**", "/favicon.ico", "/media/**");
+	}
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
-			.antMatchers("/video/popular", "/video/all", "/login", "/user").permitAll()
+			.antMatchers("/index.html", "/video/popular", "/video/all", "/login").permitAll()
 			.antMatchers("/admin/**").hasAuthority(Role.ADMIN.name())
 			.antMatchers("/my-account/**").hasAuthority(Role.USER.name())
-			.antMatchers("/user/**", "/video/**").hasAnyAuthority(Role.USER.name(),Role.ADMIN.name());
+			.anyRequest().authenticated();
 		http.formLogin()
 			.successHandler(new RestAuthenticationSuccessHandler())
 			.failureHandler(new RestAuthenticationFailureHandler())
@@ -53,18 +58,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 		http.exceptionHandling().authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
 		http.exceptionHandling().accessDeniedHandler(new RestAccessDeniedHandler());
 		http.rememberMe()
-			.rememberMeParameter("remember-me")
-			.tokenRepository(repository);
-		http.csrf().csrfTokenRepository(csrfTokenRepository());
-		http.addFilterAfter(new CsrfHeaderFilter(), CsrfFilter.class);
+			.rememberMeParameter("rememberMe")
+			.tokenRepository(tokenRepository);
+		http.addFilterAfter(new CsrfTokenGeneratorFilter(), CsrfFilter.class);
 	}
 	
-	private CsrfTokenRepository csrfTokenRepository() {
-		  HttpSessionCsrfTokenRepository repository = new HttpSessionCsrfTokenRepository();
-		  repository.setHeaderName("X-XSRF-TOKEN");
-		  return repository;
-	}
-
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();

@@ -3,24 +3,24 @@
 		<div class="alert alert-danger" ng-show="error">
 	    	There was a problem logging in. Please try again.
 		</div>
-		<form id="login-form" ng-submit="loginFormSubmit()"> <!-- action="/login" method="post" -->
+		<form id="login-form" name="form" ng-submit="loginFormSubmit()"> 
 			<div class="modal-body">
 				<div id="div-login-msg">
 					<div id="icon-login-msg" class="glyphicon glyphicon-chevron-right"></div>
-					<span id="text-login-msg">Type your username and password.</span>
+					<span id="text-login-msg">Type your login and password.</span>
 				</div>
-				<input id="username" class="form-control" type="text" placeholder="Login" name="username" ng-model="credentials.username" value="jactin" required><br/>
-				<input id="password" class="form-control" type="password" placeholder="Password" name="password" ng-model="credentials.password" value="qwerty123" required><br/>
+				<input id="username" class="form-control" type="text" placeholder="Login" name="username" ng-model="credentials.username" required><br/>
+				<input id="password" class="form-control" type="password" placeholder="Password" name="password" ng-model="credentials.password" required><br/>
 				<div class="checkbox">
 					<label><input type="checkbox" ng-model="rememberMe"> Remember me</label>
 				</div>
 			</div>
 			<div class="modal-footer">
 				<div>
-					<button type="submit" class="btn btn-primary btn-lg btn-block">Sign in</button>
+					<button type="submit" ng-disabled="!form.$valid" class="btn btn-primary btn-lg btn-block">Sign in</button>
 				</div>
 				<div>
-					<button id="login_lost_btn" type="button" class="btn btn-link">Forgot Password?</button>
+					<a ng-href="#/recovery" id="login_lost_btn" type="button" class="btn btn-link">Forgot Password?</a>
 				</div>
 			</div>
 		</form>

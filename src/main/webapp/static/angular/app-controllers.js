@@ -1,5 +1,5 @@
-angular.module('app-controllers', ['ngRoute'])
-		.config(function($routeProvider, $httpProvider) {
+angular.module('app-controllers', ['ngRoute', 'ngCookies'])
+		.config(function($routeProvider) {
 			$routeProvider.when('/main', {
 				templateUrl : 'static/html/page/main.html',
 				controller : 'allListVideoController'
@@ -32,9 +32,16 @@ angular.module('app-controllers', ['ngRoute'])
 				templateUrl : 'static/html/page/login.html',
 				controller : 'loginController'
 			});
+			$routeProvider.when('/recovery', {
+				templateUrl : 'static/html/page/forgot-password.html',
+				controller : 'recoveryAccessController'
+			});
+			$routeProvider.when('/recovery/acsess/:userId/:hash', {
+				templateUrl : 'static/html/page/password-recovery.html',
+				controller : 'recoveryAccessController'
+			});
 			$routeProvider.when('/access-denied', {
-				templateUrl : 'static/html/page/access-denied.html',
-				controller : 'accessDeniedController'
+				templateUrl : 'static/html/page/access-denied.html'
 			});
 			$routeProvider.when('/admin/account', {
 				templateUrl : 'static/html/page/account.html',
@@ -44,18 +51,9 @@ angular.module('app-controllers', ['ngRoute'])
 				templateUrl : 'static/html/page/company.html',
 				controller : 'companyController'
 			});
-			$routeProvider.when('/admin/account/:userId', {
-				templateUrl : 'static/html/page/editaccount.html',
-				controller : 'accountController'
-			});
-			$routeProvider.when('/admin/company/:companyId', {
-				templateUrl : 'static/html/page/editcompany.html',
-				controller : 'companyController'
-			});
 			$routeProvider.otherwise({
 				redirectTo : '/main'
 			});
-			$httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
 		})
 		
 		.factory('controllersFactory',function(){
@@ -102,7 +100,7 @@ angular.module('app-controllers', ['ngRoute'])
 			controllersFactory.createPaginationController($scope, {getData : videoService.listAllVideosMyAccountByPage});
 			$scope.deleteVideo = function(idx){
 				var video = $scope.records.content[idx];
-				userService.deleteVideo(video.id).then(function(resp){
+				userService.deleteVideo(video.id).$promise.then(function(resp){
 					$window.alert("File delete SUCCESS");
 					$scope.records.content.splice(idx,1);
 				}, function(resp){
@@ -136,7 +134,7 @@ angular.module('app-controllers', ['ngRoute'])
 				$scope.description = data.description;
 			});
 			$scope.saveVideo = function(){
-				userService.saveVideo($routeParams.videoId, $scope.title, $scope.description).then(function(resp){
+				userService.saveVideo($routeParams.videoId, $scope.title, $scope.description).$promise.then(function(resp){
 					$window.alert("File save SUCCESS");
 					$location.path('/my-account/video');
 				}, function(resp){
@@ -166,78 +164,80 @@ angular.module('app-controllers', ['ngRoute'])
 			};
 		} ])
 		
-		.controller('loginController', ['$scope', '$location', 'authService', function($scope, $location, authService){
+		.controller('loginController', ['$cookieStore', '$rootScope', '$scope', '$location', 'authService', function($cookieStore, $rootScope, $scope, $location, authService){
 			$scope.credentials = {
 					username :'',
 					password:''
-			};
-			$scope.rememberMe = false;
-			var authenticate = function(callback) {
-				authService.getPrincipal().$promise.then(function(data){
-	                if (data.name) {
-	                    $scope.authenticated = true;
-	                    if (data.authorities[0].authority == "ADMIN") {
-		                    $scope.roleAdmin = true;
-						} else {
-		                    $scope.roleAdmin = false;							
-						}
-	                } else {
-	                    $scope.authenticated = false;
-	                    $scope.roleAdmin = false;	
-	                }
-	                callback && callback();
-				}, function(errResponse){
-					$scope.authenticated = false;
-					$scope.roleAdmin = false;	
-					callback && callback();
-				});
-			};
-			authenticate();			
+			};	
+			var authenticate = function(){
+				$rootScope.authenticated = $cookieStore.get('authenticated');
+				$rootScope.roleAdmin = $cookieStore.get('roleAdmin');
+			}
+			authenticate();
 			$scope.loginFormSubmit = function (){
-				 var data = 'username=' + encodeURIComponent($scope.credentials.username) + '&password=' + encodeURIComponent($scope.credentials.password) + '&remember-me=' + encodeURIComponent($scope.rememberMe);
-				 authService.login(data).$promise.then(function(){
-					 authenticate(function() {
-		                    if ($scope.authenticated) {
-		                        $scope.error = false;
-		                        if ($scope.roleAdmin) {
-		                        	$location.path("/admin/account");
-								} else{
-			                        $location.path("/my-account/video");
-								}
-		                    } else {
-		                        $scope.error = true;
-		                        $location.path("/login");
-		                    }
-		                })
+				 authService.login($scope.credentials, $scope.rememberMe).$promise.then(function(data){
+					 $rootScope.authenticated = true;
+					 $cookieStore.put('authenticated',true);
+					 $scope.error = false;
+					 if (data.user.role == "ADMIN") {
+						 $rootScope.roleAdmin = true;
+						 $cookieStore.put('roleAdmin',true);
+						 $location.path("/admin/account");
+					 } else{
+						 $rootScope.roleAdmin = false;
+						 $cookieStore.put('roleAdmin',false);
+						 $location.path("/my-account/video");
+					 }
 				 }, function(){
 					 $location.path("/login");
                      $scope.error = true;
-                     $scope.authenticated = false;
+                     $rootScope.authenticated = false;
+					 $cookieStore.put('authenticated',false);
 				 });
 			};
 			$scope.logout = function(){
 				authService.logout().$promise.then(function(){
-					$scope.authenticated = false;
-				    $location.path("/main");
+					$rootScope.authenticated = false;
+					 $cookieStore.put('authenticated',false);
+					 $cookieStore.remove('authenticated');
+					 $cookieStore.remove('roleAdmin');
+					 $location.path("/main");
 				}, function(){
-					$scope.authenticated = false;
+					$rootScope.authenticated = false;
+					 $cookieStore.put('authenticated',false);
+					 $cookieStore.remove('authenticated');
+					 $cookieStore.remove('roleAdmin');
 				});
 			};
 		}])
 		
-		.controller('accessDeniedController', ['$scope', 'authServisce', function($scope, authServisce){
-			authServisce.getPrincipal().$promise.then(function(data){
-				if (data.name) {
-					$scope.msg = "Hi " + data.principal.user.name + ", you do not have permission to access this page!";
-				} else {
-					$scope.msg = "You do not have permission to access this page!";
-				}
-			});
+		.controller('recoveryAccessController', ['$scope', '$location', '$window', '$routeParams', 'recoveryService', function($scope, $location, $window, $routeParams, recoveryService){
+			$scope.sendRestoreEmail = function(){
+				recoveryService.sendRestoreEmail($scope.login).$promise.then(function(){
+					$window.alert("We have sent you an email with instructions to restore your password.");
+					$location.path("/main");
+				}, function(){
+					$scope.error = true;
+				});
+			}
+			$scope.restorePassword = function(){
+				recoveryService.restorePassword($routeParams.userId, $routeParams.hash, $scope.password).$promise.then(function(){
+					$window.alert("Your password has been changed successfully.");
+					$location.path("/login");
+				}, function(){
+					$scope.error = true;
+				});
+			}
 		}])
-
+		
 		.controller('accountController', ['$scope', 'adminService', 'controllersFactory', function($scope, adminService, controllersFactory){
 			controllersFactory.createPaginationController($scope, {getData : adminService.listAllUsersByPage});
-			$scope.allCompanies = adminService.listAllCompanies();
+			var maxInt = 2147483647;
+			controllersFactory.createPaginationController($scope, {
+				getData : function(page){
+					return adminService.listAllCompaniesByPage(page, maxInt);
+				}
+			});
 			$scope.clearData = function(){
 				$scope.name = '';
 				$scope.surname = '';
@@ -246,40 +246,47 @@ angular.module('app-controllers', ['ngRoute'])
 				$scope.password = '';
 				$scope.company = '';
 				$scope.role = '';
-				$scope.avatarFile = null;
+				$scope.avatarUrl = null;
 				$scope.currentAccountId = -1;			
 			};
-			$scope.addNewUser = function(){
+			$scope.saveUser = function(){
+				var id;
 				var avatar;
-				if ($scope.avatarFile != null) {
-					avatar = $scope.avatarFile;
-				} 
-				adminService.addUser($scope.name, $scope.surname, $scope.login, $scope.password, $scope.email, $scope.company, $scope.role, avatar).then(function(resp){
-					$scope.records.content.push({
-						id: resp.data.id,
-						name: resp.data.name,
-						surname: resp.data.surname,
-						login: resp.data.login,
-						password: resp.data.password,
-						email: resp.data.email,
-						company: resp.data.company,
-						role: resp.data.role,
-						avatarUrl: resp.data.avatarUrl
-					});
+				var companyIndex = $scope.allCompanies.findIndex(function(item){
+					return item.id == $scope.company;
+				});
+				var company = $scope.allCompanies[companyIndex];
+				if ($scope.currentAccountId > -1) {
+					id = $scope.records.content[$scope.currentAccountId].id;
+				} else {
+					avatar = $scope.avatarUrl;
+					$scope.avatarUrl = '';
+				}
+				var user = {
+							'id' : id,
+							'name': $scope.name,
+							'surname': $scope.surname,
+							'login': $scope.login,
+							'password': $scope.password,
+							'email': $scope.email,
+							'company': {
+								'id' : company.id,
+								'name': company.name,
+								'address': company.address,
+								'email': company.email,
+								'phone': company.phone,
+							},
+							'role': $scope.role,
+							'avatarUrl': $scope.avatarUrl
+						}
+				adminService.saveUser(user, avatar).then(function(resp){
+					if ($scope.currentAccountId > -1){
+						$scope.records.content[$scope.currentAccountId] = resp.data;
+					} else {
+						$scope.records.content.push(resp.data);
+					}
 					$scope.clearData();
 				})
-			};
-			$scope.saveUser = function(){
-				if ($scope.currentAccountId > -1) {
-					var id = $scope.currentAccountId;
-					adminService.saveUser($scope.records.content[id].id, $scope.name, $scope.surname, $scope.email, $scope.company).then(function(resp){
-						$scope.records.content[id].name = resp.data.name;
-						$scope.records.content[id].surname = resp.data.surname;
-						$scope.records.content[id].email = resp.data.email;
-						$scope.records.content[id].company = resp.data.company;
-						$scope.clearData();
-					})
-				}
 			}
 			$scope.editUser = function(idx){
 				$scope.currentAccountId = idx;
@@ -288,14 +295,14 @@ angular.module('app-controllers', ['ngRoute'])
 				$scope.surname = user.surname;
 				$scope.email = user.email;
 				$scope.login = user.login;
-				$scope.login = '';
+				$scope.password = user.password;
 				$scope.company = user.company.id;
 				$scope.role = user.role;
-				$scope.avatarFile = user.avatarUrl;
+				$scope.avatarUrl = user.avatarUrl;
 			}
 			$scope.deleteUser = function(idx){
 				var user = $scope.records.content[idx];
-				adminService.deleteUser(user.id).then(function(resp){
+				adminService.deleteUser(user.id).$promise.then(function(resp){
 					$scope.records.content.splice(idx,1);					
 				});
 			}
@@ -303,7 +310,11 @@ angular.module('app-controllers', ['ngRoute'])
 		}])
 
 		.controller('companyController', ['$scope', 'adminService', 'controllersFactory', function($scope, adminService, controllersFactory){
-			controllersFactory.createPaginationController($scope, {getData : adminService.listAllCompaniesByPage});
+			controllersFactory.createPaginationController($scope, {
+				getData : function(page){
+					return adminService.listAllCompaniesByPage(page, 10);
+				}
+			});
 			$scope.clearData = function(){
 				$scope.name = '';
 				$scope.address = '';
@@ -311,28 +322,26 @@ angular.module('app-controllers', ['ngRoute'])
 				$scope.phone = '';
 				$scope.currentCompanyId = -1;			
 			};
-			$scope.addNewCompany = function(){
-				adminService.addCompany($scope.name, $scope.address, $scope.email, $scope.phone).then(function(resp){
-					$scope.records.content.push({
-						id: resp.data.id,
-						name: resp.data.name,
-						address: resp.data.address,
-						email: resp.data.email,
-						phone: resp.data.phone
-					});
+			$scope.saveCompany = function(){
+				var id;
+				if ($scope.currentCompanyId > -1) {
+					id = $scope.records.content[$scope.currentCompanyId].id;
+				}
+				var company = {
+						'id' : id,
+						'name': $scope.name,
+						'address': $scope.address,
+						'email': $scope.email,
+						'phone': $scope.phone
+				}
+				adminService.saveCompany(company).$promise.then(function(resp){
+					if ($scope.currentCompanyId > -1) {
+						$scope.records.content[$scope.currentCompanyId] = resp;
+					} else {
+						$scope.records.content.push(resp);
+					}
 					$scope.clearData();
 				})
-			}
-			$scope.saveCompany = function(){
-				if ($scope.currentCompanyId > -1) {
-					var id = $scope.currentCompanyId;
-					adminService.saveCompany($scope.records.content[id].id, $scope.address, $scope.email, $scope.phone).then(function(resp){
-						$scope.records.content[id].address = resp.data.address;
-						$scope.records.content[id].email = resp.data.email;
-						$scope.records.content[id].phone = resp.data.phone;
-						$scope.clearData();
-					})
-				}
 			}
 			$scope.editCompany = function(idx){
 				$scope.currentCompanyId = idx;
@@ -344,7 +353,7 @@ angular.module('app-controllers', ['ngRoute'])
 			}
 			$scope.deleteCompany = function(idx){
 				var company = $scope.records.content[idx];
-				adminService.deleteCompany(company.id).then(function(resp){
+				adminService.deleteCompany(company.id).$promise.then(function(resp){
 					$scope.records.content.splice(idx,1);					
 				});
 			}

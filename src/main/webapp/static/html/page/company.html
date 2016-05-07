@@ -25,7 +25,8 @@
 					</div>
 				</div>
 				<button type="submit" class="btn btn-success" ng-disabled="!form.$valid" ng-click="saveCompany()" ng-show="currentCompanyId > -1">Save</button>
-				<button type="submit" class="btn btn-success" ng-disabled="!form.$valid" ng-click="addNewCompany()" ng-hide="currentCompanyId > -1">Add</button>
+				<button type="submit" class="btn btn-success" ng-disabled="!form.$valid" ng-click="saveCompany()" ng-hide="currentCompanyId > -1">Add</button>
+				<button type="button" class="btn btn-default" ng-click="clearData()" >Cancel</button>
 			</form>
 		</div>
 		<div class="clearfix"> </div>	

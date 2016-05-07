@@ -9,6 +9,7 @@ import org.springframework.hateoas.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -47,20 +48,14 @@ public class UserController {
 
 	@RequestMapping(value = "/video/{videoId}", method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.OK)
-	public void updateVideo(@PathVariable String videoId, VideoUploadForm uploadForm) {
-		Video video = commonService.findVideoById(videoId);
-		if (video.getOwner().equals(SecurityUtils.getCurrentUser())) {
-			userService.updateVideo(videoId, uploadForm);
-		}
+	public void updateVideo(@PathVariable String videoId, @RequestBody VideoUploadForm uploadForm) {
+		userService.updateVideo(videoId, uploadForm);
 	}
 
 	@RequestMapping(value = "/video/{videoId}", method = RequestMethod.DELETE)
 	@ResponseStatus(value = HttpStatus.OK)
 	public void deleteVideo(@PathVariable String videoId) {
-		Video video = commonService.findVideoById(videoId);
-		if (video.getOwner().equals(SecurityUtils.getCurrentUser())) {
-			userService.deleteVideo(videoId);
-		}
+		userService.deleteVideo(videoId);
 	}
 
 

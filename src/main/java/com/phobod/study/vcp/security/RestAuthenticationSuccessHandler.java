@@ -10,10 +10,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 public class RestAuthenticationSuccessHandler implements AuthenticationSuccessHandler{
 
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+		ObjectMapper mapper = new ObjectMapper();
+		String json = mapper.writeValueAsString(authentication.getPrincipal());
+		response.getWriter().write(json);
+		response.getWriter().flush();
 		response.setStatus(HttpStatus.OK.value());
 	}
 

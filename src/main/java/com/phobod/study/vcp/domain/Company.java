@@ -32,6 +32,15 @@ public class Company implements Serializable{
 		this.phone = phone;
 	}
 
+	private Company(String id, String name, String address, String email, String phone) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.address = address;
+		this.email = email;
+		this.phone = phone;
+	}
+
 	public String getId() {
 		return id;
 	}

@@ -5,8 +5,8 @@
 				<div class="row">
 					<div class="form-group col-md-4">
 						<label for="inputAvatar">Avatar</label>
-					    <input type="file" accept="image/*" ng-model="avatarFile" id="inputAvatar" preview-class="myImage img-thumbnail" media-preview name="avatarFile" ng-hide="currentAccountId > -1" />
-						<img class="media-object small-avatar thumbnail" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" ng-src="{{avatarFile}}" alt="avatar" ng-show="currentAccountId > -1">
+					    <input type="file" accept="image/*" ng-model="avatarUrl" id="inputAvatar" preview-class="myImage img-thumbnail" media-preview name="avatarFile" ng-hide="currentAccountId > -1" />
+						<img class="media-object small-avatar thumbnail" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" ng-src="{{avatarUrl}}" alt="avatar" ng-show="currentAccountId > -1">
 					    <i ng-show="form.avatarFile.$error.required">*required</i>
 					</div>
 					<div class="form-group col-md-8">
@@ -35,7 +35,7 @@
 							</div>
 							<div class="form-group col-md-6">
 								<label for="inputPassword">Password</label>
-								<input type="text" class="form-control" id="inputPassword" placeholder="Password" ng-model="password" name="password" ng-disabled="currentAccountId > -1" required>
+								<input type="password" class="form-control" id="inputPassword" placeholder="Password" ng-model="password" name="password" ng-disabled="currentAccountId > -1" required>
 								<i ng-show="form.password.$error.required">*required</i>
 							</div>
 						</div>
@@ -59,7 +59,8 @@
 					</div>
 				</div>
 				<button type="submit" class="btn btn-success" ng-disabled="!form.$valid" ng-click="saveUser()" ng-show="currentAccountId > -1">Save</button>
-				<button type="submit" class="btn btn-success" ng-disabled="!form.$valid" ng-click="addNewUser()" ng-hide="currentAccountId > -1">Add</button>
+				<button type="submit" class="btn btn-success" ng-disabled="!form.$valid" ng-click="saveUser()" ng-hide="currentAccountId > -1">Add</button>
+				<button type="button" class="btn btn-default" ng-click="clearData()" >Cancel</button>
 			</form>
 		</div>
 		<div class="clearfix"> </div>	

@@ -1,6 +1,7 @@
 package com.phobod.study.vcp.service.impl;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -13,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.phobod.study.vcp.Constants.Role;
@@ -29,6 +30,9 @@ public class CreateTestDataService {
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 	@Value("${media.dir}")
 	private String mediaDir;
@@ -75,7 +79,7 @@ public class CreateTestDataService {
 	}
 
 	private File[] getMediaDirs(){
-		return new File[] {new File(mediaDir + "/thumbnails"), new File(mediaDir + "/video"), new File(mediaDir + "/image")};
+		return new File[] {new File(mediaDir + "/thumbnail"), new File(mediaDir + "/video"), new File(mediaDir + "/image")};
 	}
 	
 	private void createMediaDirsIfNecessary(){
@@ -132,25 +136,30 @@ public class CreateTestDataService {
 	}
 
 	private List<User> getTestUsers(List<Company> companies) {
-		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 		return Arrays.asList(
-				new User("Tom", "Anderson", "Admin01", encoder.encode("sjdSDb34"), "tomas@mail.ru",
+				new User("Tom", "Anderson", "Admin01", passwordEncoder.encode("sjdSDb34"), "tomas@mail.ru",
 						companies.get(RANDOM.nextInt(companies.size())), Role.ADMIN,
 						"http://www.radfaces.com/images/avatars/ickis.jpg"),
-				new User("Jack", "Douu", "jactin", encoder.encode("qwerty123"), "jactin@mail.ru",
+				new User("Jack", "Douu", "jactin", passwordEncoder.encode("qwerty123"), "jactin@mail.ru",
 						companies.get(RANDOM.nextInt(companies.size())), Role.USER,
 						"http://www.radfaces.com/images/avatars/krumm.jpg"),
-				new User("Rachel", "Stone", "roston", encoder.encode("sdfvsm2d"), "roston@mail.ru",
+				new User("Rachel", "Stone", "roston", passwordEncoder.encode("sdfvsm2d"), "roston@mail.ru",
 						companies.get(RANDOM.nextInt(companies.size())), Role.USER,
 						"http://www.radfaces.com/images/avatars/jane-lane.jpg"),
-				new User("Steve", "Macleod", "duncan", encoder.encode("lsdb2HG"), "duncan@mail.ru",
+				new User("Steve", "Macleod", "duncan", passwordEncoder.encode("lsdb2HG"), "duncan@mail.ru",
 						companies.get(RANDOM.nextInt(companies.size())), Role.USER,
 						"http://www.radfaces.com/images/avatars/oblina.jpg"));
 	}
 
 	private void createVideos(List<User> users){
 		List<Video> testVideos = getTestVideos();
-		complementTestVideos(users, testVideos);
+		List<User> listOnlyUsers = new ArrayList<>();
+		for (User user : users) {
+			if (user.getRole() == Role.USER) {
+				listOnlyUsers.add(user);
+			}
+		}
+		complementTestVideos(listOnlyUsers, testVideos);
 		mongoTemplate.insert(testVideos, Video.class);
 		LOGGER.info("Created {} video files", testVideos.size());
 	}

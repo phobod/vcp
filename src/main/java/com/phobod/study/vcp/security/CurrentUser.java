@@ -1,8 +1,7 @@
 package com.phobod.study.vcp.security;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.Collections;
 
 import javax.annotation.Nonnull;
 
@@ -30,9 +29,7 @@ public class CurrentUser implements UserDetails{
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		List<GrantedAuthority> list = new ArrayList<>();
-		list.add(new SimpleGrantedAuthority(user.getRole().name()));
-		return list;
+		return Collections.singleton(new SimpleGrantedAuthority(user.getRole().name()));
 	}
 
 	@Override

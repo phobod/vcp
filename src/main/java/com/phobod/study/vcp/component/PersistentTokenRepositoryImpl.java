@@ -1,4 +1,4 @@
-package com.phobod.study.vcp.service.impl;
+package com.phobod.study.vcp.component;
 
 import java.util.Date;
 import java.util.List;
@@ -12,7 +12,7 @@ import com.phobod.study.vcp.domain.Token;
 import com.phobod.study.vcp.repository.storage.TokenRepository;
 
 @Component
-public class TokenService implements PersistentTokenRepository{
+public class PersistentTokenRepositoryImpl implements PersistentTokenRepository{
 
 	@Autowired
     TokenRepository repository;

@@ -1,17 +1,19 @@
 package com.phobod.study.vcp.service.impl;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.phobod.study.vcp.domain.Company;
 import com.phobod.study.vcp.domain.User;
-import com.phobod.study.vcp.form.CompaniesUploadForm;
-import com.phobod.study.vcp.form.UsersUploadForm;
+import com.phobod.study.vcp.exception.CantSaveUserException;
 import com.phobod.study.vcp.repository.storage.CompanyRepository;
 import com.phobod.study.vcp.repository.storage.UserRepository;
 import com.phobod.study.vcp.service.AdminService;
@@ -33,6 +35,9 @@ public class AdminServiceImpl implements AdminService{
 	@Autowired
 	private ImageService imageService;
 	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+	
 	@Override
 	public Page<User> listAllUsers(Pageable pageable) {
 		return userRepository.findAllByOrderByNameAsc(pageable);
@@ -44,46 +49,47 @@ public class AdminServiceImpl implements AdminService{
 	}
 
 	@Override
-	public List<Company> listAllCompanies() {
-		return companyRepository.findAllByOrderByNameAsc();
-	}
-	
-	@Override
-	public User addUser(UsersUploadForm form) {
-		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-		String avatarImageUrl = null;
-		if (form.getAvatar() != null) {
-			avatarImageUrl = imageService.saveImageData(form.getAvatar());		
+	public User saveUser(String userJson, MultipartFile avatar) {
+		User user = parseUserFromJson(userJson);
+		if (user.getId() == null) {
+			user.setPassword(passwordEncoder.encode(user.getPassword()));
 		}
-		Company company = companyRepository.findOne(form.getCompanyId());
-		User user = new User(form.getName(), form.getSurname(), form.getLogin(), encoder.encode(form.getPassword()), form.getEmail(), company, form.getRole(), avatarImageUrl);
+		String avatarImageUrl = saveImage(avatar);
+		if (avatarImageUrl != null) {
+			user.setAvatarUrl(avatarImageUrl);
+		}
 		return userRepository.save(user);
 	}
 
-	@Override
-	public Company addCompany(CompaniesUploadForm form) {
-		Company company = new Company(form.getName(), form.getAddress(), form.getEmail(), form.getPhone());
-		return companyRepository.save(company);
+	private User parseUserFromJson(String userJson) throws CantSaveUserException {
+		try {
+			ObjectMapper mapper = new ObjectMapper();
+			return mapper.readValue(userJson, User.class);
+		} catch (IOException e) {
+			throw new CantSaveUserException("Can't parse user data: " + e.getMessage(), e);
+		}
+	}
+
+	private String saveImage(MultipartFile avatar) throws CantSaveUserException {
+		try {
+			return saveImageInteranl(avatar);
+		} catch (Exception e) {
+			throw new CantSaveUserException("Can't save image data: " + e.getMessage(), e);
+		}
+	}
+
+	private String saveImageInteranl(MultipartFile avatar) throws IOException {
+		String avatarImageUrl = null;
+		if (avatar != null) {
+			avatarImageUrl = imageService.saveImageData(avatar.getBytes());
+		}
+		return avatarImageUrl;
 	}
 
 	@Override
-	public User updateUser(UsersUploadForm form, String userId) {
-		Company company = companyRepository.findOne(form.getCompanyId());
-		User user = userRepository.findOne(userId);
-		user.setName(form.getName());
-		user.setSurname(form.getSurname());
-		user.setEmail(form.getEmail());
-		user.setCompany(company);
-		return userRepository.save(user);
-	}
-
-	@Override
-	public Company updateCompany(CompaniesUploadForm form, String companyId) {
-		Company company = companyRepository.findOne(companyId);
-		company.setAddress(form.getAddress());
-		company.setEmail(form.getEmail());
-		company.setPhone(form.getPhone());
-		return companyRepository.save(company);
+	public Company saveCompany(Company company) {
+		Company cc = companyRepository.save(company);
+		return cc;
 	}
 
 	@Override

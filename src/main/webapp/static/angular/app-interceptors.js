@@ -1,6 +1,7 @@
 angular.module('app-interceptors', [])
 .config(['$httpProvider', function($httpProvider) {
     $httpProvider.interceptors.push('authHttpResponseInterceptor');
+    $httpProvider.interceptors.push('csrfTokenInterceptor');
 }])
 .factory("authHttpResponseInterceptor", ['$q','$location',function($q,$location){
 	return {
@@ -17,4 +18,21 @@ angular.module('app-interceptors', [])
             return $q.reject(rejection);
         }
     }
-}]);
+}])
+.factory('csrfTokenInterceptor', function () {
+	var csrfToken = null;
+	return {
+		response: function (response) {
+			if (response.headers('X-CSRF-TOKEN')) {
+				csrfToken = response.headers('X-CSRF-TOKEN');
+			}
+			return response;
+		},
+		request: function (config) {
+			if ((config.method == 'POST' || config.method == 'PUT' || config.method == 'DELETE')&& csrfToken) {
+				config.headers['X-CSRF-TOKEN'] = csrfToken;
+			}
+			return config;
+		}
+	}
+});

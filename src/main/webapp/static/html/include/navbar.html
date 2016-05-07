@@ -16,7 +16,7 @@
 						<input type="submit" value=" " ng-click="find()">
 					</form>
 				</div>
-				<div class="header-top-right" ng-controller="loginController">
+				<div class="header-top-right"  ng-controller="loginController">
 					<div class="file">
 						<a ng-href="#/my-account/upload" ng-show="authenticated && !roleAdmin" >Upload</a>
 						<a ng-href="#/my-account/video" ng-show="authenticated && !roleAdmin">My Account</a>
@@ -24,7 +24,7 @@
 						<a ng-href="#/admin/company" ng-show="authenticated && roleAdmin">Company Control</a>
 					</div>
 					<div class="signin">
-						<a ng-href="#/login" class="play-icon popup-with-zoom-anim" ng-show="!authenticated" >Sign In</a>
+						<a ng-href="#/login" class="play-icon popup-with-zoom-anim" ng-hide="authenticated" >Sign In</a>
 						<a href="#" class="play-icon popup-with-zoom-anim" ng-show="authenticated" ng-click="logout()">Logout</a>
 					</div>
 					<div class="clearfix"> </div>
