@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 import com.phobod.study.vcp.exception.CantProcessMediaContentException;
 import com.phobod.study.vcp.service.ThumbnailService;
 
-@Service
+@Service("jcodecThumbnailService")
 public class JCodecThumbnailService implements ThumbnailService{
 	@Override
 	public byte[] createThumbnail(Path videoFilePath) {

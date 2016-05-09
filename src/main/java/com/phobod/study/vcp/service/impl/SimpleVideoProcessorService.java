@@ -3,6 +3,7 @@ package com.phobod.study.vcp.service.impl;
 import java.nio.file.Path;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.phobod.study.vcp.component.UploadVideoTempStorage;
@@ -20,6 +21,7 @@ public class SimpleVideoProcessorService implements VideoProcessorService{
 	private VideoService videoService;
 	
 	@Autowired
+	@Qualifier("ffmpegThumbnailService")
 	private ThumbnailService thumbnailService;
 	
 	@Autowired

@@ -41,22 +41,15 @@ angular.module('app-services', [ 'ngResource', 'ngFileUpload' ])
 		}
 	}
 }])
-.service("authService", ['$resource', function($resource){
+.service("authService", ['$http', function($http){
 	return {
 		login : function(credentials, rememberMe){
-			var data = 'username=' + encodeURIComponent(credentials.username) + '&password=' + encodeURIComponent(credentials.password) + '&rememberMe=' + encodeURIComponent(rememberMe);
-			return $resource('login', {}, {
-				login : {
-					method : 'POST',
-					headers : {'Content-Type': 'application/x-www-form-urlencoded'}
-				}
-			}).login(data);
+			return $http.post('/login', $.param({'username':credentials.username,'password':credentials.password,'remember-me':rememberMe}), {
+				headers : {'Content-Type': 'application/x-www-form-urlencoded'}
+			});
 		},
 		logout : function(){
-			return $resource('logout', {}).save();
-		},
-		isAuthenticated : function(){
-			
+			return $http.post('/logout', {});
 		}
 	}
 }])
@@ -80,12 +73,12 @@ angular.module('app-services', [ 'ngResource', 'ngFileUpload' ])
 		listAllCompaniesByPage : function(page, size) {
 			return $resource('/admin/company?page=:page&size=:size&sort=type,desc',{page:page,size:size}).get();
 		},
-		saveUser : function(user, file) {
-			return Upload.upload({
-                url: 'admin/account',
-                method: "POST",
-                data: {'userJson': Upload.json(user), file: file}
-            });
+		saveUser : function(user) {
+			return $resource('admin/account').save({},user);
+		},
+		getAvatarUrl : function(email){
+			var form = {email: email};
+			return $resource('admin/emailhash').save({},{email: email});
 		},
 		saveCompany : function(company) {
 			return $resource('admin/company').save({},company);

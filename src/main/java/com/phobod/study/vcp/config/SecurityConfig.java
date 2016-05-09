@@ -12,10 +12,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.csrf.CsrfFilter;
 
 import com.phobod.study.vcp.Constants.Role;
+import com.phobod.study.vcp.security.AddPrincipalHeadersFilter;
 import com.phobod.study.vcp.security.CsrfTokenGeneratorFilter;
 import com.phobod.study.vcp.security.RestAccessDeniedHandler;
 import com.phobod.study.vcp.security.RestAuthenticationFailureHandler;
@@ -58,9 +60,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 		http.exceptionHandling().authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
 		http.exceptionHandling().accessDeniedHandler(new RestAccessDeniedHandler());
 		http.rememberMe()
-			.rememberMeParameter("rememberMe")
+			.rememberMeParameter("remember-me")
 			.tokenRepository(tokenRepository);
 		http.addFilterAfter(new CsrfTokenGeneratorFilter(), CsrfFilter.class);
+		http.addFilterAfter(new AddPrincipalHeadersFilter(), LogoutFilter.class);
 	}
 	
 	@Bean

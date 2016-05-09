@@ -1,1 +1,1 @@
-angular.module('app', ['app-services', 'app-controllers', 'app-filters', 'app-interceptors', 'angular-media-preview', 'validation.match']);
+angular.module('app', ['app-services', 'app-controllers', 'app-filters', 'app-interceptors', 'validation.match']);

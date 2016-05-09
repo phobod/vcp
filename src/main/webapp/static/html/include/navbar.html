@@ -18,14 +18,14 @@
 				</div>
 				<div class="header-top-right"  ng-controller="loginController">
 					<div class="file">
-						<a ng-href="#/my-account/upload" ng-show="authenticated && !roleAdmin" >Upload</a>
-						<a ng-href="#/my-account/video" ng-show="authenticated && !roleAdmin">My Account</a>
-						<a ng-href="#/admin/account" ng-show="authenticated && roleAdmin">Account Control</a>
-						<a ng-href="#/admin/company" ng-show="authenticated && roleAdmin">Company Control</a>
+						<a ng-href="#/my-account/upload" ng-show="principal.auth && principal.role != 'ADMIN'" >Upload</a>
+						<a ng-href="#/my-account/video" ng-show="principal.auth && principal.role != 'ADMIN'">My Account</a>
+						<a ng-href="#/admin/account" ng-show="principal.auth && principal.role == 'ADMIN'">Account Control</a>
+						<a ng-href="#/admin/company" ng-show="principal.auth && principal.role == 'ADMIN'">Company Control</a>
 					</div>
 					<div class="signin">
-						<a ng-href="#/login" class="play-icon popup-with-zoom-anim" ng-hide="authenticated" >Sign In</a>
-						<a href="#" class="play-icon popup-with-zoom-anim" ng-show="authenticated" ng-click="logout()">Logout</a>
+						<a ng-href="#/login" class="play-icon popup-with-zoom-anim" ng-hide="principal.auth" >Sign In</a>
+						<a href="#" class="play-icon popup-with-zoom-anim" ng-show="principal.auth" ng-click="logout()">Logout</a>
 					</div>
 					<div class="clearfix"> </div>
 				</div>

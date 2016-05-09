@@ -3,10 +3,34 @@ angular.module('app-interceptors', [])
     $httpProvider.interceptors.push('authHttpResponseInterceptor');
     $httpProvider.interceptors.push('csrfTokenInterceptor');
 }])
-.factory("authHttpResponseInterceptor", ['$q','$location',function($q,$location){
+.factory("authHttpResponseInterceptor", ['$q','$location', '$rootScope', function($q, $location, $rootScope){
+	$rootScope.principal = {
+			auth : false,
+			id : '', 
+			name : '',
+			role : 'anonym'
+	};
 	return {
         response: function(response){
-            return response || $q.when(response);
+        	var id = response.headers('PrimcipalId');
+        	var name = response.headers('PrimcipalName');
+        	var role = response.headers('PrimcipalRole');
+        	if(id != undefined && name != undefined && role != undefined) {
+        		$rootScope.principal = {
+                	auth : true,
+                	id : id,
+        			name : name,
+                	role : role
+                };
+        	} else{
+        		$rootScope.principal = {
+        			auth : false,
+        			id : '',
+        			name : '',
+                	role : 'anonym'
+                };
+        	}
+            return response;
         },
         responseError: function(rejection) {
             if (rejection.status === 401) {

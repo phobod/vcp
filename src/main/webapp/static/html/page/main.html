@@ -11,11 +11,18 @@
 				<div class="resent-grid-info recommended-grid-info">
 					<h3><a ng-href="#/user/{{video.owner.id}}/video/{{video.id}}" class="title title-info" ng-bind="video.title"></a></h3>
 					<p class="descr descr-info" ng-bind="video.description"></p>
-					<ul>
-						<li><p class="author author-info"><a ng-href="#/user/{{video.owner.id}}/video" class="author" ng-bind="video.owner.name + ' ' + video.owner.surname"></a></p></li>
-						<li class="right-list"><p class="views views-info">{{video.views}} views</p></li>
-					</ul>
-					<p class="company company-info"ng-bind="video.owner.company.name"></p>
+					<div>
+						<div class="media-left">
+							<img class="media-object small-avatar thumbnail" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" ng-src="{{video.owner.avatarUrl | trusted}}" alt="avatar">
+						</div>
+						<div  class="media-body">
+							<p class="author author-info"><a ng-href="#/user/{{video.owner.id}}/video" class="author" ng-bind="video.owner.name + ' ' + video.owner.surname"></a></p>
+							<p class="company company-info"ng-bind="video.owner.company.name"></p>
+						</div>
+						<div class="media-right"> 
+							<p class="views views-info">{{video.views}} views</p>
+						</div>
+					</div>
 				</div>
 			</div>
 			<div class="clearfix"> </div>

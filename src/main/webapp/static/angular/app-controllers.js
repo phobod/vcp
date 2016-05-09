@@ -1,4 +1,4 @@
-angular.module('app-controllers', ['ngRoute', 'ngCookies'])
+angular.module('app-controllers', ['ngRoute'])
 		.config(function($routeProvider) {
 			$routeProvider.when('/main', {
 				templateUrl : 'static/html/page/main.html',
@@ -164,49 +164,27 @@ angular.module('app-controllers', ['ngRoute', 'ngCookies'])
 			};
 		} ])
 		
-		.controller('loginController', ['$cookieStore', '$rootScope', '$scope', '$location', 'authService', function($cookieStore, $rootScope, $scope, $location, authService){
+		.controller('loginController', ['$rootScope', '$scope', '$location', 'authService', function($rootScope, $scope, $location, authService){
 			$scope.credentials = {
 					username :'',
 					password:''
 			};	
-			var authenticate = function(){
-				$rootScope.authenticated = $cookieStore.get('authenticated');
-				$rootScope.roleAdmin = $cookieStore.get('roleAdmin');
-			}
-			authenticate();
 			$scope.loginFormSubmit = function (){
-				 authService.login($scope.credentials, $scope.rememberMe).$promise.then(function(data){
-					 $rootScope.authenticated = true;
-					 $cookieStore.put('authenticated',true);
+				 authService.login($scope.credentials, $scope.rememberMe).then(function(data){
 					 $scope.error = false;
-					 if (data.user.role == "ADMIN") {
-						 $rootScope.roleAdmin = true;
-						 $cookieStore.put('roleAdmin',true);
+					 if ($rootScope.principal.role == "ADMIN") {
 						 $location.path("/admin/account");
 					 } else{
-						 $rootScope.roleAdmin = false;
-						 $cookieStore.put('roleAdmin',false);
 						 $location.path("/my-account/video");
 					 }
 				 }, function(){
 					 $location.path("/login");
                      $scope.error = true;
-                     $rootScope.authenticated = false;
-					 $cookieStore.put('authenticated',false);
 				 });
 			};
 			$scope.logout = function(){
-				authService.logout().$promise.then(function(){
-					$rootScope.authenticated = false;
-					 $cookieStore.put('authenticated',false);
-					 $cookieStore.remove('authenticated');
-					 $cookieStore.remove('roleAdmin');
+				authService.logout().then(function(){
 					 $location.path("/main");
-				}, function(){
-					$rootScope.authenticated = false;
-					 $cookieStore.put('authenticated',false);
-					 $cookieStore.remove('authenticated');
-					 $cookieStore.remove('roleAdmin');
 				});
 			};
 		}])
@@ -233,11 +211,7 @@ angular.module('app-controllers', ['ngRoute', 'ngCookies'])
 		.controller('accountController', ['$scope', 'adminService', 'controllersFactory', function($scope, adminService, controllersFactory){
 			controllersFactory.createPaginationController($scope, {getData : adminService.listAllUsersByPage});
 			var maxInt = 2147483647;
-			controllersFactory.createPaginationController($scope, {
-				getData : function(page){
-					return adminService.listAllCompaniesByPage(page, maxInt);
-				}
-			});
+			$scope.allCompanies = adminService.listAllCompaniesByPage(0,maxInt);
 			$scope.clearData = function(){
 				$scope.name = '';
 				$scope.surname = '';
@@ -246,22 +220,25 @@ angular.module('app-controllers', ['ngRoute', 'ngCookies'])
 				$scope.password = '';
 				$scope.company = '';
 				$scope.role = '';
-				$scope.avatarUrl = null;
+				$scope.avatarUrl = 'http://www.gravatar.com/avatar/00000000000000000000000000000000?d=mm';
+				$scope.avatarPreview = $scope.avatarUrl + '&s=300';
 				$scope.currentAccountId = -1;			
 			};
+			$scope.getAvatarUrl = function(){
+				adminService.getAvatarUrl($scope.email).$promise.then(function(data){
+					$scope.avatarUrl = data.url;
+					$scope.avatarPreview = $scope.avatarUrl + '&s=300';
+				});
+			}
 			$scope.saveUser = function(){
 				var id;
-				var avatar;
-				var companyIndex = $scope.allCompanies.findIndex(function(item){
+				var companyIndex = $scope.allCompanies.content.findIndex(function(item){
 					return item.id == $scope.company;
 				});
-				var company = $scope.allCompanies[companyIndex];
+				var company = $scope.allCompanies.content[companyIndex];
 				if ($scope.currentAccountId > -1) {
 					id = $scope.records.content[$scope.currentAccountId].id;
-				} else {
-					avatar = $scope.avatarUrl;
-					$scope.avatarUrl = '';
-				}
+				} 
 				var user = {
 							'id' : id,
 							'name': $scope.name,
@@ -279,11 +256,11 @@ angular.module('app-controllers', ['ngRoute', 'ngCookies'])
 							'role': $scope.role,
 							'avatarUrl': $scope.avatarUrl
 						}
-				adminService.saveUser(user, avatar).then(function(resp){
+				adminService.saveUser(user).$promise.then(function(resp){
 					if ($scope.currentAccountId > -1){
-						$scope.records.content[$scope.currentAccountId] = resp.data;
+						$scope.records.content[$scope.currentAccountId] = resp;
 					} else {
-						$scope.records.content.push(resp.data);
+						$scope.records.content.push(resp);
 					}
 					$scope.clearData();
 				})
@@ -299,6 +276,7 @@ angular.module('app-controllers', ['ngRoute', 'ngCookies'])
 				$scope.company = user.company.id;
 				$scope.role = user.role;
 				$scope.avatarUrl = user.avatarUrl;
+				$scope.avatarPreview = $scope.avatarUrl + '&s=300';
 			}
 			$scope.deleteUser = function(idx){
 				var user = $scope.records.content[idx];

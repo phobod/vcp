@@ -1,6 +1,7 @@
 package com.phobod.study.vcp.security;
 
 import javax.annotation.Nullable;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,6 +20,15 @@ public class SecurityUtils {
 			return ((CurrentUser) principal).getUser();
 		} else {
 			return null;
+		}
+	}
+	
+	public static void addPrincipalHeaders(HttpServletResponse resp) {
+		User user = SecurityUtils.getCurrentUser();
+		if(user != null) {
+			resp.setHeader("PrimcipalId", user.getId());
+			resp.setHeader("PrimcipalName", user.getName());
+			resp.setHeader("PrimcipalRole", user.getRole().name());
 		}
 	}
 }

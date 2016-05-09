@@ -12,11 +12,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.phobod.study.vcp.domain.Company;
 import com.phobod.study.vcp.domain.User;
+import com.phobod.study.vcp.form.AvatarUrlGenerationForm;
 import com.phobod.study.vcp.service.AdminService;
+import com.phobod.study.vcp.service.AvatarService;
 
 @RestController
 @RequestMapping("/admin")
@@ -24,6 +25,9 @@ public class AdminController {
 	
 	@Autowired
 	private AdminService adminService;
+	
+	@Autowired
+	private AvatarService avatarService;
 	
 	@RequestMapping(value = "/account", method = RequestMethod.GET)
 	public @ResponseBody PagedResources<Resource<User>> listAllUser(Pageable pageable, PagedResourcesAssembler<User> assembler) {
@@ -38,8 +42,8 @@ public class AdminController {
 	}
 
 	@RequestMapping(value = "/account", method = RequestMethod.POST)
-	public @ResponseBody User saveUser(String userJson, MultipartFile file) {
-		return adminService.saveUser(userJson, file);
+	public @ResponseBody User saveUser(@RequestBody User user) {
+		return adminService.saveUser(user);
 	}
 
 	@RequestMapping(value = "/company", method = RequestMethod.POST)
@@ -55,6 +59,13 @@ public class AdminController {
 	@RequestMapping(value = "/company/{companyId}", method = RequestMethod.DELETE)
 	public void deleteCompany(@PathVariable String companyId) {
 		adminService.deleteCompany(companyId);
+	}
+
+	@RequestMapping(value = "/emailhash", method = RequestMethod.POST)
+	public @ResponseBody AvatarUrlGenerationForm getAvatarUrl(@RequestBody AvatarUrlGenerationForm form) {
+		String url = avatarService.generateAvatarUrl(form.getEmail());
+		form.setUrl(url);
+		return form;
 	}
 
 }
