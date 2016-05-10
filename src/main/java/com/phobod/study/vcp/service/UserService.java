@@ -13,7 +13,7 @@ public interface UserService {
 	@Nonnull Page<Video> listVideosByUser(@Nonnull Pageable pageable, @Nonnull String userId);
 	@Nonnull Page<Video> listVideosByUserExcludeOne(@Nonnull Pageable pageable, @Nonnull String excludedVideoId, @Nonnull String userId);
 	void uploadVideo(@Nonnull User currentUser, @Nonnull VideoUploadForm form);
-	void updateVideo(@Nonnull String videoId, @Nonnull VideoUploadForm form);
-	void deleteVideo(@Nonnull String videoId);
+	void updateVideo(@Nonnull String videoId, @Nonnull VideoUploadForm form, @Nonnull String userId);
+	void deleteVideo(@Nonnull String videoId, @Nonnull String userId);
 	void deleteAllVideosByUser(@Nonnull String userId);
 }

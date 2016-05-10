@@ -1,8 +1,8 @@
 <div class="main-grids">
-	<div class="recommended" ng-controller="allListVideoByUserController">
+	<div class="recommended">
 		<div class="recommended-grids">
 			<div class="recommended-info">
-				<h3 ng-bind="'All videos user ' + videos.content[0].owner.name + ' ' + videos.content[0].owner.surname"></h3>
+				<h3 ng-bind="'All videos user ' + records.content[0].owner.name + ' ' + records.content[0].owner.surname"></h3>
 			</div>
 			<div ng-include="'static/html/include/mainlist.html'"></div>
 		</div>

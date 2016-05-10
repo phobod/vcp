@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -34,15 +33,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     PersistentTokenRepository tokenRepository;
 
 	@Override
-	public void configure(WebSecurity web) throws Exception {
-		web.ignoring()
-			.antMatchers("/index.html", "/static/**", "/favicon.ico", "/media/**");
-	}
-
-	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
-			.antMatchers("/index.html", "/video/popular", "/video/all", "/login").permitAll()
+			.antMatchers("/video/popular", "/video/all", "/login", "/recovery/**", "/index.html", "/static/**", "/favicon.ico", "/media/**").permitAll()
 			.antMatchers("/admin/**").hasAuthority(Role.ADMIN.name())
 			.antMatchers("/my-account/**").hasAuthority(Role.USER.name())
 			.anyRequest().authenticated();

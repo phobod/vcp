@@ -47,11 +47,17 @@ public class FFmpegThumbnailService implements ThumbnailService{
     private int getDuration(String filename) throws IOException{
         ProcessBuilder pb = new ProcessBuilder(ffprobe, "-v", "error", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1", filename);
         pb.redirectErrorStream(true);
-        Process p = pb.start();
-        BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
-        String duration = br.readLine();
-        p.getInputStream().close();
-        p.getOutputStream().close();
+        String duration;
+        Process p = null;
+		try {
+			p = pb.start();
+			BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
+			duration = br.readLine();
+		} finally {
+			if (p != null) {
+				p.destroy();
+			}
+		}
         if (duration != null) {
         	return Double.valueOf(duration).intValue();
         }
@@ -87,15 +93,20 @@ public class FFmpegThumbnailService implements ThumbnailService{
 	private void createTempThumbnail(int second, String filename, Path tempProcessedImagePath) throws IOException, InterruptedException {
 		ProcessBuilder pb = new ProcessBuilder(ffmpeg, "-i", filename, "-s", "640X360", "-ss", String.valueOf(second), "-vcodec", "mjpeg", "-vframes", "1", "-f", "image2", tempProcessedImagePath.toString());
         pb.redirectErrorStream(true);
-        Process p = pb.start();
-        BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
-        String line = null;
-        while ((line = br.readLine()) != null) {
-        	LOGGER.debug(line);
-        }
-    	LOGGER.debug("wait over " + p.waitFor());
-    	br.close();
-        p.getOutputStream().close();
+        Process p = null;
+        try {
+			p = pb.start();
+			BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
+			String line = null;
+			while ((line = br.readLine()) != null) {
+				LOGGER.debug(line);
+			}
+			LOGGER.debug("wait over " + p.waitFor());
+		} finally {
+			if (p != null) {
+				p.destroy();
+			}
+		}
 	}
     
 	private Path generateUniqueTempFilePath() {

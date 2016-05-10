@@ -75,11 +75,13 @@ angular.module('app-controllers', ['ngRoute'])
 		})
 		
 		.controller('allListVideoController',[ '$scope', 'videoService', 'controllersFactory', function($scope, videoService, controllersFactory) {
+			console.log('allListVideoController');
 			$scope.videoPopularList = videoService.listPopularVideos();
 			controllersFactory.createPaginationController($scope, {getData : videoService.listAllVideosByPage});
 		} ])
 		
 		.controller('listVideosByUserController',[ '$scope', '$routeParams', 'videoService', 'controllersFactory', function($scope, $routeParams, videoService, controllersFactory) {
+			console.log('listVideosByUserController');
 			$scope.currentVideo = videoService.findVideoById($routeParams.videoId);
 			controllersFactory.createPaginationController($scope, {
 				getData : function(page){
@@ -89,6 +91,7 @@ angular.module('app-controllers', ['ngRoute'])
 		} ])
 
 		.controller('allListVideoByUserController',[ '$scope', '$routeParams', 'videoService', 'controllersFactory', function($scope, $routeParams, videoService, controllersFactory) {
+			console.log('allListVideoByUserController');
 			controllersFactory.createPaginationController($scope, {
 				getData : function(page){
 					return videoService.listAllVideosByUserByPage($routeParams.userId, page); 
@@ -97,6 +100,7 @@ angular.module('app-controllers', ['ngRoute'])
 		} ])
 		
 		.controller('allListVideoMyAccountController',[ '$scope', '$window', 'videoService', 'userService', 'controllersFactory', function($scope, $window, videoService, userService, controllersFactory) {
+			console.log('allListVideoMyAccountController');
 			controllersFactory.createPaginationController($scope, {getData : videoService.listAllVideosMyAccountByPage});
 			$scope.deleteVideo = function(idx){
 				var video = $scope.records.content[idx];
@@ -110,6 +114,7 @@ angular.module('app-controllers', ['ngRoute'])
 		} ])
 		
 		.controller('uploadVideoController', ['$scope', '$window', '$location', 'userService', function ($scope, $window, $location, userService) {
+			console.log('uploadVideoController');
 			$scope.submit = function(){
 				userService.uploadVideo($scope.title, $scope.description, $scope.file).then(function(resp){
 					$scope.clearData();
@@ -128,6 +133,7 @@ angular.module('app-controllers', ['ngRoute'])
 		}])
 		
 		.controller('editVideoController',[ '$scope', '$window', '$location', '$routeParams', 'videoService', 'userService', 'controllersFactory', function($scope, $window, $location, $routeParams, videoService, userService, controllersFactory) {
+			console.log('editVideoController');
 			videoService.findVideoById($routeParams.videoId).$promise.then(function(data){
 				$scope.currentVideo = data;
 				$scope.title = data.title;
@@ -144,6 +150,7 @@ angular.module('app-controllers', ['ngRoute'])
 		} ])
 
 		.controller('searchResultController',[ '$scope', '$location', 'videoService', 'controllersFactory', function($scope, $location, videoService, controllersFactory) {
+			console.log('searchResultController');
 			$scope.textQuery = $location.search().query;
 			controllersFactory.createPaginationController($scope, {
 				getData : function(page){
@@ -153,6 +160,7 @@ angular.module('app-controllers', ['ngRoute'])
 		} ])
 		
 		.controller('searchController',[ '$scope', '$location', function($scope, $location) {
+			console.log('searchController');
 			$scope.query = '';
 			$scope.find = function(){
 				if($scope.query.trim() != ''){
@@ -165,6 +173,7 @@ angular.module('app-controllers', ['ngRoute'])
 		} ])
 		
 		.controller('loginController', ['$rootScope', '$scope', '$location', 'authService', function($rootScope, $scope, $location, authService){
+			console.log('loginController');
 			$scope.credentials = {
 					username :'',
 					password:''
@@ -190,6 +199,7 @@ angular.module('app-controllers', ['ngRoute'])
 		}])
 		
 		.controller('recoveryAccessController', ['$scope', '$location', '$window', '$routeParams', 'recoveryService', function($scope, $location, $window, $routeParams, recoveryService){
+			console.log('recoveryAccessController');
 			$scope.sendRestoreEmail = function(){
 				recoveryService.sendRestoreEmail($scope.login).$promise.then(function(){
 					$window.alert("We have sent you an email with instructions to restore your password.");
@@ -209,6 +219,7 @@ angular.module('app-controllers', ['ngRoute'])
 		}])
 		
 		.controller('accountController', ['$scope', 'adminService', 'controllersFactory', function($scope, adminService, controllersFactory){
+			console.log('accountController');
 			controllersFactory.createPaginationController($scope, {getData : adminService.listAllUsersByPage});
 			var maxInt = 2147483647;
 			$scope.allCompanies = adminService.listAllCompaniesByPage(0,maxInt);
@@ -288,6 +299,7 @@ angular.module('app-controllers', ['ngRoute'])
 		}])
 
 		.controller('companyController', ['$scope', 'adminService', 'controllersFactory', function($scope, adminService, controllersFactory){
+			console.log('companyController');
 			controllersFactory.createPaginationController($scope, {
 				getData : function(page){
 					return adminService.listAllCompaniesByPage(page, 10);

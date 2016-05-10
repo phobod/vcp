@@ -27,6 +27,7 @@ import com.phobod.study.vcp.repository.storage.UserRepository;
 import com.phobod.study.vcp.repository.storage.VideoRepository;
 import com.phobod.study.vcp.service.CommonService;
 import com.phobod.study.vcp.service.NotificationService;
+import com.phobod.study.vcp.service.VideoStatisticsService;
 
 @Service
 public class CommonServiceImpl implements CommonService {
@@ -45,6 +46,9 @@ public class CommonServiceImpl implements CommonService {
 	@Autowired
 	private NotificationService notificationService;
 	
+	@Autowired
+	private VideoStatisticsService videoStatisticsService;
+	
 	@Override
 	public List<Video> listPopularVideos() {
 		return videoRepository.findTop3ByOrderByViewsDesc();
@@ -59,8 +63,9 @@ public class CommonServiceImpl implements CommonService {
 	}
 
 	@Override
-	public Video findVideoById(String id) {
-		return videoRepository.findOne(id);
+	public Video findVideoById(String videoId, User user, String userIP) {
+		videoStatisticsService.saveVideoViewStatistics(videoId, user, userIP);
+		return videoRepository.findOne(videoId);
 	}
 
 	@Override

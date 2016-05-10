@@ -21,7 +21,6 @@ import com.phobod.study.vcp.domain.Video;
 import com.phobod.study.vcp.form.VideoUploadForm;
 import com.phobod.study.vcp.security.CurrentUser;
 import com.phobod.study.vcp.security.SecurityUtils;
-import com.phobod.study.vcp.service.CommonService;
 import com.phobod.study.vcp.service.UserService;
 
 @RestController
@@ -29,9 +28,6 @@ import com.phobod.study.vcp.service.UserService;
 public class UserController {
 	@Autowired
 	private UserService userService;
-	
-	@Autowired
-	private CommonService commonService;
 	
 	@RequestMapping(value = "/upload", method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.OK)
@@ -48,14 +44,14 @@ public class UserController {
 
 	@RequestMapping(value = "/video/{videoId}", method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.OK)
-	public void updateVideo(@PathVariable String videoId, @RequestBody VideoUploadForm uploadForm) {
-		userService.updateVideo(videoId, uploadForm);
+	public void updateVideo(@AuthenticationPrincipal CurrentUser currentUser, @PathVariable String videoId, @RequestBody VideoUploadForm uploadForm) {
+		userService.updateVideo(videoId, uploadForm, currentUser.getUser().getId());
 	}
 
 	@RequestMapping(value = "/video/{videoId}", method = RequestMethod.DELETE)
 	@ResponseStatus(value = HttpStatus.OK)
-	public void deleteVideo(@PathVariable String videoId) {
-		userService.deleteVideo(videoId);
+	public void deleteVideo(@AuthenticationPrincipal CurrentUser currentUser, @PathVariable String videoId) {
+		userService.deleteVideo(videoId, currentUser.getUser().getId());
 	}
 
 
