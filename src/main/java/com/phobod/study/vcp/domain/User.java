@@ -46,21 +46,6 @@ public class User implements Serializable{
 		this.avatarUrl = avatarUrl;
 	}
 
-	
-	private User(String id, String name, String surname, String login, String password, String email, Company company, Role role, String avatarUrl, String hash) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.surname = surname;
-		this.login = login;
-		this.password = password;
-		this.email = email;
-		this.company = company;
-		this.role = role;
-		this.avatarUrl = avatarUrl;
-		this.hash = hash;
-	}
-
 	public String getId() {
 		return id;
 	}

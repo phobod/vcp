@@ -1,7 +1,11 @@
 package com.phobod.study.vcp.repository.statistics;
 
+import java.util.List;
+
 import org.springframework.data.repository.CrudRepository;
 
-public interface VideoStatisticsRepository extends CrudRepository<String, String>{
+import com.phobod.study.vcp.domain.VideoStatistics;
 
+public interface VideoStatisticsRepository extends CrudRepository<VideoStatistics, String>{
+	List<VideoStatistics> findByDate(String date);
 }

@@ -1,0 +1,31 @@
+<div class="main">
+	<div class="show-top-grids">	
+		<div class="col-md-8 col-md-offset-2">
+			<div class="page-header">
+				<h3>Video Views Statistics for today</h3>
+			</div>
+			<table class="table table-striped account-table">
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>Video Title</th>
+						<th>Number of views</th>
+						<th>Number of users</th>
+						<th>Number of diff. IP</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="video in videoStatisticsList">
+						<td>{{$index + 1}}</td>
+						<td>{{video.title}}</td>
+						<td>{{video.viewCount}}</td>
+						<td>{{video.userIdSet.length}}</td>
+						<td>{{video.ipAddressSet.length}}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="clearfix"> </div>	
+	</div>
+</div>
+<div class="clearfix"> </div>	

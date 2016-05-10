@@ -17,11 +17,22 @@
 					</form>
 				</div>
 				<div class="header-top-right"  ng-controller="loginController">
-					<div class="file">
+						<div class="dropdown" ng-show="principal.auth && principal.role == 'ADMIN'">
+							<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+								Admin Panel
+								<span class="caret"></span>
+							</button>
+							<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+								<li><a ng-href="#/admin/account">Account Control</a></li>
+								<li role="separator" class="divider"></li>
+								<li><a ng-href="#/admin/company">Company Control</a></li>
+								<li role="separator" class="divider"></li>
+								<li><a ng-href="#/admin/statistics">Video Statistics</a></li>
+							</ul>
+						</div>					
+					<div class="file" >
 						<a ng-href="#/my-account/upload" ng-show="principal.auth && principal.role != 'ADMIN'" >Upload</a>
 						<a ng-href="#/my-account/video" ng-show="principal.auth && principal.role != 'ADMIN'">My Account</a>
-						<a ng-href="#/admin/account" ng-show="principal.auth && principal.role == 'ADMIN'">Account Control</a>
-						<a ng-href="#/admin/company" ng-show="principal.auth && principal.role == 'ADMIN'">Company Control</a>
 					</div>
 					<div class="signin">
 						<a ng-href="#/login" class="play-icon popup-with-zoom-anim" ng-hide="principal.auth" >Sign In</a>

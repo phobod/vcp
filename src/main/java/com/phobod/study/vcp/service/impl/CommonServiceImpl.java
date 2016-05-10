@@ -49,13 +49,13 @@ public class CommonServiceImpl implements CommonService {
 	@Autowired
 	private VideoStatisticsService videoStatisticsService;
 	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+	
 	@Override
 	public List<Video> listPopularVideos() {
 		return videoRepository.findTop3ByOrderByViewsDesc();
 	}
-	
-	@Autowired
-	private PasswordEncoder passwordEncoder;
 	
 	@Override
 	public Page<Video> listAllVideos(Pageable pageable) {
@@ -64,8 +64,10 @@ public class CommonServiceImpl implements CommonService {
 
 	@Override
 	public Video findVideoById(String videoId, User user, String userIP) {
-		videoStatisticsService.saveVideoViewStatistics(videoId, user, userIP);
-		return videoRepository.findOne(videoId);
+		Video video = videoRepository.findOne(videoId);
+		video.setViews(video.getViews() + 1);
+		videoStatisticsService.saveVideoViewStatistics(video, user, userIP);
+		return videoRepository.save(video);
 	}
 
 	@Override

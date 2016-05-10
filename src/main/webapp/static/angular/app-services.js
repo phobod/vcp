@@ -60,8 +60,6 @@ angular.module('app-services', [ 'ngResource', 'ngFileUpload' ])
 			return $resource('recovery/:login',{login:login}).save();
 		},
 		restorePassword : function(userId, hash, password){
-			console.log('recoveryService: restorePassword');
-//			return $http.post('/recovery/password', $.param({'id': userId, 'hash': hash, 'password': password}));
 			return $resource('recovery/password').save({},{'id': userId, 'hash': hash, 'password': password});
 		}
 	}
@@ -90,6 +88,9 @@ angular.module('app-services', [ 'ngResource', 'ngFileUpload' ])
 		},
 		deleteCompany : function(companyId) {
 			return $resource('admin/company/:companyId',{companyId:companyId}).delete();
+		},
+		listVideoStatistics : function() {
+			return $resource('/admin/statistics').query();
 		}
 	}
 }]);

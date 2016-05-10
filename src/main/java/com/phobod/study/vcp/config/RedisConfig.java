@@ -8,8 +8,10 @@ import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 
+import com.phobod.study.vcp.domain.VideoStatistics;
+
 @Configuration
-@EnableRedisRepositories
+@EnableRedisRepositories("com.phobod.study.vcp.repository.statistics")
 public class RedisConfig {
 	
 	@Value("${redis.host}")
@@ -28,8 +30,8 @@ public class RedisConfig {
 	}
 	
 	@Bean
-	public RedisTemplate<String, String> redisTemplate(){
-		RedisTemplate<String, String> template = new RedisTemplate<String, String>();
+	public RedisTemplate<VideoStatistics, String> redisTemplate(){
+		RedisTemplate<VideoStatistics, String> template = new RedisTemplate<VideoStatistics, String>();
 		template.setConnectionFactory(connectionFactory());
 		return template;
 	}

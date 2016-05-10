@@ -125,7 +125,8 @@ public class CreateTestDataService {
 		return Arrays.asList(
 				new Company("Coca-Cola", "Atlanta, USA", "info@coca-cola.com", "+1-800-438-2653"),
 				new Company("Microsoft", "Redmond, USA", "info@microsoft.com", "+1-800-882-8080"),
-				new Company("Google", "Mountain View, USA", "info@google.com", "+1-650-253-0000"));
+				new Company("Google", "Mountain View, USA", "info@google.com", "+1-650-253-0000"),
+				new Company("VCP", "Odessa, Ukraine", "vcp.service@gmail.com", "+38-067-111-1111"));
 	}
 
 	private List<User> createUsers(List<Company> companies) {
@@ -136,6 +137,12 @@ public class CreateTestDataService {
 	}
 
 	private List<User> getTestUsers(List<Company> companies) {
+		Company mainCompany = null;
+		for (Company company : companies) {
+			if (company.getName().equals("VCP")) {
+				mainCompany = company;
+			}
+		}
 		return Arrays.asList(
 				new User("Tom", "Anderson", "Admin01", passwordEncoder.encode("sjdSDb34"), "tomas@mail.ru",
 						companies.get(RANDOM.nextInt(companies.size())), Role.ADMIN,
@@ -148,7 +155,13 @@ public class CreateTestDataService {
 						"http://www.radfaces.com/images/avatars/jane-lane.jpg"),
 				new User("Steve", "Macleod", "duncan", passwordEncoder.encode("lsdb2HG"), "duncan@mail.ru",
 						companies.get(RANDOM.nextInt(companies.size())), Role.USER,
-						"http://www.radfaces.com/images/avatars/oblina.jpg"));
+						"http://www.radfaces.com/images/avatars/oblina.jpg"),
+				new User("User", "User", "user", passwordEncoder.encode("1111"), "testuser@mail.ru",
+						companies.get(RANDOM.nextInt(companies.size())), Role.USER,
+						"http://www.radfaces.com/images/avatars/chucky.jpg"),
+				new User("Admin", "Admin", "admin", passwordEncoder.encode("1111"), "vcp.recovery.service@gmail.com",
+						mainCompany, Role.ADMIN,
+						"http://www.gravatar.com/avatar/262f8cc87f07aa61a71b4819d64fa092?d=mm"));
 	}
 
 	private void createVideos(List<User> users){

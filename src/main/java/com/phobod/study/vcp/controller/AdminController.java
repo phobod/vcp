@@ -1,5 +1,7 @@
 package com.phobod.study.vcp.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,9 +17,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.phobod.study.vcp.domain.Company;
 import com.phobod.study.vcp.domain.User;
+import com.phobod.study.vcp.domain.VideoStatistics;
 import com.phobod.study.vcp.form.AvatarUrlGenerationForm;
 import com.phobod.study.vcp.service.AdminService;
 import com.phobod.study.vcp.service.AvatarService;
+import com.phobod.study.vcp.service.VideoStatisticsService;
 
 @RestController
 @RequestMapping("/admin")
@@ -28,6 +32,9 @@ public class AdminController {
 	
 	@Autowired
 	private AvatarService avatarService;
+	
+	@Autowired
+	private VideoStatisticsService videoStatisticsService;
 	
 	@RequestMapping(value = "/account", method = RequestMethod.GET)
 	public @ResponseBody PagedResources<Resource<User>> listAllUser(Pageable pageable, PagedResourcesAssembler<User> assembler) {
@@ -66,6 +73,12 @@ public class AdminController {
 		String url = avatarService.generateAvatarUrl(form.getEmail());
 		form.setUrl(url);
 		return form;
+	}
+
+	@RequestMapping(value = "/statistics", method = RequestMethod.GET)
+	public @ResponseBody List<VideoStatistics> listVideoStatistics() {
+		List<VideoStatistics> videoStatistics = videoStatisticsService.listVideoStatistics();
+		return  videoStatistics;
 	}
 
 }

@@ -27,32 +27,16 @@ public class Video implements Serializable{
 		super();
 	}
 
-	public Video(String title, String description, String thumbnailUrl, String videoUrl, int views, User owner) {
+	public Video(String thumbnailUrl, String videoUrl) {
 		super();
-		this.title = title;
-		this.description = description;
 		this.thumbnailUrl = thumbnailUrl;
 		this.videoUrl = videoUrl;
-		this.views = views;
-		this.owner = owner;
-	}
-
-
-
-	public Video(String title, String description, String thumbnailUrl, String videoUrl, User owner) {
-		this(title, description, thumbnailUrl, videoUrl, 0, owner);
 	}
 
 	public Video(String title, String description, String thumbnailUrl, String videoUrl) {
 		super();
 		this.title = title;
 		this.description = description;
-		this.thumbnailUrl = thumbnailUrl;
-		this.videoUrl = videoUrl;
-	}
-
-	public Video(String thumbnailUrl, String videoUrl) {
-		super();
 		this.thumbnailUrl = thumbnailUrl;
 		this.videoUrl = videoUrl;
 	}
