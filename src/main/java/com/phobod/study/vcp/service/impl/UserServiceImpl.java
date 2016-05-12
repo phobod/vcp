@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void updateVideo(String videoId, VideoUploadForm form, String userId) {
+	public void updateVideo(String videoId, VideoUploadForm form, String userId) throws AccessDeniedException{
 		Video video = videoRepository.findOne(videoId);
 		if (!video.getOwner().getId().equals(userId)) {
 			throw new AccessDeniedException(String.format("User %s denied access to edit video %s. This user is not the owner of the video.", SecurityUtils.getCurrentUser().getLogin(), video.getId()));
@@ -65,7 +65,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void deleteVideo(String videoId, String userId) {
+	public void deleteVideo(String videoId, String userId) throws AccessDeniedException{
 		Video video = videoRepository.findOne(videoId);
 		if (!video.getOwner().getId().equals(userId)) {
 			throw new AccessDeniedException(String.format("User %s denied access to delete video %s. This user is not the owner of the video.", SecurityUtils.getCurrentUser().getLogin(), video.getId()));

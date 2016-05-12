@@ -1,8 +1,6 @@
 <div class="modal-dialog">
 	<div class="main" id="div-forms">
-		<div class="alert alert-danger" ng-show="error">
-	    	There was a problem logging in. Please try again.
-		</div>
+		<div class="alert alert-danger" ng-show="error">There was a problem logging in. Please try again.</div>
 		<form id="login-form" name="form" ng-submit="loginFormSubmit()"> 
 			<div class="modal-body">
 				<div id="div-login-msg">
@@ -11,17 +9,11 @@
 				</div>
 				<input id="username" class="form-control" type="text" placeholder="Login" name="username" ng-model="credentials.username" required><br/>
 				<input id="password" class="form-control" type="password" placeholder="Password" name="password" ng-model="credentials.password" required><br/>
-				<div class="checkbox">
-					<label><input type="checkbox" ng-model="rememberMe"> Remember me</label>
-				</div>
+				<div class="checkbox"><label><input type="checkbox" ng-model="rememberMe"> Remember me</label></div>
 			</div>
 			<div class="modal-footer">
-				<div>
-					<button type="submit" ng-disabled="!form.$valid" class="btn btn-primary btn-lg btn-block">Sign in</button>
-				</div>
-				<div>
-					<a ng-href="#/recovery" id="login_lost_btn" type="button" class="btn btn-link">Forgot Password?</a>
-				</div>
+				<div><button type="submit" ng-disabled="!form.$valid" class="btn btn-primary btn-lg btn-block">Sign in</button></div>
+				<div><a ng-href="#/recovery" id="login_lost_btn" type="button" class="btn btn-link">Forgot Password?</a></div>
 			</div>
 		</form>
 	</div>

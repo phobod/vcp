@@ -83,11 +83,8 @@ public class FFmpegThumbnailService implements ThumbnailService{
 		}
     }
 
-	private ByteArrayOutputStream getThumbnailFromTempFile(Path tempProcessedImagePath) throws IOException {
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-        BufferedImage img = ImageIO.read(tempProcessedImagePath.toFile());
-        ImageIO.write(img, "jpg", out);
-		return out;
+	private Path generateUniqueTempFilePath() {
+		return Paths.get(System.getProperty("java.io.tmpdir") + "processed" + UUID.randomUUID() + ".jpg");
 	}
 
 	private void createTempThumbnail(int second, String filename, Path tempProcessedImagePath) throws IOException, InterruptedException {
@@ -109,8 +106,11 @@ public class FFmpegThumbnailService implements ThumbnailService{
 		}
 	}
     
-	private Path generateUniqueTempFilePath() {
-		return Paths.get(System.getProperty("java.io.tmpdir") + "processed" + UUID.randomUUID() + ".jpg");
+	private ByteArrayOutputStream getThumbnailFromTempFile(Path tempProcessedImagePath) throws IOException {
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+        BufferedImage img = ImageIO.read(tempProcessedImagePath.toFile());
+        ImageIO.write(img, "jpg", out);
+		return out;
 	}
 
 }

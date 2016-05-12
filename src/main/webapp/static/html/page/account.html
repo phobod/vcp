@@ -1,6 +1,10 @@
 <div class="main" >
 	<div class="show-top-grids">
 		<div class="col-md-8 col-md-offset-2" >
+			<div class="page-header center">
+				<h3>Accounts control panel</h3>
+			</div>
+			<div class="alert alert-danger" ng-show="error">{{errorMessage}}</div>		
 			<form class="new-company" name="form">
 				<div class="row">
 					<div class="form-group col-md-3">
@@ -10,43 +14,41 @@
 						<div class="row">
 							<div class="form-group col-md-4">
 								<label for="inputName">Name</label>
-								<input type="text" class="form-control" id="inputName" placeholder="Name" ng-model="name" name="name" required>
+								<input type="text" class="form-control" id="inputName" placeholder="Name" ng-model="selectedAccount.name" name="name" required>
 								<i ng-show="form.name.$error.required">*required</i>
 							</div>
 							<div class="form-group col-md-4">
 								<label for="inputSurname">Surname</label>
-								<input type="text" class="form-control" id="inputSurname" placeholder="Surname" ng-model="surname" name="surname" required>
+								<input type="text" class="form-control" id="inputSurname" placeholder="Surname" ng-model="selectedAccount.surname" name="surname" required>
 								<i ng-show="form.surname.$error.required">*required</i>
 							</div>
 							<div class="form-group col-md-4">
 								<label for="inputEmail">Email</label>
-								<input type="email" class="form-control" id="inputEmail" placeholder="Email" ng-model="email" name="email" ng-model-options="{updateOn: 'blur'}" ng-change="getAvatarUrl()" required>
+								<input type="email" class="form-control" id="inputEmail" placeholder="Email" ng-model="selectedAccount.email" name="email" ng-model-options="{updateOn: 'blur'}" ng-change="getAvatarUrl(form.email.$valid)" required>
 								<i ng-show="form.email.$error.required || form.email.$invalid">*a valid email is required</i>
 							</div>
 						</div>
 						<div class="row">
 							<div class="form-group col-md-6">
 								<label for="inputLogin">Login</label>
-								<input type="text" class="form-control" id="inputLogin" placeholder="Login" ng-model="login" name="login" ng-disabled="currentAccountId > -1" required>
+								<input type="text" class="form-control" id="inputLogin" placeholder="Login" ng-model="selectedAccount.login" name="login" ng-disabled="selectedAccountIndex > -1" required>
 								<i ng-show="form.login.$error.required">*required</i>
 							</div>
 							<div class="form-group col-md-6">
 								<label for="inputPassword">Password</label>
-								<input type="password" class="form-control" id="inputPassword" placeholder="Password" ng-model="password" name="password" ng-disabled="currentAccountId > -1" required>
+								<input type="password" class="form-control" id="inputPassword" placeholder="Password" ng-model="selectedAccount.password" name="password" ng-disabled="selectedAccountIndex > -1" required>
 								<i ng-show="form.password.$error.required">*required</i>
 							</div>
 						</div>
 						<div class="row">
 							<div class="form-group col-md-6">
 								<label for="inputCompany">Company</label>
-								<select class="form-control" id="inputCompany" ng-model="company"  name="company" required>
-									<option ng-repeat="company in allCompanies.content" value="{{company.id}}">{{company.name}}</option>
-								</select>
+								<select class="form-control" id="inputCompany" ng-model="company"  name="company" ng-options="company.name for company in allCompanies.content" required></select>
 								<i ng-show="form.company.$error.required">*required</i>
 							</div>
 							<div class="form-group col-md-6">
 								<label for="inputRole">Role</label>
-								<select class="form-control" id="inputRole" ng-model="role"  name="role" ng-disabled="currentAccountId > -1" required>
+								<select class="form-control" id="inputRole" ng-model="selectedAccount.role"  name="role" ng-disabled="selectedAccountIndex > -1" required>
 									<option>USER</option>
 									<option>ADMIN</option>
 								</select>
@@ -55,8 +57,8 @@
 						</div>
 					</div>
 				</div>
-				<button type="submit" class="btn btn-success" ng-disabled="!form.$valid" ng-click="saveUser()" ng-show="currentAccountId > -1">Save</button>
-				<button type="submit" class="btn btn-success" ng-disabled="!form.$valid" ng-click="saveUser()" ng-hide="currentAccountId > -1">Add</button>
+				<button type="submit" class="btn btn-success" ng-disabled="!form.$valid" ng-click="saveUser()" ng-show="selectedAccountIndex > -1">Save</button>
+				<button type="submit" class="btn btn-success" ng-disabled="!form.$valid" ng-click="saveUser()" ng-hide="selectedAccountIndex > -1">Add</button>
 				<button type="button" class="btn btn-default" ng-click="clearData()" >Cancel</button>
 			</form>
 		</div>

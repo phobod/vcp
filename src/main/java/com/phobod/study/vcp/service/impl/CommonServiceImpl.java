@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 
 import com.phobod.study.vcp.domain.User;
 import com.phobod.study.vcp.domain.Video;
-import com.phobod.study.vcp.exception.CantProcessPasswordRestoreException;
+import com.phobod.study.vcp.exception.CantProcessAccessRecoveryException;
 import com.phobod.study.vcp.form.RecoveryForm;
 import com.phobod.study.vcp.repository.search.VideoSearchRepository;
 import com.phobod.study.vcp.repository.storage.UserRepository;
@@ -65,13 +65,23 @@ public class CommonServiceImpl implements CommonService {
 	@Override
 	public Video findVideoById(String videoId, User user, String userIP) {
 		Video video = videoRepository.findOne(videoId);
-		video.setViews(video.getViews() + 1);
+		increaseVideoViewCount(video);
 		videoStatisticsService.saveVideoViewStatistics(video, user, userIP);
-		return videoRepository.save(video);
+		return video;
+	}
+
+	private void increaseVideoViewCount(Video video) {
+		video.setViews(video.getViews() + 1);
+		videoRepository.save(video);
 	}
 
 	@Override
 	public Page<Video> listVideosBySearchQuery(String query, Pageable pageable) {
+		SearchQuery searchQuery = prepareSearchQuery(query, pageable);
+		return videoSearchRepository.search(searchQuery);
+	}
+
+	private SearchQuery prepareSearchQuery(String query, Pageable pageable) {
 		SearchQuery searchQuery = new NativeSearchQueryBuilder()
 				.withQuery(QueryBuilders.multiMatchQuery(query)
 						.field("title")
@@ -84,45 +94,51 @@ public class CommonServiceImpl implements CommonService {
 				.withSort(SortBuilders.fieldSort("views").order(SortOrder.DESC))
 				.build();
 		searchQuery.setPageable(pageable);
-		return videoSearchRepository.search(searchQuery);
+		return searchQuery;
 	}
 
 	@Override
-	public void sendRestoreEmail(String login) {
+	public void sendRestoreEmail(String login) throws CantProcessAccessRecoveryException{
 		try {
-			processSendRestoreEmail(login);
+			sendRestoreEmailInternal(login);
 		} catch (Exception e) {
-			throw new CantProcessPasswordRestoreException("Sending email for password recovery failed for login: " + login + ". " + e.getMessage(), e);
+			throw new CantProcessAccessRecoveryException("Sending email for password recovery failed for login: " + login + ". " + e.getMessage(), e);
 		}
 	}
 
-	private void processSendRestoreEmail(String login) {
+	private void sendRestoreEmailInternal(String login) {
 		User user = userRepository.findByLogin(login);
-		String hash = UUID.randomUUID().toString();
-		user.setHash(hash);
-		userRepository.save(user);
-		String restoreLink = vcpUrl + "/#/recovery/acsess/" + user.getId() + "/" + hash;
+		addHashToUser(user);
+		String restoreLink = vcpUrl + "/#/recovery/acsess/" + user.getId() + "/" + user.getHash();
 		notificationService.sendRestoreAccessLink(user, restoreLink);
 	}
 
+	private void addHashToUser(User user) {
+		user.setHash(generateUniqueHash());
+		userRepository.save(user);
+	}
+
+	private String generateUniqueHash() {
+		return UUID.randomUUID().toString();
+	}
+	
 	@Override
-	public void restorePassword(RecoveryForm form) {
+	public void restorePassword(RecoveryForm form) throws CantProcessAccessRecoveryException{
 		try {
-			processPasswordRestoreRequest(form);
+			restorePasswordInternal(form);
 		} catch (Exception e) {
-			throw new CantProcessPasswordRestoreException("The password recovery process failed for userId: " + form.getId() + ". " + e.getMessage(), e);
+			throw new CantProcessAccessRecoveryException("The password recovery process failed for userId: " + form.getId() + ". " + e.getMessage(), e);
 		}
 	}
 
-	private void processPasswordRestoreRequest(RecoveryForm form) {
+	private void restorePasswordInternal(RecoveryForm form) {
 		User user = userRepository.findOne(form.getId());
 		if (user.getHash() == null || form.getHash() == null || !user.getHash().equals(form.getHash())) {
-			throw new CantProcessPasswordRestoreException("Hash is Null or is not correct.");
+			throw new CantProcessAccessRecoveryException("Hash is Null or is not correct.");
 		}
 		user.setPassword(passwordEncoder.encode(form.getPassword()));
 		user.setHash(null);
 		userRepository.save(user);
-		
 	}
 	
 }

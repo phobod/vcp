@@ -13,7 +13,6 @@ import org.springframework.util.Assert;
 import com.phobod.study.vcp.domain.User;
 
 public class CurrentUser implements UserDetails{
-
 	private static final long serialVersionUID = -4469483500704167851L;
 	private User user;
 

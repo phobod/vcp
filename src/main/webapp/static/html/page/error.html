@@ -2,10 +2,10 @@
 	<div class="row">
 		<div class="span12">
 			<div class="page-header center">
-				<h1>Access is denied <small><font face="Tahoma" color="red">Error 403</font></small></h1>
+				<h1>{{errorMessage.message}} <small><font face="Tahoma" color="red">Error {{errorMessage.code}}</font></small></h1>
 				<br />
 				<div >
-					<p class="lead">You do not have permission to access this page!</p>
+					<p class="lead">{{errorMessage.description}}</p>
 					<p><b>Either contact your webmaster or you could just press this neat little button:</b></p>
 				</div>
 				<a ng-href="#/main" class="btn btn-large btn-info"><i class="icon-home icon-white"></i> Take Me Home</a>

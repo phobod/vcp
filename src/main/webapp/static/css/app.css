@@ -48,3 +48,13 @@
 input.ng-invalid{
     border-color: red;
 }
+select.ng-invalid{
+    border-color: red;
+}
+.center {
+	text-align: center; 
+	margin-left: auto; 
+	margin-right: auto; 
+	margin-bottom: auto; 
+	margin-top: auto;
+}

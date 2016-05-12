@@ -1,10 +1,13 @@
 package com.phobod.study.vcp.service.impl;
 
+import java.io.UnsupportedEncodingException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import javax.annotation.PreDestroy;
+import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -76,13 +79,7 @@ public class AsyncEmailNotificationService implements NotificationService{
 		public void run() {
 			try {
 				LOGGER.debug("Send a new email to {}", destinationEmail);
-				MimeMessageHelper message = new MimeMessageHelper(javaMailSender.createMimeMessage(), false);
-				message.setSubject(subject);
-				message.setTo(new InternetAddress(destinationEmail, name));
-				message.setFrom(fromEmail, fromName);
-				message.setText(content);
-				MimeMailMessage msg = new MimeMailMessage(message);
-				javaMailSender.send(msg.getMimeMessage());
+				javaMailSender.send(prepareEmail());
 				LOGGER.debug("Email to {} successful sent", destinationEmail);
 			} catch (Exception e) {
 				LOGGER.error("Can't send email to " + destinationEmail + ": " + e.getMessage(), e);
@@ -94,6 +91,16 @@ public class AsyncEmailNotificationService implements NotificationService{
 					LOGGER.error("Email not sent to " + destinationEmail);
 				}
 			}			
+		}
+
+		private MimeMessage prepareEmail() throws MessagingException, UnsupportedEncodingException {
+			MimeMessageHelper message = new MimeMessageHelper(javaMailSender.createMimeMessage(), false);
+			message.setSubject(subject);
+			message.setTo(new InternetAddress(destinationEmail, name));
+			message.setFrom(fromEmail, fromName);
+			message.setText(content);
+			MimeMailMessage msg = new MimeMailMessage(message);
+			return msg.getMimeMessage();
 		}
 		
 	}

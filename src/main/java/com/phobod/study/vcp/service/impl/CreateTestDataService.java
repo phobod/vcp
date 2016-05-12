@@ -79,7 +79,7 @@ public class CreateTestDataService {
 	}
 
 	private File[] getMediaDirs(){
-		return new File[] {new File(mediaDir + "/thumbnail"), new File(mediaDir + "/video"), new File(mediaDir + "/image")};
+		return new File[] {new File(mediaDir + "/thumbnail"), new File(mediaDir + "/video")};
 	}
 	
 	private void createMediaDirsIfNecessary(){
@@ -99,9 +99,6 @@ public class CreateTestDataService {
 			f.delete();
 		}
 		for (File f : new File(mediaDir + "/video").listFiles()) {
-			f.delete();
-		}
-		for (File f : new File(mediaDir + "/image").listFiles()) {
 			f.delete();
 		}
 		LOGGER.info("Media sub folders cleared");
@@ -144,24 +141,12 @@ public class CreateTestDataService {
 			}
 		}
 		return Arrays.asList(
-				new User("Tom", "Anderson", "Admin01", passwordEncoder.encode("sjdSDb34"), "tomas@mail.ru",
-						companies.get(RANDOM.nextInt(companies.size())), Role.ADMIN,
-						"http://www.radfaces.com/images/avatars/ickis.jpg"),
-				new User("Jack", "Douu", "jactin", passwordEncoder.encode("qwerty123"), "jactin@mail.ru",
-						companies.get(RANDOM.nextInt(companies.size())), Role.USER,
-						"http://www.radfaces.com/images/avatars/krumm.jpg"),
-				new User("Rachel", "Stone", "roston", passwordEncoder.encode("sdfvsm2d"), "roston@mail.ru",
-						companies.get(RANDOM.nextInt(companies.size())), Role.USER,
-						"http://www.radfaces.com/images/avatars/jane-lane.jpg"),
-				new User("Steve", "Macleod", "duncan", passwordEncoder.encode("lsdb2HG"), "duncan@mail.ru",
-						companies.get(RANDOM.nextInt(companies.size())), Role.USER,
-						"http://www.radfaces.com/images/avatars/oblina.jpg"),
-				new User("User", "User", "user", passwordEncoder.encode("1111"), "testuser@mail.ru",
-						companies.get(RANDOM.nextInt(companies.size())), Role.USER,
-						"http://www.radfaces.com/images/avatars/chucky.jpg"),
-				new User("Admin", "Admin", "admin", passwordEncoder.encode("1111"), "vcp.recovery.service@gmail.com",
-						mainCompany, Role.ADMIN,
-						"http://www.gravatar.com/avatar/262f8cc87f07aa61a71b4819d64fa092?d=mm"));
+				new User("Tom", "Anderson", "Admin01", passwordEncoder.encode("sjdSDb34"), "AmREIT@yandex.ru", companies.get(RANDOM.nextInt(companies.size())), Role.ADMIN, "http://www.gravatar.com/avatar/2ecec780360672c51b13f99f187e7285?d=mm"),
+				new User("Jack", "Douu", "jactin", passwordEncoder.encode("qwerty123"), "Bnefica@yandex.ru", companies.get(RANDOM.nextInt(companies.size())), Role.USER, "http://www.gravatar.com/avatar/27526da8cc68e227b84e0418b1667c17?d=mm"),
+				new User("Rachel", "Stone", "roston", passwordEncoder.encode("sdfvsm2d"), "Cmlabs@yandex.ru", companies.get(RANDOM.nextInt(companies.size())), Role.USER, "http://www.gravatar.com/avatar/46c7101ae6cb2714c914a0af79e2a822?d=mm"),
+				new User("Steve", "Macleod", "duncan", passwordEncoder.encode("lsdb2HG"), "dnesice@yandex.ru", companies.get(RANDOM.nextInt(companies.size())), Role.USER, "http://www.gravatar.com/avatar/cb22dcb5c2341afc4487f4814b177f34?d=mm"),
+				new User("User", "User", "user", passwordEncoder.encode("1111"), "emaddeh@yandex.ru", companies.get(RANDOM.nextInt(companies.size())), Role.USER, "http://www.gravatar.com/avatar/e5c8b280949740fa8a68922258187e44?d=mm"),
+				new User("Admin", "Admin", "admin", passwordEncoder.encode("1111"), "vcp.recovery.service@gmail.com", mainCompany, Role.ADMIN, "http://www.gravatar.com/avatar/262f8cc87f07aa61a71b4819d64fa092?d=mm"));
 	}
 
 	private void createVideos(List<User> users){

@@ -22,8 +22,9 @@ import com.phobod.study.vcp.service.ThumbnailService;
 
 @Service("jcodecThumbnailService")
 public class JCodecThumbnailService implements ThumbnailService{
+	
 	@Override
-	public byte[] createThumbnail(Path videoFilePath) {
+	public byte[] createThumbnail(Path videoFilePath) throws CantProcessMediaContentException{
 		try {
 			return createThumbnailInternal(videoFilePath);
 		} catch (IOException | JCodecException e) {
@@ -43,6 +44,11 @@ public class JCodecThumbnailService implements ThumbnailService{
 		return out.toByteArray();
 	}
 
+	private Picture getVideoFrameBySecond(Path videoFilePath, double second) throws IOException, JCodecException{
+		FrameGrab grab = new FrameGrab(new FileChannelWrapper(FileChannel.open(videoFilePath)));
+		return grab.seekToSecondPrecise(second).getNativeFrame();
+	}
+
 	private BufferedImage resizeThubnail(BufferedImage originalImage, int width, int height) {
 		Image image = originalImage.getScaledInstance(width, height, Image.SCALE_AREA_AVERAGING);
         BufferedImage changedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
@@ -50,11 +56,6 @@ public class JCodecThumbnailService implements ThumbnailService{
         g2d.drawImage(image, 0, 0, null);
         g2d.dispose();
 		return changedImage;
-	}
-
-	private Picture getVideoFrameBySecond(Path videoFilePath, double second) throws IOException, JCodecException{
-		FrameGrab grab = new FrameGrab(new FileChannelWrapper(FileChannel.open(videoFilePath)));
-		return grab.seekToSecondPrecise(second).getNativeFrame();
 	}
 
 }

@@ -12,15 +12,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.phobod.study.vcp.domain.User;
 import com.phobod.study.vcp.domain.Video;
 import com.phobod.study.vcp.form.VideoUploadForm;
 import com.phobod.study.vcp.security.CurrentUser;
-import com.phobod.study.vcp.security.SecurityUtils;
 import com.phobod.study.vcp.service.UserService;
 
 @RestController
@@ -31,13 +28,12 @@ public class UserController {
 	
 	@RequestMapping(value = "/upload", method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.OK)
-	public void uploadVideo(VideoUploadForm uploadForm ){
-		User currentUser = SecurityUtils.getCurrentUser();
-		userService.uploadVideo(currentUser, uploadForm);
+	public void uploadVideo(@AuthenticationPrincipal CurrentUser currentUser, VideoUploadForm uploadForm ){
+		userService.uploadVideo(currentUser.getUser(), uploadForm);
 	} 
 	
 	@RequestMapping(value = "/video", method = RequestMethod.GET)
-	public @ResponseBody PagedResources<Resource<Video>> listVideos(@AuthenticationPrincipal CurrentUser currentUser, Pageable pageable, PagedResourcesAssembler<Video> assembler) {
+	public PagedResources<Resource<Video>> listVideos(@AuthenticationPrincipal CurrentUser currentUser, Pageable pageable, PagedResourcesAssembler<Video> assembler) {
 		Page<Video> videos = userService.listVideosByUser(pageable, currentUser.getUser().getId());
 		return assembler.toResource(videos);
 	}

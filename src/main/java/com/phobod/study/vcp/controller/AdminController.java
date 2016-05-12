@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.phobod.study.vcp.domain.Company;
@@ -37,24 +36,24 @@ public class AdminController {
 	private VideoStatisticsService videoStatisticsService;
 	
 	@RequestMapping(value = "/account", method = RequestMethod.GET)
-	public @ResponseBody PagedResources<Resource<User>> listAllUser(Pageable pageable, PagedResourcesAssembler<User> assembler) {
+	public PagedResources<Resource<User>> listAllUser(Pageable pageable, PagedResourcesAssembler<User> assembler) {
 		Page<User> users = adminService.listAllUsers(pageable);
 		return assembler.toResource(users);
 	}
 
 	@RequestMapping(value = "/company", method = RequestMethod.GET)
-	public @ResponseBody PagedResources<Resource<Company>> listAllCompaniesByPage(Pageable pageable, PagedResourcesAssembler<Company> assembler) {
-		Page<Company> users = adminService.listAllCompanies(pageable);
-		return assembler.toResource(users);
+	public PagedResources<Resource<Company>> listAllCompaniesByPage(Pageable pageable, PagedResourcesAssembler<Company> assembler) {
+		Page<Company> companies = adminService.listAllCompanies(pageable);
+		return assembler.toResource(companies);
 	}
 
 	@RequestMapping(value = "/account", method = RequestMethod.POST)
-	public @ResponseBody User saveUser(@RequestBody User user) {
+	public User saveUser(@RequestBody User user) {
 		return adminService.saveUser(user);
 	}
 
 	@RequestMapping(value = "/company", method = RequestMethod.POST)
-	public @ResponseBody Company saveCompany(@RequestBody Company company) {
+	public Company saveCompany(@RequestBody Company company) {
 		return adminService.saveCompany(company);
 	}
 
@@ -69,16 +68,14 @@ public class AdminController {
 	}
 
 	@RequestMapping(value = "/emailhash", method = RequestMethod.POST)
-	public @ResponseBody AvatarUrlGenerationForm getAvatarUrl(@RequestBody AvatarUrlGenerationForm form) {
-		String url = avatarService.generateAvatarUrl(form.getEmail());
-		form.setUrl(url);
+	public AvatarUrlGenerationForm getAvatarUrl(@RequestBody AvatarUrlGenerationForm form) {
+		form.setUrl(avatarService.generateAvatarUrl(form.getEmail()));
 		return form;
 	}
 
 	@RequestMapping(value = "/statistics", method = RequestMethod.GET)
-	public @ResponseBody List<VideoStatistics> listVideoStatistics() {
-		List<VideoStatistics> videoStatistics = videoStatisticsService.listVideoStatistics();
-		return  videoStatistics;
+	public List<VideoStatistics> listVideoStatistics() {
+		return videoStatisticsService.listVideoStatistics();
 	}
 
 }

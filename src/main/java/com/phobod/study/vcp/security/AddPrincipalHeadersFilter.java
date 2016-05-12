@@ -14,7 +14,6 @@ public class AddPrincipalHeadersFilter implements Filter{
 
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
-
 	}
 
 	@Override
@@ -25,7 +24,6 @@ public class AddPrincipalHeadersFilter implements Filter{
 
 	@Override
 	public void destroy() {
-
 	}
 
 }

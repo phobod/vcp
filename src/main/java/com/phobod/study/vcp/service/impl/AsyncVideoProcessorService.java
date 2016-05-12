@@ -18,7 +18,6 @@ import com.phobod.study.vcp.service.VideoProcessorService;
 
 @Service("asyncVideoProcessorService")
 public class AsyncVideoProcessorService implements VideoProcessorService{
-
 	private ExecutorService executorService;
 	
 	@Value("${thread.pool.count}")

@@ -42,5 +42,4 @@ public class VideoUploadForm {
 		this.file = file;
 	}
 	
-	
 }

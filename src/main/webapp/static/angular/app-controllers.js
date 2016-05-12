@@ -43,6 +43,9 @@ angular.module('app-controllers', ['ngRoute'])
 			$routeProvider.when('/access-denied', {
 				templateUrl : 'static/html/page/access-denied.html'
 			});
+			$routeProvider.when('/error', {
+				templateUrl : 'static/html/page/error.html'
+			});
 			$routeProvider.when('/admin/account', {
 				templateUrl : 'static/html/page/account.html',
 				controller : 'accountController'
@@ -217,74 +220,44 @@ angular.module('app-controllers', ['ngRoute'])
 			var maxInt = 2147483647;
 			$scope.allCompanies = adminService.listAllCompaniesByPage(0,maxInt);
 			$scope.clearData = function(){
-				$scope.name = '';
-				$scope.surname = '';
-				$scope.email = '';
-				$scope.login = '';
-				$scope.password = '';
-				$scope.company = '';
-				$scope.role = '';
-				$scope.avatarUrl = 'http://www.gravatar.com/avatar/00000000000000000000000000000000?d=mm';
-				$scope.avatarPreview = $scope.avatarUrl + '&s=300';
-				$scope.currentAccountId = -1;			
+				$scope.error = false;
+				$scope.selectedAccount = null;
+				$scope.company = null;
+				$scope.avatarPreview = 'http://www.gravatar.com/avatar/00000000000000000000000000000000?d=mm&s=300';
+				$scope.selectedAccountIndex = -1;			
 			};
-			$scope.getAvatarUrl = function(){
-				adminService.getAvatarUrl($scope.email).$promise.then(function(data){
-					$scope.avatarUrl = data.url;
-					$scope.avatarPreview = $scope.avatarUrl + '&s=300';
-				});
+			$scope.getAvatarUrl = function(value){
+				if (value) {
+					adminService.getAvatarUrl($scope.selectedAccount.email).$promise.then(function(data){
+						$scope.selectedAccount.avatarUrl = data.url;
+						$scope.avatarPreview = $scope.selectedAccount.avatarUrl + '&s=300';
+					});
+				}
 			}
 			$scope.saveUser = function(){
-				var id;
-				var companyIndex = $scope.allCompanies.content.findIndex(function(item){
-					return item.id == $scope.company;
-				});
-				var company = $scope.allCompanies.content[companyIndex];
-				if ($scope.currentAccountId > -1) {
-					id = $scope.records.content[$scope.currentAccountId].id;
-				} 
-				var user = {
-							'id' : id,
-							'name': $scope.name,
-							'surname': $scope.surname,
-							'login': $scope.login,
-							'password': $scope.password,
-							'email': $scope.email,
-							'company': {
-								'id' : company.id,
-								'name': company.name,
-								'address': company.address,
-								'email': company.email,
-								'phone': company.phone,
-							},
-							'role': $scope.role,
-							'avatarUrl': $scope.avatarUrl
-						}
-				adminService.saveUser(user).$promise.then(function(resp){
-					if ($scope.currentAccountId > -1){
-						$scope.records.content[$scope.currentAccountId] = resp;
+				$scope.selectedAccount.company = $scope.company;				
+				adminService.saveUser($scope.selectedAccount).$promise.then(function(resp){
+					if ($scope.selectedAccountIndex > -1){
+						$scope.records.content[$scope.selectedAccountIndex] = resp;
 					} else {
 						$scope.records.content.push(resp);
 					}
 					$scope.clearData();
+				},function(error){
+					$scope.error = true;
+					$scope.errorMessage = error.data.description;
 				})
 			}
 			$scope.editUser = function(idx){
-				$scope.currentAccountId = idx;
-				var user = $scope.records.content[idx];
-				$scope.name = user.name;
-				$scope.surname = user.surname;
-				$scope.email = user.email;
-				$scope.login = user.login;
-				$scope.password = user.password;
-				$scope.company = user.company.id;
-				$scope.role = user.role;
-				$scope.avatarUrl = user.avatarUrl;
-				$scope.avatarPreview = $scope.avatarUrl + '&s=300';
+				$scope.selectedAccountIndex = idx;
+				$scope.selectedAccount = angular.copy($scope.records.content[idx]);
+				$scope.company = $scope.allCompanies.content.find(function(item){
+					return item.id == $scope.selectedAccount.company.id;
+				});
+				$scope.avatarPreview = $scope.selectedAccount.avatarUrl + '&s=300';
 			}
 			$scope.deleteUser = function(idx){
-				var user = $scope.records.content[idx];
-				adminService.deleteUser(user.id).$promise.then(function(resp){
+				adminService.deleteUser($scope.records.content[idx].id).$promise.then(function(resp){
 					$scope.records.content.splice(idx,1);					
 				});
 			}
@@ -292,55 +265,37 @@ angular.module('app-controllers', ['ngRoute'])
 		}])
 
 		.controller('companyController', ['$scope', 'adminService', 'controllersFactory', function($scope, adminService, controllersFactory){
-			controllersFactory.createPaginationController($scope, {
-				getData : function(page){
-					return adminService.listAllCompaniesByPage(page, 10);
-				}
-			});
+			controllersFactory.createPaginationController($scope, {getData : function(page){return adminService.listAllCompaniesByPage(page, 10)}});
 			$scope.clearData = function(){
-				$scope.name = '';
-				$scope.address = '';
-				$scope.email = '';
-				$scope.phone = '';
-				$scope.currentCompanyId = -1;			
+				$scope.error = false;
+				$scope.selectedCompany = null;
+				$scope.selectedCompanyIndex = -1;			
 			};
 			$scope.saveCompany = function(){
-				var id;
-				if ($scope.currentCompanyId > -1) {
-					id = $scope.records.content[$scope.currentCompanyId].id;
-				}
-				var company = {
-						'id' : id,
-						'name': $scope.name,
-						'address': $scope.address,
-						'email': $scope.email,
-						'phone': $scope.phone
-				}
-				adminService.saveCompany(company).$promise.then(function(resp){
-					if ($scope.currentCompanyId > -1) {
-						$scope.records.content[$scope.currentCompanyId] = resp;
+				adminService.saveCompany($scope.selectedCompany).$promise.then(function(resp){
+					if ($scope.selectedCompanyIndex > -1) {
+						$scope.records.content[$scope.selectedCompanyIndex] = resp;
 					} else {
 						$scope.records.content.push(resp);
 					}
 					$scope.clearData();
+				},function(error){
+					$scope.error = true;
+					$scope.errorMessage = error.data.description;
 				})
 			}
 			$scope.editCompany = function(idx){
-				$scope.currentCompanyId = idx;
-				var company = $scope.records.content[idx];
-				$scope.name = company.name;
-				$scope.address = company.address;
-				$scope.email = company.email;
-				$scope.phone = company.phone;
+				$scope.selectedCompanyIndex = idx;
+				$scope.selectedCompany = angular.copy($scope.records.content[idx]);
 			}
 			$scope.deleteCompany = function(idx){
-				var company = $scope.records.content[idx];
-				adminService.deleteCompany(company.id).$promise.then(function(resp){
+				adminService.deleteCompany($scope.records.content[idx].id).$promise.then(function(resp){
 					$scope.records.content.splice(idx,1);					
 				});
 			}
 			$scope.clearData();
 		}])
+		
 		.controller('statisticsController', ['$scope', 'adminService', function($scope, adminService){
 			$scope.videoStatisticsList = adminService.listVideoStatistics();
 		}]);

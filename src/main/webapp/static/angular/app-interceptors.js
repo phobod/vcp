@@ -1,14 +1,19 @@
 angular.module('app-interceptors', [])
 .config(['$httpProvider', function($httpProvider) {
-    $httpProvider.interceptors.push('authHttpResponseInterceptor');
+    $httpProvider.interceptors.push('httpResponseInterceptor');
     $httpProvider.interceptors.push('csrfTokenInterceptor');
 }])
-.factory("authHttpResponseInterceptor", ['$q','$location', '$rootScope', function($q, $location, $rootScope){
+.factory("httpResponseInterceptor", ['$q','$location', '$rootScope', function($q, $location, $rootScope){
 	$rootScope.principal = {
 			auth : false,
 			id : '', 
 			name : '',
 			role : 'anonym'
+	};
+	$rootScope.errorMessage = {
+			message : '',
+			description : '', 
+			code : ''
 	};
 	return {
         response: function(response){
@@ -35,9 +40,15 @@ angular.module('app-interceptors', [])
         responseError: function(rejection) {
             if (rejection.status === 401) {
                 $location.path('/login').search('returnTo', $location.path());
-            }
-            if (rejection.status === 403) {
+            } else if (rejection.status === 403) {
                 $location.path('/access-denied').search('returnTo', $location.path());
+            } else if (rejection.status != 500 || rejection.data.message != 'Not valid') {
+            	$rootScope.errorMessage = {
+            			message : rejection.data.message,
+            			description : rejection.data.description, 
+            			code : rejection.status
+            	};
+            	$location.path('/error');
             }
             return $q.reject(rejection);
         }

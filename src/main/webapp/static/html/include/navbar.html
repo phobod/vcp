@@ -1,47 +1,41 @@
-	<nav class="navbar navbar-inverse navbar-fixed-top">
-		<div class="container-fluid">
-			<div class="navbar-header">
-				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-					<span class="sr-only">Toggle navigation</span> 
-					<span class="icon-bar"></span> 
-					<span class="icon-bar"></span> 
-					<span class="icon-bar"></span>
-				</button>
-				<a class="navbar-brand" ng-href="#/main"><h1><img src="/static/img/logo.png" alt="" /></h1></a>
-			</div>
-			<div id="navbar" class="navbar-collapse collapse">
-				<div class="top-search" ng-controller="searchController">
-					<form class="navbar-form navbar-right">
-						<input type="text" class="form-control" placeholder="Search..." ng-model="query" ng-keypress="onEnter($event)">
-						<input type="submit" value=" " ng-click="find()">
-					</form>
-				</div>
-				<div class="header-top-right"  ng-controller="loginController">
-						<div class="dropdown" ng-show="principal.auth && principal.role == 'ADMIN'">
-							<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-								Admin Panel
-								<span class="caret"></span>
-							</button>
-							<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-								<li><a ng-href="#/admin/account">Account Control</a></li>
-								<li role="separator" class="divider"></li>
-								<li><a ng-href="#/admin/company">Company Control</a></li>
-								<li role="separator" class="divider"></li>
-								<li><a ng-href="#/admin/statistics">Video Statistics</a></li>
-							</ul>
-						</div>					
-					<div class="file" >
-						<a ng-href="#/my-account/upload" ng-show="principal.auth && principal.role != 'ADMIN'" >Upload</a>
-						<a ng-href="#/my-account/video" ng-show="principal.auth && principal.role != 'ADMIN'">My Account</a>
-					</div>
-					<div class="signin">
-						<a ng-href="#/login" class="play-icon popup-with-zoom-anim" ng-hide="principal.auth" >Sign In</a>
-						<a href="#" class="play-icon popup-with-zoom-anim" ng-show="principal.auth" ng-click="logout()">Logout</a>
-					</div>
-					<div class="clearfix"> </div>
-				</div>
-			</div>
-			<div class="clearfix"> </div>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<a class="navbar-brand" ng-href="#/main"><h1><img src="/static/img/logo.png" alt="" /></h1></a>
 		</div>
-	</nav>
-	<div class="clearfix"> </div>
+		<div id="navbar" class="navbar-collapse collapse">
+			<div class="top-search" ng-controller="searchController">
+				<form class="navbar-form navbar-right">
+					<input type="text" class="form-control" placeholder="Search..." ng-model="query" ng-keypress="onEnter($event)"> 
+					<input type="submit" value=" " ng-click="find()">
+				</form>
+			</div>
+			<div class="header-top-right" ng-controller="loginController">
+				<div class="dropdown" ng-show="principal.auth && principal.role == 'ADMIN'">
+					<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+						Admin Panel 
+						<span class="caret"></span>
+					</button>
+					<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+						<li><a ng-href="#/admin/account">Account Control</a></li>
+						<li role="separator" class="divider"></li>
+						<li><a ng-href="#/admin/company">Company Control</a></li>
+						<li role="separator" class="divider"></li>
+						<li><a ng-href="#/admin/statistics">Video Statistics</a></li>
+					</ul>
+				</div>
+				<div class="file">
+					<a ng-href="#/my-account/upload" ng-show="principal.auth && principal.role != 'ADMIN'">Upload</a>
+					<a ng-href="#/my-account/video" ng-show="principal.auth && principal.role != 'ADMIN'">My Account</a>
+				</div>
+				<div class="signin">
+					<a ng-href="#/login" class="play-icon popup-with-zoom-anim" ng-hide="principal.auth">Sign In</a> 
+					<a href="" class="play-icon popup-with-zoom-anim" ng-show="principal.auth" ng-click="logout()">Logout</a>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+		</div>
+		<div class="clearfix"></div>
+	</div>
+</nav>
+<div class="clearfix"></div>
