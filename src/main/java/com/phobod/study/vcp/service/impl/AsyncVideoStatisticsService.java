@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import com.phobod.study.vcp.domain.User;
 import com.phobod.study.vcp.domain.Video;
 import com.phobod.study.vcp.domain.VideoStatistics;
+import com.phobod.study.vcp.exception.CantProcessStatisticsException;
 import com.phobod.study.vcp.repository.statistics.VideoStatisticsRepository;
 import com.phobod.study.vcp.service.VideoStatisticsService;
 
@@ -37,8 +38,13 @@ public class AsyncVideoStatisticsService implements VideoStatisticsService {
 	}
 
 	@Override
-	public List<VideoStatistics> listVideoStatistics() {
-		return videoStatisticsRepository.findByDate(getCurrentTime());
+	public List<VideoStatistics> listVideoStatistics() throws CantProcessStatisticsException{
+		String currentDate = getCurrentTime();
+		try {
+			return videoStatisticsRepository.findByDate(currentDate);
+		} catch (Throwable e) {
+			throw new CantProcessStatisticsException("Can't get statistics for date " + currentDate + ": " + e.getMessage(), e);
+		}
 	}
 	
 	private String getCurrentTime() {

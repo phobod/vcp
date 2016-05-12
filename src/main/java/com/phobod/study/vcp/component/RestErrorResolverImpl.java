@@ -23,8 +23,9 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.phobod.study.vcp.exception.CantProcessMediaContentException;
 import com.phobod.study.vcp.exception.CantProcessAccessRecoveryException;
+import com.phobod.study.vcp.exception.CantProcessMediaContentException;
+import com.phobod.study.vcp.exception.CantProcessStatisticsException;
 import com.phobod.study.vcp.exception.CantProcessUserException;
 import com.phobod.study.vcp.exception.ValidationException;
 
@@ -53,6 +54,8 @@ public class RestErrorResolverImpl implements RestErrorResolver {
 			return handleProcessPasswordRestoreError(ex, request, handler);
 		} else if (ex instanceof CantProcessMediaContentException) {
 			return handleProcessMediaContentError(ex, request, handler);
+		} else if (ex instanceof CantProcessStatisticsException) {
+			return handleProcessStatisticsError(ex, request, handler);
 		} else {
 			return handleInternalServerError(ex, request, handler);
 		}
@@ -99,6 +102,11 @@ public class RestErrorResolverImpl implements RestErrorResolver {
 	private RestError handleProcessMediaContentError(Exception ex, HttpServletRequest request, Object handler) {
 		return new RestError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Not correct data",
 				"An error occurred during the processing of the media content. Please try again.");
+	}
+
+	private RestError handleProcessStatisticsError(Exception ex, HttpServletRequest request, Object handler) {
+		return new RestError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error during processing",
+				"An error occurred during the processing of the statistics. Please try again.");
 	}
 
 	private RestError handleInternalServerError(Exception ex, HttpServletRequest request, Object handler) {
