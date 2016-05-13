@@ -73,6 +73,7 @@ public class CommonServiceImpl implements CommonService {
 	private void increaseVideoViewCount(Video video) {
 		video.setViews(video.getViews() + 1);
 		videoRepository.save(video);
+		videoSearchRepository.save(video);
 	}
 
 	@Override

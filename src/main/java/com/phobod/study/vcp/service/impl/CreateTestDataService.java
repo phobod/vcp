@@ -22,6 +22,7 @@ import com.phobod.study.vcp.domain.Company;
 import com.phobod.study.vcp.domain.Token;
 import com.phobod.study.vcp.domain.User;
 import com.phobod.study.vcp.domain.Video;
+import com.phobod.study.vcp.repository.statistics.VideoStatisticsRepository;
 
 @Service
 public class CreateTestDataService {
@@ -30,6 +31,9 @@ public class CreateTestDataService {
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
+	
+	@Autowired
+	private VideoStatisticsRepository videoStatisticsRepository;
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
@@ -41,7 +45,7 @@ public class CreateTestDataService {
 	private boolean mongoRecreateDb;
 
 	private String reason = "mongo.recreate.db=true";
-	
+
 	@PostConstruct
 	public void createTestDataIfNecessary() {
 		if (shouldTestDataBeCreated()) {
@@ -72,6 +76,7 @@ public class CreateTestDataService {
 		createMediaDirsIfNecessary();
 		clearMediaSubFolders();
 		clearCollection();
+		clearStatistics();
 		List<Company> companies = createCompanies();
 		List<User> users = createUsers(companies);
 		createVideos(users);
@@ -109,6 +114,12 @@ public class CreateTestDataService {
 		mongoTemplate.remove(new Query(), Company.class);
 		mongoTemplate.remove(new Query(), Video.class);
 		mongoTemplate.remove(new Query(), Token.class);
+		LOGGER.info("Collection cleared");
+	}
+	
+	private void clearStatistics() {
+		videoStatisticsRepository.deleteAll();
+		LOGGER.info("Statistics cleared");
 	}
 
 	private List<Company> createCompanies() {
