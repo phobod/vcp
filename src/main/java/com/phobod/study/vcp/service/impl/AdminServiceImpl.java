@@ -3,6 +3,7 @@ package com.phobod.study.vcp.service.impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -45,7 +46,7 @@ public class AdminServiceImpl implements AdminService{
 	public User saveUser(User user) throws ValidationException{
 		try {
 			return saveUserInternal(user);
-		} catch (Exception e) {
+		} catch (DuplicateKeyException e) {
 			throw new ValidationException("Can't save user. User with the same parameter already exists: " + e.getMessage(), e);
 		}
 	}
@@ -61,7 +62,7 @@ public class AdminServiceImpl implements AdminService{
 	public Company saveCompany(Company company) throws ValidationException{
 		try {
 			return companyRepository.save(company);
-		} catch (Exception e) {
+		} catch (DuplicateKeyException e) {
 			throw new ValidationException("Can't save company. Company with the same parameter already exists: " + e.getMessage(), e);
 		}
 	}

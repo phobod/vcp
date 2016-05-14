@@ -3,9 +3,6 @@ package com.phobod.study.vcp.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.PagedResources;
-import org.springframework.hateoas.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,21 +30,20 @@ public class UserController {
 	} 
 	
 	@RequestMapping(value = "/video", method = RequestMethod.GET)
-	public PagedResources<Resource<Video>> listVideos(@AuthenticationPrincipal CurrentUser currentUser, Pageable pageable, PagedResourcesAssembler<Video> assembler) {
-		Page<Video> videos = userService.listVideosByUser(pageable, currentUser.getUser().getId());
-		return assembler.toResource(videos);
+	public Page<Video> listVideos(@AuthenticationPrincipal CurrentUser currentUser, Pageable pageable) {
+		return userService.listVideosByUser(pageable, currentUser.getUser().getId());
 	}
 
 	@RequestMapping(value = "/video/{videoId}", method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.OK)
 	public void updateVideo(@AuthenticationPrincipal CurrentUser currentUser, @PathVariable String videoId, @RequestBody VideoUploadForm uploadForm) {
-		userService.updateVideo(videoId, uploadForm, currentUser.getUser().getId());
+		userService.updateVideo(videoId, uploadForm, currentUser.getUser());
 	}
 
 	@RequestMapping(value = "/video/{videoId}", method = RequestMethod.DELETE)
 	@ResponseStatus(value = HttpStatus.OK)
 	public void deleteVideo(@AuthenticationPrincipal CurrentUser currentUser, @PathVariable String videoId) {
-		userService.deleteVideo(videoId, currentUser.getUser().getId());
+		userService.deleteVideo(videoId, currentUser.getUser());
 	}
 
 

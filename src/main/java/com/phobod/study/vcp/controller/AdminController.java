@@ -5,9 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.PagedResources;
-import org.springframework.hateoas.Resource;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,15 +33,13 @@ public class AdminController {
 	private VideoStatisticsService videoStatisticsService;
 	
 	@RequestMapping(value = "/account", method = RequestMethod.GET)
-	public PagedResources<Resource<User>> listAllUser(Pageable pageable, PagedResourcesAssembler<User> assembler) {
-		Page<User> users = adminService.listAllUsers(pageable);
-		return assembler.toResource(users);
+	public Page<User> listAllUsers(Pageable pageable) {
+		return adminService.listAllUsers(pageable);
 	}
 
 	@RequestMapping(value = "/company", method = RequestMethod.GET)
-	public PagedResources<Resource<Company>> listAllCompaniesByPage(Pageable pageable, PagedResourcesAssembler<Company> assembler) {
-		Page<Company> companies = adminService.listAllCompanies(pageable);
-		return assembler.toResource(companies);
+	public Page<Company> listAllCompanies(Pageable pageable) {
+		return adminService.listAllCompanies(pageable);
 	}
 
 	@RequestMapping(value = "/account", method = RequestMethod.POST)

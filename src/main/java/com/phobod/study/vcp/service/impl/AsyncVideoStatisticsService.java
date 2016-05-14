@@ -1,9 +1,8 @@
 package com.phobod.study.vcp.service.impl;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -48,10 +47,7 @@ public class AsyncVideoStatisticsService implements VideoStatisticsService {
 	}
 	
 	private String getCurrentTime() {
-		Calendar calendar = Calendar.getInstance();
-		Date date = calendar.getTime();
-		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-		return dateFormat.format(date);
+		return LocalDate.now().toString();
 	}
 	
 	private class StatisticsItem implements Runnable {
@@ -86,8 +82,7 @@ public class AsyncVideoStatisticsService implements VideoStatisticsService {
 		}
 		
 	    private long getExpirationTime(){
-	        Calendar calendar = Calendar.getInstance();
-	        return ((23 - calendar.get(Calendar.HOUR_OF_DAY)) * 60 + (59 - calendar.get(Calendar.MINUTE))) * 60 + (59 - calendar.get(Calendar.SECOND));
+	        return ChronoUnit.SECONDS.between(LocalTime.now(),LocalTime.MAX);
 	    }
 
 		

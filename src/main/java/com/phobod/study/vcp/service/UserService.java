@@ -14,7 +14,7 @@ public interface UserService {
 	@Nonnull Page<Video> listVideosByUser(@Nonnull Pageable pageable, @Nonnull String userId);
 	@Nonnull Page<Video> listVideosByUserExcludeOne(@Nonnull Pageable pageable, @Nonnull String excludedVideoId, @Nonnull String userId);
 	void uploadVideo(@Nonnull User currentUser, @Nonnull VideoUploadForm form);
-	void updateVideo(@Nonnull String videoId, @Nonnull VideoUploadForm form, @Nonnull String userId) throws AccessDeniedException;
-	void deleteVideo(@Nonnull String videoId, @Nonnull String userId) throws AccessDeniedException;
+	void updateVideo(@Nonnull String videoId, @Nonnull VideoUploadForm form, @Nonnull User user) throws AccessDeniedException;
+	void deleteVideo(@Nonnull String videoId, @Nonnull User user) throws AccessDeniedException;
 	void deleteAllVideosByUser(@Nonnull String userId);
 }

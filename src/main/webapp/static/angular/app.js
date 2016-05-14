@@ -1,1 +1,1 @@
-angular.module('app', ['app-services', 'app-controllers', 'app-filters', 'app-interceptors', 'validation.match']);
+angular.module('app', ['app-services', 'common-controllers', 'admin-controllers', 'user-controllers', 'app-filters', 'app-interceptors', 'validation.match']);

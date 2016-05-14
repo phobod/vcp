@@ -55,6 +55,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 		http.rememberMe()
 			.rememberMeParameter("remember-me")
 			.tokenRepository(tokenRepository);
+		http.csrf().ignoringAntMatchers("/login");
 		http.addFilterAfter(new CsrfTokenGeneratorFilter(), CsrfFilter.class);
 		http.addFilterAfter(new AddPrincipalHeadersFilter(), LogoutFilter.class);
 	}

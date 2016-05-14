@@ -4,28 +4,28 @@ angular.module('app-services', [ 'ngResource', 'ngFileUpload' ])
 		listPopularVideos : function() {
 			return $resource('/video/popular').query();
 		},
-		listAllVideosByPage : function(page) {
+		listAllVideos : function(page) {
 			return $resource('/video/all?page=:page&size=12&sort=type,desc',{page:page}).get();
 		},
 		findVideoById : function(videoId) {
 			return $resource('/video/:videoId',{videoId:videoId}).get();
 		},
-		listVideosByUserByPage : function(userId, excludedVideoId, page){
+		listVideosByUserExcludeOne : function(userId, excludedVideoId, page){
 			return $resource('/user/:userId/video/:excludedVideoId?page=:page&size=10&sort=type,desc',{userId:userId, excludedVideoId:excludedVideoId, page:page}).get();
 		},
-		listAllVideosByUserByPage : function(userId, page){
+		listVideosByUser : function(userId, page){
 			return $resource('/user/:userId/video?page=:page&size=12&sort=type,desc',{userId:userId, page:page}).get();
 		},
-		listAllVideosMyAccountByPage : function(page){
-			return $resource('/my-account/video?page=:page&size=10&sort=type,desc',{page:page}).get();
-		},
-		listBySearchQuery : function(query, page){
+		listVideosBySearchQuery : function(query, page){
 			return $resource('/video/search?query=:query&page=:page&size=12',{query: query, page:page}).get();
 		}
 	}
 }])
 .service("userService", ['$resource', 'Upload', function($resource, Upload){
 	return {
+		listVideos : function(page){
+			return $resource('/my-account/video?page=:page&size=10&sort=type,desc',{page:page}).get();
+		},
 		uploadVideo : function(title, description, file){
 			return Upload.upload({
                 url: 'my-account/upload',
@@ -67,10 +67,10 @@ angular.module('app-services', [ 'ngResource', 'ngFileUpload' ])
 
 .service("adminService", ['$resource', 'Upload', function($resource, Upload){
 	return {
-		listAllUsersByPage : function(page) {
+		listAllUsers : function(page) {
 			return $resource('/admin/account?page=:page&size=10&sort=type,desc',{page:page}).get();
 		},
-		listAllCompaniesByPage : function(page, size) {
+		listAllCompanies : function(page, size) {
 			return $resource('/admin/company?page=:page&size=:size&sort=type,desc',{page:page,size:size}).get();
 		},
 		saveUser : function(user) {

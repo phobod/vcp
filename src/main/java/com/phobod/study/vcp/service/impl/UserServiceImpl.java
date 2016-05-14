@@ -12,7 +12,6 @@ import com.phobod.study.vcp.domain.Video;
 import com.phobod.study.vcp.form.VideoUploadForm;
 import com.phobod.study.vcp.repository.search.VideoSearchRepository;
 import com.phobod.study.vcp.repository.storage.VideoRepository;
-import com.phobod.study.vcp.security.SecurityUtils;
 import com.phobod.study.vcp.service.UserService;
 import com.phobod.study.vcp.service.VideoProcessorService;
 
@@ -49,10 +48,10 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void updateVideo(String videoId, VideoUploadForm form, String userId) throws AccessDeniedException{
+	public void updateVideo(String videoId, VideoUploadForm form, User user) throws AccessDeniedException{
 		Video video = videoRepository.findOne(videoId);
-		if (!video.getOwner().getId().equals(userId)) {
-			throw new AccessDeniedException(String.format("User %s denied access to edit video %s. This user is not the owner of the video.", SecurityUtils.getCurrentUser().getLogin(), video.getId()));
+		if (!video.getOwner().getId().equals(user.getId())) {
+			throw new AccessDeniedException(String.format("User %s denied access to edit video %s. This user is not the owner of the video.", user.getLogin(), video.getId()));
 		}
 		video.setTitle(form.getTitle());
 		video.setDescription(form.getDescription());
@@ -65,10 +64,10 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void deleteVideo(String videoId, String userId) throws AccessDeniedException{
+	public void deleteVideo(String videoId, User user) throws AccessDeniedException{
 		Video video = videoRepository.findOne(videoId);
-		if (!video.getOwner().getId().equals(userId)) {
-			throw new AccessDeniedException(String.format("User %s denied access to delete video %s. This user is not the owner of the video.", SecurityUtils.getCurrentUser().getLogin(), video.getId()));
+		if (!video.getOwner().getId().equals(user.getId())) {
+			throw new AccessDeniedException(String.format("User %s denied access to delete video %s. This user is not the owner of the video.", user.getLogin(), video.getId()));
 		}
 		videoRepository.delete(videoId);
 		videoSearchRepository.delete(videoId);

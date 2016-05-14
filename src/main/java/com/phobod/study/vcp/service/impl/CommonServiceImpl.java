@@ -127,7 +127,7 @@ public class CommonServiceImpl implements CommonService {
 	public void restorePassword(RecoveryForm form) throws CantProcessAccessRecoveryException{
 		try {
 			restorePasswordInternal(form);
-		} catch (Exception e) {
+		} catch (CantProcessAccessRecoveryException e) {
 			throw new CantProcessAccessRecoveryException("The password recovery process failed for userId: " + form.getId() + ". " + e.getMessage(), e);
 		}
 	}
