@@ -13,9 +13,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import com.phobod.study.vcp.component.TestUtils;
 import com.phobod.study.vcp.component.UploadVideoTempStorage;
 import com.phobod.study.vcp.domain.Video;
-import com.phobod.study.vcp.form.VideoUploadForm;
 import com.phobod.study.vcp.service.ImageService;
 import com.phobod.study.vcp.service.ThumbnailService;
 import com.phobod.study.vcp.service.VideoProcessorService;
@@ -38,7 +38,6 @@ public class SimpleVideoProcessorServiceTest {
 	@Mock
 	private UploadVideoTempStorage uploadVideoTempStorage;
 	
-	private VideoUploadForm uploadForm;
 	private Path tempUploadedVideoPath;
 	private String videoUrl;
 	private byte[] thumbnailImageData;
@@ -46,7 +45,6 @@ public class SimpleVideoProcessorServiceTest {
 
 	@Before
 	public void setUp() throws Exception {
-		uploadForm = new VideoUploadForm();
 		tempUploadedVideoPath = Paths.get("tempUploadedVideoPath");
 		videoUrl = "videoUrl";
 		thumbnailImageData = new byte[1024];
@@ -59,7 +57,7 @@ public class SimpleVideoProcessorServiceTest {
 		when(videoService.saveVideo(tempUploadedVideoPath)).thenReturn(videoUrl);
 		when(thumbnailService.createThumbnail(tempUploadedVideoPath)).thenReturn(thumbnailImageData);
 		when(imageService.saveImageData(thumbnailImageData)).thenReturn(thumbnailImageUrl);
-		Video video = videoProcessorService.processVideo(uploadForm);
+		Video video = videoProcessorService.processVideo(TestUtils.getVideoUploadForm());
 		assertEquals(thumbnailImageUrl, video.getThumbnailUrl());
 		assertEquals(videoUrl, video.getVideoUrl());
 	}

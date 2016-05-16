@@ -32,14 +32,10 @@ public class UploadVideoTempStorageTest {
 	private MultipartFile file;
 
 	private VideoUploadForm[] videoUploadForm;
-	private String title;
-	private String description;
 	
 	@Before
 	public void setUp() throws Exception {
-		title = "title";
-		description = "description";
-		videoUploadForm = new VideoUploadForm[]{new VideoUploadForm(title,description,file)};
+		videoUploadForm = new VideoUploadForm[]{new VideoUploadForm("title","description",file)};
 	}
 	
 	@Test(expected = CantProcessMediaContentException.class)

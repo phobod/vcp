@@ -32,6 +32,7 @@ public class ErrorHandlerTest {
 
 	private RestError restError;
 	private Exception ex;
+	
 	@Before
 	public void setUp() throws Exception {
 		restError = new RestError(500, "message", "description");

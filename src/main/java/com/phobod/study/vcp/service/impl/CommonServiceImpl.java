@@ -2,6 +2,7 @@ package com.phobod.study.vcp.service.impl;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 import org.elasticsearch.common.unit.Fuzziness;
 import org.elasticsearch.index.query.MatchQueryBuilder.Operator;
@@ -133,6 +134,9 @@ public class CommonServiceImpl implements CommonService {
 	}
 
 	private void restorePasswordInternal(RecoveryForm form) {
+		if (!checkPasswordWithRegExp(form.getPassword())) {
+			throw new CantProcessAccessRecoveryException("Password is not correct.");
+		}
 		User user = userRepository.findOne(form.getId());
 		if (user.getHash() == null || form.getHash() == null || !user.getHash().equals(form.getHash())) {
 			throw new CantProcessAccessRecoveryException("Hash is Null or is not correct.");
@@ -141,5 +145,10 @@ public class CommonServiceImpl implements CommonService {
 		user.setHash(null);
 		userRepository.save(user);
 	}
+	
+    private boolean checkPasswordWithRegExp(String password){  
+        Pattern p = Pattern.compile("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{6,12}$");  
+        return p.matcher(password).matches();  
+    } 
 	
 }

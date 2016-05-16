@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -14,7 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import com.phobod.study.vcp.domain.User;
+import com.phobod.study.vcp.component.TestUtils;
 import com.phobod.study.vcp.repository.storage.UserRepository;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -24,29 +23,19 @@ public class AuthentificationServiceTest {
 	
 	@Mock
 	private UserRepository userRepository;
-	
-	private String login;
-	private User user;
-	
-	@Before
-	public void setUp() throws Exception {
-		login = "testLogin";
-		user = new User();
-		user.setLogin(login);
-	}
 
 	@Test(expected = UsernameNotFoundException.class)
 	public final void testLoadUserByUsernameWithException() {
-		when(userRepository.findByLogin(login)).thenReturn(null);
-		userDetailsService.loadUserByUsername(login);
+		when(userRepository.findByLogin("testLogin")).thenReturn(null);
+		userDetailsService.loadUserByUsername("testLogin");
 	}
 
 	@Test
 	public final void testLoadUserByUsernameSuccess() {
-		when(userRepository.findByLogin(login)).thenReturn(user);
-		UserDetails userDetails = userDetailsService.loadUserByUsername(login);
-		verify(userRepository).findByLogin(login);
-		assertEquals(login, userDetails.getUsername());
+		when(userRepository.findByLogin(TestUtils.getTestUserWithoutId().getLogin())).thenReturn(TestUtils.getTestUserWithoutId());
+		UserDetails userDetails = userDetailsService.loadUserByUsername(TestUtils.getTestUserWithoutId().getLogin());
+		verify(userRepository).findByLogin(TestUtils.getTestUserWithoutId().getLogin());
+		assertEquals(TestUtils.getTestUserWithoutId().getLogin(), userDetails.getUsername());
 	}
 	
 }

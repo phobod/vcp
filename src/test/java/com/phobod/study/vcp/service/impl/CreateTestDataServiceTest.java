@@ -10,7 +10,6 @@ import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Field;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -38,10 +37,6 @@ public class CreateTestDataServiceTest {
 	
 	@Mock
 	private PasswordEncoder passwordEncoder;
-	
-	@Before
-	public void setUp() throws Exception {
-	}
 
 	private void setUpPrivateField(String name, Object value) throws NoSuchFieldException, IllegalAccessException {
 		Field fromEmailField = createTestDataService.getClass().getDeclaredField(name);

@@ -3,13 +3,11 @@ package com.phobod.study.vcp.service.impl;
 import static org.junit.Assert.assertNotNull;
 
 import java.lang.reflect.Field;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.phobod.study.vcp.exception.CantProcessMediaContentException;
@@ -17,26 +15,12 @@ import com.phobod.study.vcp.service.ThumbnailService;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FFmpegThumbnailServiceTest {
-	@InjectMocks
 	private ThumbnailService thumbnailService = new FFmpegThumbnailService();
-	
-	private Path testVideoFilePath;
-	private Path testIncorrectVideoFilePath;
-	private String ffmpeg;
-	private String ffprobe;
 	
 	@Before
 	public void setUp() throws Exception {
-		testVideoFilePath = Paths.get("src/main/webapp/static/video/video-stub.mp4");
-		testIncorrectVideoFilePath = Paths.get("src/main/webapp/static/video/incorrect-video-stub.mp4");
-		setUpthumbnailServiceFields();
-	}
-
-	private void setUpthumbnailServiceFields() throws NoSuchFieldException, IllegalAccessException {
-		ffmpeg = "D:/ffmpeg/bin/ffmpeg.exe";
-		setUpPrivateField("ffmpeg",ffmpeg);
-		ffprobe = "D:/ffmpeg/bin/ffprobe.exe";
-		setUpPrivateField("ffprobe",ffprobe);
+		setUpPrivateField("ffmpeg","D:/ffmpeg/bin/ffmpeg.exe");
+		setUpPrivateField("ffprobe","D:/ffmpeg/bin/ffprobe.exe");
 	}
 
 	private void setUpPrivateField(String name, Object value) throws NoSuchFieldException, IllegalAccessException {
@@ -52,17 +36,17 @@ public class FFmpegThumbnailServiceTest {
 
 	@Test(expected = CantProcessMediaContentException.class)
 	public final void testCreateThumbnailWithIncorrectFile() {
-		thumbnailService.createThumbnail(testIncorrectVideoFilePath);
+		thumbnailService.createThumbnail(Paths.get("src/test/resources/video/incorrect-video-stub.mp4"));
 	}
 
 	@Test(expected = CantProcessMediaContentException.class)
 	public final void testCreateThumbnailWithIncorrectPath() {
-		thumbnailService.createThumbnail(Paths.get("src/main/webapp/static/video/not-exist.mp4"));
+		thumbnailService.createThumbnail(Paths.get("src/test/resources/video/not-exist.mp4"));
 	}
 
 	@Test
 	public final void testCreateThumbnailSuccess() {
-		byte[] thumbnail = thumbnailService.createThumbnail(testVideoFilePath);
+		byte[] thumbnail = thumbnailService.createThumbnail(Paths.get("src/main/webapp/static/video/video-stub.mp4"));
 		assertNotNull(thumbnail);
 	}
 

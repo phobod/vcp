@@ -6,10 +6,8 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.dao.DuplicateKeyException;
@@ -32,12 +30,7 @@ import com.phobod.study.vcp.exception.ValidationException;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RestErrorResolverImplTest {
-	@InjectMocks
 	private RestErrorResolver restErrorResolver = new RestErrorResolverImpl();
-	
-	@Before
-	public void setUp() throws Exception {
-	}
 
 	@Test
 	public final void testResolveErrorNotFound() throws IOException {

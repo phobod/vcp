@@ -9,18 +9,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.phobod.study.vcp.Constants.Role;
-import com.phobod.study.vcp.domain.Company;
+import com.phobod.study.vcp.component.TestUtils;
 import com.phobod.study.vcp.domain.User;
 import com.phobod.study.vcp.exception.ValidationException;
 import com.phobod.study.vcp.repository.storage.CompanyRepository;
@@ -45,85 +44,116 @@ public class AdminServiceImplTest {
 	@Mock	
 	private PasswordEncoder passwordEncoder;
 	
-	private Pageable pageable;
-	private User user;
-	private User userWithNonullId;
-	private Company company;
+	@Rule
+    public ExpectedException thrown= ExpectedException.none();
+	
+	private String userId;	
+	private String companyId;	
 
 	@Before
 	public void setUp() throws Exception {
-		pageable = new PageRequest(0, 10);
-		company = new Company("Test Company", "Test Address", "test.company@email.com", "+1-111-111-1111");
-		user = new User("TestUserName1", "TestUserSurname1", "TestUserLogin1", passwordEncoder.encode("1111"), "test.user1@email.com", company, Role.USER, "http://www.gravatar.com/avatar/00000000000000000000000000000000?d=mm");
-		userWithNonullId = new User("TestUserName2", "TestUserSurname2", "TestUserLogin2", passwordEncoder.encode("1111"), "test.user2@email.com", company, Role.USER, "http://www.gravatar.com/avatar/00000000000000000000000000000000?d=mm");
-		userWithNonullId.setId("id");
+		userId = "userId";
+		companyId = "companyId";
 	}
 
 	@Test
 	public void testListAllUsers() {
-		adminService.listAllUsers(pageable);
-		verify(userRepository).findAllByOrderByNameAsc(pageable);
+		adminService.listAllUsers(TestUtils.getTestPageable());
+		verify(userRepository).findAllByOrderByNameAsc(TestUtils.getTestPageable());
 	}
 
 	@Test
 	public void testListAllCompanies() {
-		adminService.listAllCompanies(pageable);
-		verify(companyRepository).findAllByOrderByNameAsc(pageable);
+		adminService.listAllCompanies(TestUtils.getTestPageable());
+		verify(companyRepository).findAllByOrderByNameAsc(TestUtils.getTestPageable());
 	}
 
-	@Test(expected = ValidationException.class)
+	@Test
 	public void testSaveUserWithDuplicateKey() throws ValidationException{
-		when(userRepository.save(user)).thenThrow(new DuplicateKeyException(""));
-		adminService.saveUser(user);
-	}
-
-	@Test
-	public void testSaveUserWithNullId() throws ValidationException{
-		adminService.saveUser(user);
-		verify(passwordEncoder).encode(user.getPassword());
-		verify(userRepository).save(user);
-	}
-
-	@Test
-	public void testSaveUserWithNonnullId() throws ValidationException{
-		adminService.saveUser(userWithNonullId);
-		verify(passwordEncoder, times(0)).encode(userWithNonullId.getPassword());
-		verify(userRepository).save(userWithNonullId);
+		thrown.expect(ValidationException.class);
+		thrown.expectMessage("Can't save user. User with the same parameter already exists");
+		when(userRepository.findOne(userId)).thenReturn(TestUtils.getTestUserWithId(userId));
+		when(userRepository.save(TestUtils.getTestUserWithId(userId))).thenThrow(new DuplicateKeyException(""));
+		adminService.saveUser(TestUtils.getTestUserWithId(userId));
 	}
 
 	@Test(expected = ValidationException.class)
+	public void testSaveUserWithIncorrectEmail() throws ValidationException{
+		adminService.saveUser(TestUtils.getNewUserObjectWithEmailAndPassword("ds@ds", "111AAAaaa"));
+	}
+
+	@Test(expected = ValidationException.class)
+	public void testSaveUserWithIncorrectPassword() throws ValidationException{
+		adminService.saveUser(TestUtils.getNewUserObjectWithEmailAndPassword("ds@ds.com", "111"));
+	}
+
+	@Test
+	public void testSaveNewUser() throws ValidationException{
+		when(passwordEncoder.encode(TestUtils.getTestUserWithoutId().getPassword())).thenReturn(TestUtils.getTestUserWithoutId().getPassword());
+		adminService.saveUser(TestUtils.getTestUserWithoutId());
+		verify(passwordEncoder).encode(TestUtils.getTestUserWithoutId().getPassword());
+		verify(userRepository).save(TestUtils.getTestUserWithoutId());
+	}
+
+	@Test
+	public void testUpdateUser() throws ValidationException{
+		when(userRepository.findOne(userId)).thenReturn(TestUtils.getTestUserWithId(userId));
+		adminService.saveUser(TestUtils.getTestUserWithId(userId));
+		verify(passwordEncoder, times(0)).encode(TestUtils.getTestUserWithId(userId).getPassword());
+		verify(userRepository).findOne(userId);
+		verify(userRepository).save(TestUtils.getTestUserWithId(userId));
+	}
+
+	@Test
 	public void testSaveCompanyWithDuplicateKey() {
-		when(companyRepository.save(company)).thenThrow(new DuplicateKeyException(""));
-		adminService.saveCompany(company);
+		thrown.expect(ValidationException.class);
+		thrown.expectMessage("Can't save company. Company with the same parameter already exists");
+		when(companyRepository.save(TestUtils.getTestCompanyWithoutId())).thenThrow(new DuplicateKeyException(""));
+		adminService.saveCompany(TestUtils.getTestCompanyWithoutId());
+	}
+
+	@Test(expected = ValidationException.class)
+	public void testSaveCompanyWithIncorrectEmail() {
+		adminService.saveCompany(TestUtils.getNewCompanyObjectWithEmailAndPhone("ew@wew", "1234567"));
+	}
+	
+	@Test(expected = ValidationException.class)
+	public void testSaveCompanyWithIncorrectPhone() {
+		adminService.saveCompany(TestUtils.getNewCompanyObjectWithEmailAndPhone("ew@wew.com", "asd1"));
 	}
 
 	@Test
 	public void testSaveCompanySuccess() {
-		adminService.saveCompany(company);
-		verify(companyRepository).save(company);
+		adminService.saveCompany(TestUtils.getTestCompanyWithoutId());
+		verify(companyRepository).save(TestUtils.getTestCompanyWithoutId());
 	}
 
 	@Test
 	public void testDeleteUser() {
-		adminService.deleteUser(user.getId());
-		verify(userService).deleteAllVideosByUser(user.getId());
-		verify(userRepository).delete(user.getId());
+		adminService.deleteUser(userId);
+		verify(userService).deleteAllVideosByUser(userId);
+		verify(userRepository).delete(userId);
 	}
 
 	@Test
 	public void testDeleteCompany() {
+		List<User> listUsers = generateTestListUsers();
+		when(userRepository.findByCompanyId(companyId)).thenReturn(listUsers);
+		adminService.deleteCompany(companyId);
+		verify(userRepository).findByCompanyId(companyId);
+		verify(userService, times(5)).deleteAllVideosByUser(anyString());
+		verify(userRepository, times(5)).delete(anyString());
+		verify(companyRepository).delete(companyId);
+	}
+
+	private List<User> generateTestListUsers() {
 		List<User> listUsers = new ArrayList<>();
 		for (int i = 0; i < 5; i++) {
 			User user = new User();
 			user.setId(String.valueOf(i));
 			listUsers.add(user);
 		}
-		when(userRepository.findByCompanyId(company.getId())).thenReturn(listUsers);
-		adminService.deleteCompany(company.getId());
-		verify(userRepository).findByCompanyId(company.getId());
-		verify(userService, times(5)).deleteAllVideosByUser(anyString());
-		verify(userRepository, times(5)).delete(anyString());
-		verify(companyRepository).delete(company.getId());
+		return listUsers;
 	}
 
 }

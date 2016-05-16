@@ -1,6 +1,7 @@
 package com.phobod.study.vcp.service.impl;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -52,8 +53,19 @@ public class AdminServiceImpl implements AdminService{
 	}
 
 	private User saveUserInternal(User user) {
+		if (!checkEmailWithRegExp(user.getEmail()) || user.getPassword() == null || (!checkPasswordWithRegExp(user.getPassword()) & user.getId() == null)) {
+			System.out.println("user.getEmail() = " + user.getEmail());
+			System.out.println("user.getPassword() = " + user.getPassword());
+			System.out.println("user.getId() = " + user.getId());
+			throw new ValidationException("Can't save user. The data entered is not correct!");
+		}
 		if (user.getId() == null) {
 			user.setPassword(passwordEncoder.encode(user.getPassword()));
+		} else {
+			User existUser = userRepository.findOne(user.getId());
+			if (!existUser.getPassword().equals(user.getPassword())) {
+				throw new ValidationException("Can't save user. The data entered is not correct!");
+			}
 		}
 		return userRepository.save(user);
 	}
@@ -61,10 +73,17 @@ public class AdminServiceImpl implements AdminService{
 	@Override
 	public Company saveCompany(Company company) throws ValidationException{
 		try {
-			return companyRepository.save(company);
+			return saveCompanyInternal(company);
 		} catch (DuplicateKeyException e) {
 			throw new ValidationException("Can't save company. Company with the same parameter already exists: " + e.getMessage(), e);
 		}
+	}
+
+	private Company saveCompanyInternal(Company company) {
+		if (!checkEmailWithRegExp(company.getEmail()) || (!checkPhoneNumberWithRegExp(company.getPhone()))) {
+			throw new ValidationException("Can't save company. The data entered is not correct!");
+		}
+		return companyRepository.save(company);
 	}
 
 	@Override
@@ -82,5 +101,18 @@ public class AdminServiceImpl implements AdminService{
 		companyRepository.delete(companyId);
 	}
 
+    private boolean checkPasswordWithRegExp(String password){  
+        Pattern p = Pattern.compile("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{6,12}$");  
+        return p.matcher(password).matches();  
+    } 
 
+    private boolean checkEmailWithRegExp(String password){  
+        Pattern p = Pattern.compile("^\\w+[\\w-\\.]*\\@\\w+((-\\w+)|(\\w*))\\.[a-z]{2,3}$");  
+        return p.matcher(password).matches();  
+    } 
+
+    private boolean checkPhoneNumberWithRegExp(String password){  
+        Pattern p = Pattern.compile("(\\+)?(\\()?(\\d+){1,4}(\\))?(-)?(\\d+){1,3}?(-)?(\\d+){1,4}?(-)?(\\d+){1,4}?(-)?(\\d+){1,4}");  
+        return p.matcher(password).matches();  
+    } 
 }

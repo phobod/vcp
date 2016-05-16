@@ -11,15 +11,10 @@ import org.mockito.ArgumentMatcher;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 
-import com.phobod.study.vcp.Constants.Role;
-import com.phobod.study.vcp.domain.Company;
-import com.phobod.study.vcp.domain.User;
+import com.phobod.study.vcp.component.TestUtils;
 import com.phobod.study.vcp.domain.Video;
-import com.phobod.study.vcp.form.VideoUploadForm;
 import com.phobod.study.vcp.repository.search.VideoSearchRepository;
 import com.phobod.study.vcp.repository.storage.VideoRepository;
 import com.phobod.study.vcp.service.UserService;
@@ -39,58 +34,46 @@ public class UserServiceImplTest {
 	@Mock
 	private VideoProcessorService videoProcessorService;
 	
-	private Pageable pageable;
-	private User user;
-	private User otherUser;
 	private String videoId;
-	private Video video;
-	private VideoUploadForm form;
+	private String userId;
 
 	@Before
 	public void setUp() throws Exception {
-		pageable = new PageRequest(0, 10);
-		user = new User("TestUserName", "TestUserSurname", "TestUserLogin", "1111", "test.user@email.com", new Company(), Role.USER, "http://www.gravatar.com/avatar/00000000000000000000000000000000?d=mm");
-		user.setId("id");
-		otherUser = new User();
-		otherUser.setId("otherId");
 		videoId = "videoId";
-		video = new Video();
-		video.setId(videoId);
-		video.setOwner(user);
-		form = new VideoUploadForm("title","description",null);
+		userId = "userId";
 	}
 
 	@Test
 	public final void testListVideosByUser() {
-		userService.listVideosByUser(pageable, user.getId());
-		verify(videoRepository).findByOwnerIdOrderByViewsDesc(pageable, user.getId());
+		userService.listVideosByUser(TestUtils.getTestPageable(), userId);
+		verify(videoRepository).findByOwnerIdOrderByViewsDesc(TestUtils.getTestPageable(), userId);
 	}
 
 	@Test
 	public final void testListVideosByUserExcludeOne() {
-		userService.listVideosByUserExcludeOne(pageable, videoId, user.getId());
-		verify(videoRepository).findByIdNotAndOwnerIdOrderByViewsDesc(pageable, videoId, user.getId());
+		userService.listVideosByUserExcludeOne(TestUtils.getTestPageable(), videoId, userId);
+		verify(videoRepository).findByIdNotAndOwnerIdOrderByViewsDesc(TestUtils.getTestPageable(), videoId, userId);
 	}
 
 	@Test
 	public final void testUploadVideo() {
-		when(videoProcessorService.processVideo(form)).thenReturn(video);
-		userService.uploadVideo(user, form);
-		verify(videoProcessorService).processVideo(form);
+		when(videoProcessorService.processVideo(TestUtils.getVideoUploadForm())).thenReturn(TestUtils.getTestVideoWithoutId());
+		userService.uploadVideo(TestUtils.getTestUserWithId(userId), TestUtils.getVideoUploadForm());
+		verify(videoProcessorService).processVideo(TestUtils.getVideoUploadForm());
 		verify(videoRepository).save(argThat(new SavedVideoArgumentMatcher()));
 		verify(videoSearchRepository).save(argThat(new SavedVideoArgumentMatcher()));
 	}
 
 	@Test(expected = AccessDeniedException.class)
 	public final void testUpdateVideoWithException() {
-		when(videoRepository.findOne(videoId)).thenReturn(video);
-		userService.updateVideo(videoId, form, otherUser);
+		when(videoRepository.findOne(videoId)).thenReturn(TestUtils.getTestVideoWithIdAndUser(videoId, TestUtils.getTestUserWithId(userId)));
+		userService.updateVideo(videoId, TestUtils.getVideoUploadForm(), TestUtils.getTestOtherUserWithId(userId + "1"));
 	}
 
 	@Test
 	public final void testUpdateVideoSuccess() {
-		when(videoRepository.findOne(videoId)).thenReturn(video);
-		userService.updateVideo(videoId, form, user);
+		when(videoRepository.findOne(videoId)).thenReturn(TestUtils.getTestVideoWithIdAndUser(videoId, TestUtils.getTestUserWithId(userId)));
+		userService.updateVideo(videoId, TestUtils.getVideoUploadForm(), TestUtils.getTestUserWithId(userId));
 		verify(videoRepository).findOne(videoId);
 		verify(videoRepository).save(argThat(new SavedVideoArgumentMatcher()));
 		verify(videoSearchRepository).save(argThat(new SavedVideoArgumentMatcher()));
@@ -98,23 +81,23 @@ public class UserServiceImplTest {
 
 	@Test(expected = AccessDeniedException.class)
 	public final void testDeleteVideoWithException() {
-		when(videoRepository.findOne(videoId)).thenReturn(video);
-		userService.deleteVideo(videoId, otherUser);
+		when(videoRepository.findOne(videoId)).thenReturn(TestUtils.getTestVideoWithIdAndUser(videoId, TestUtils.getTestUserWithId(userId)));
+		userService.deleteVideo(videoId, TestUtils.getTestOtherUserWithId(userId + "1"));
 	}
 
 	@Test
 	public final void testDeleteVideoSuccess() {
-		when(videoRepository.findOne(videoId)).thenReturn(video);
-		userService.deleteVideo(videoId, user);
+		when(videoRepository.findOne(videoId)).thenReturn(TestUtils.getTestVideoWithIdAndUser(videoId, TestUtils.getTestUserWithId(userId)));
+		userService.deleteVideo(videoId, TestUtils.getTestUserWithId(userId));
 		verify(videoRepository).delete(videoId);
 		verify(videoSearchRepository).delete(videoId);
 	}
 
 	@Test
 	public final void testDeleteAllVideosByUser() {
-		userService.deleteAllVideosByUser(user.getId());
-		verify(videoRepository).deleteByOwnerId(user.getId());
-		verify(videoSearchRepository).deleteByOwnerId(user.getId());
+		userService.deleteAllVideosByUser(userId);
+		verify(videoRepository).deleteByOwnerId(userId);
+		verify(videoSearchRepository).deleteByOwnerId(userId);
 	}
 	
 	private class SavedVideoArgumentMatcher extends ArgumentMatcher<Video>{
@@ -122,7 +105,7 @@ public class UserServiceImplTest {
 		public boolean matches(Object argument) {
 			if (argument instanceof Video) {
 				Video savedVideo = (Video)argument;
-				if (form.getTitle().equals(savedVideo.getTitle()) && form.getDescription().equals(savedVideo.getDescription())) {
+				if (TestUtils.getVideoUploadForm().getTitle().equals(savedVideo.getTitle()) && TestUtils.getVideoUploadForm().getDescription().equals(savedVideo.getDescription())) {
 					return true;
 				}
 			}

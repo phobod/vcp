@@ -23,7 +23,8 @@ angular.module('admin-controllers', ['ngRoute'])
 			$scope.selectedAccount = null;
 			$scope.company = null;
 			$scope.avatarPreview = 'http://www.gravatar.com/avatar/00000000000000000000000000000000?d=mm&s=300';
-			$scope.selectedAccountIndex = -1;			
+			$scope.selectedAccountIndex = -1;	
+			$scope.passwordRegExp = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,12}$/;
 		};
 		$scope.getAvatarUrl = function(value){
 			if (value) {
@@ -49,6 +50,7 @@ angular.module('admin-controllers', ['ngRoute'])
 		}
 		$scope.editUser = function(idx){
 			$scope.selectedAccountIndex = idx;
+			$scope.passwordRegExp = /.*/;
 			$scope.selectedAccount = angular.copy($scope.records.content[idx]);
 			$scope.company = $scope.allCompanies.content.find(function(item){
 				return item.id == $scope.selectedAccount.company.id;

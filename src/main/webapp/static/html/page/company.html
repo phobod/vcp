@@ -19,13 +19,13 @@
 				<div class="row">
 					<div class="form-group col-md-6">
 						<label for="inputEmail">Email</label>
-						<input type="email" class="form-control" id="inputEmail" placeholder="Email" ng-model="selectedCompany.email" name="email" required>
-						<i ng-show="form.email.$error.required || form.email.$invalid">*a valid email is required</i>
+						<input type="email" class="form-control" id="inputEmail" placeholder="Email" ng-model="selectedCompany.email" name="email" required ng-pattern="/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/">
+						<i ng-show="form.email.$error.required || form.email.$invalid || form.email.$error.pattern">*a valid email is required</i>
 					</div>
 					<div class="form-group col-md-6">
 						<label for="inputPhone">Phone</label>
-						<input type="text" class="form-control" id="inputPhone" placeholder="Phone" ng-model="selectedCompany.phone" name="phone" required>
-	  					<i ng-show="form.phone.$error.required">*required</i>      
+						<input type="text" class="form-control" id="inputPhone" placeholder="Phone" ng-model="selectedCompany.phone" name="phone" required ng-pattern="/(\+)?(\()?(\d+){1,4}(\))?(-)?(\d+){1,3}?(-)?(\d+){1,4}?(-)?(\d+){1,4}?(-)?(\d+){1,4}/">
+	  					<i ng-show="form.phone.$error.required || form.phone.$error.pattern">*required</i>      
 					</div>
 				</div>
 				<button type="submit" class="btn btn-success" ng-disabled="!form.$valid" ng-click="saveCompany()" ng-show="selectedCompanyIndex > -1">Save</button>

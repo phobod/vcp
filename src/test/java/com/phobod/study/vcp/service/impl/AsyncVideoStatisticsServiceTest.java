@@ -13,10 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.phobod.study.vcp.Constants.Role;
-import com.phobod.study.vcp.domain.Company;
-import com.phobod.study.vcp.domain.User;
-import com.phobod.study.vcp.domain.Video;
+import com.phobod.study.vcp.component.TestUtils;
 import com.phobod.study.vcp.domain.VideoStatistics;
 import com.phobod.study.vcp.exception.CantProcessStatisticsException;
 import com.phobod.study.vcp.repository.statistics.VideoStatisticsRepository;
@@ -30,36 +27,33 @@ public class AsyncVideoStatisticsServiceTest{
 	@Mock
 	private VideoStatisticsRepository videoStatisticsRepository;
 
-	private User user;
-	private Video video;
+	private String userId;
+	private String videoId;
 	private String ip;
 
 	@Before
 	public void setUp() throws Exception {
-		user = new User("TestUserName", "TestUserSurname", "TestUserLogin", "1111", "test.user@email.com", new Company(), Role.USER, "http://www.gravatar.com/avatar/00000000000000000000000000000000?d=mm");
-		user.setId("userId");
-		video = new Video("title", "description", "thumbnailUrl", "videoUrl");
-		video.setId("videoId");
-		video.setOwner(user);
+		userId = "userId";
+		videoId = "videoId";
 		ip = "192.168.0.1";
 	}
 
-	@Test(timeout = 200)
+	@Test(timeout = 300)
 	public void testSaveVideoViewStatisticsForExistVideo() throws Exception {		
-		VideoStatistics videoStatistics = new VideoStatistics(video.getId(),video.getTitle(),100);
-		when(videoStatisticsRepository.findOne(video.getId())).thenReturn(videoStatistics);
-		videoStatisticsService.saveVideoViewStatistics(video, user, ip);
+		VideoStatistics videoStatistics = new VideoStatistics(videoId,TestUtils.getTestVideoWithId(videoId).getTitle(),100);
+		when(videoStatisticsRepository.findOne(videoId)).thenReturn(videoStatistics);
+		videoStatisticsService.saveVideoViewStatistics(TestUtils.getTestVideoWithId(videoId), TestUtils.getTestUserWithId(userId), ip);
 		Thread.sleep(100);
-		verify(videoStatisticsRepository).findOne(video.getId());
+		verify(videoStatisticsRepository).findOne(videoId);
 		verify(videoStatisticsRepository).save(argThat(new VideoStatisticsArgumentMatcher(101)));;
 	}
 
 	@Test(timeout = 200)
 	public void testSaveVideoViewStatisticsForNewVideo() throws Exception {		
-		when(videoStatisticsRepository.findOne(video.getId())).thenReturn(null);
-		videoStatisticsService.saveVideoViewStatistics(video, user, ip);
+		when(videoStatisticsRepository.findOne(videoId)).thenReturn(null);
+		videoStatisticsService.saveVideoViewStatistics(TestUtils.getTestVideoWithId(videoId), TestUtils.getTestUserWithId(userId), ip);
 		Thread.sleep(100);
-		verify(videoStatisticsRepository).findOne(video.getId());
+		verify(videoStatisticsRepository).findOne(videoId);
 		verify(videoStatisticsRepository).save(argThat(new VideoStatisticsArgumentMatcher(1)));
 	}
 	
@@ -87,7 +81,7 @@ public class AsyncVideoStatisticsServiceTest{
 		public boolean matches(Object argument) {
 			if (argument instanceof VideoStatistics) {
 				VideoStatistics statistics = (VideoStatistics)argument;
-				if (statistics.getVideoId() == video.getId() && statistics.getTitle() == video.getTitle() && statistics.getUserIdSet().contains(user.getId()) 
+				if (videoId.equals(statistics.getVideoId()) && TestUtils.getTestVideoWithId(videoId).getTitle().equals(statistics.getTitle()) && statistics.getUserIdSet().contains(userId) 
 						&& statistics.getIpAddressSet().contains(ip) && statistics.getViewCount() == viewCount) {
 					return true;
 				}

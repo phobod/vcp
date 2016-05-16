@@ -9,7 +9,6 @@ import java.lang.reflect.Field;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.phobod.study.vcp.exception.CantProcessMediaContentException;
@@ -17,17 +16,11 @@ import com.phobod.study.vcp.service.ImageService;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FileStorageImageServiceTest {
-	@InjectMocks
 	private ImageService imageService = new FileStorageImageService();
-
-	private String mediaDir;
-	private byte[] testByteArray;
 	
 	@Before
 	public void setUp() throws Exception {
-		testByteArray = new byte[1024];
-		mediaDir="D:/Developing/workspace/vcp/src/main/webapp/media";
-		setUpPrivateField("mediaDir",mediaDir);
+		setUpPrivateField("mediaDir","D:/Developing/workspace/vcp/src/main/webapp/media");
 	}
 
 	private void setUpPrivateField(String name, Object value) throws NoSuchFieldException, IllegalAccessException {
@@ -43,7 +36,7 @@ public class FileStorageImageServiceTest {
 
 	@Test
 	public final void testSaveImageDataSuccess() {
-		String ThumbnailFileName = imageService.saveImageData(testByteArray);
+		String ThumbnailFileName = imageService.saveImageData(new byte[1024]);
 		assertNotNull(ThumbnailFileName);
 		File file = new File("D:/Developing/workspace/vcp/src/main/webapp/", ThumbnailFileName);
 		assertTrue(file.exists());

@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.TypeMismatchException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BindException;
@@ -84,12 +85,14 @@ public class RestErrorResolverImpl implements RestErrorResolver {
 	}
 
 	private RestError handleValidationError(Exception ex, HttpServletRequest request, Object handler) throws IOException {
-		return new RestError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Not valid", getDescriptionFromDuplicateKeyException(ex));
+		if (ex instanceof DuplicateKeyException) {
+			return new RestError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Not valid", getDescriptionFromDuplicateKeyException(ex));
+		}
+		return new RestError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error during processing", "An error occurred during the processing or incorrect data. Please try again.");
 	}
 
 	private RestError handleProcessUserError(Exception ex, HttpServletRequest request, Object handler) {
-		return new RestError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error during processing",
-				"An error occurred during the process of creating a new account. Please try again.");
+		return new RestError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error during processing", "An error occurred during the process of creating a new account. Please try again.");
 	}
 
 	private RestError handleProcessPasswordRestoreError(Exception ex, HttpServletRequest request, Object handler) {
@@ -97,18 +100,15 @@ public class RestErrorResolverImpl implements RestErrorResolver {
 	}
 
 	private RestError handleProcessMediaContentError(Exception ex, HttpServletRequest request, Object handler) {
-		return new RestError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Not correct data",
-				"An error occurred during the processing of the media content. Please try again.");
+		return new RestError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Not correct data", "An error occurred during the processing of the media content. Please try again.");
 	}
 
 	private RestError handleProcessStatisticsError(Exception ex, HttpServletRequest request, Object handler) {
-		return new RestError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error during processing",
-				"An error occurred during the processing of the statistics. Please try again.");
+		return new RestError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error during processing", "An error occurred during the processing of the statistics. Please try again.");
 	}
 
 	private RestError handleInternalServerError(Exception ex, HttpServletRequest request, Object handler) {
-		return new RestError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal Server Error",
-				"We're sorry! The server encountered an internal error and was unable to complete your request.");
+		return new RestError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal Server Error", "We're sorry! The server encountered an internal error and was unable to complete your request.");
 	}
 	
 	private String getDescriptionFromDuplicateKeyException(Exception ex) throws IOException, JsonParseException, JsonMappingException {

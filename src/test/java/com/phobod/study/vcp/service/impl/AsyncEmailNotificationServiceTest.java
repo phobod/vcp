@@ -30,22 +30,20 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.mail.MailSendException;
 import org.springframework.mail.javamail.JavaMailSender;
 
-import com.phobod.study.vcp.Constants.Role;
-import com.phobod.study.vcp.domain.Company;
+import com.phobod.study.vcp.component.TestUtils;
 import com.phobod.study.vcp.domain.User;
 import com.phobod.study.vcp.service.NotificationService;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AsyncEmailNotificationServiceTest {
-
 	@InjectMocks
 	private NotificationService notificationService = new AsyncEmailNotificationService();
 
 	@Mock
 	private JavaMailSender javaMailSender;
 	
-	private User user;
-	private List<User> usersWithIncorrectEmail; 
+	private List<User> usersWithBlankEmail; 
+	private String userId;
 	private String restoreLink;
 	private int tryCount;
 	private String fromName;
@@ -54,9 +52,8 @@ public class AsyncEmailNotificationServiceTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		user = new User("TestUserName", "TestUserSurname", "TestUserLogin", "1111", "test.user@email.com", new Company(), Role.USER, "http://www.gravatar.com/avatar/00000000000000000000000000000000?d=mm");
-		user.setId("userId");
-		usersWithIncorrectEmail = Arrays.asList(new User(),new User(null,null,null,null,"",null,null,null),new User(null,null,null,null,"   ",null,null,null));
+		userId = "userId";
+		usersWithBlankEmail = Arrays.asList(new User(),new User(null,null,null,null,"",null,null,null),new User(null,null,null,null,"   ",null,null,null));
 		restoreLink = "test link";
 		mimeMessage = new MimeMessage(Session.getDefaultInstance(System.getProperties(), null));
 		setUpNotificationServiceFields();
@@ -81,7 +78,7 @@ public class AsyncEmailNotificationServiceTest {
 	public final void testSendRestoreAccessLinkWithFailure() throws Exception {
 		doThrow(new MailSendException("")).when(javaMailSender).send((MimeMessage) anyObject());
 		when(javaMailSender.createMimeMessage()).thenReturn(mimeMessage);
-		notificationService.sendRestoreAccessLink(user, restoreLink);
+		notificationService.sendRestoreAccessLink(TestUtils.getTestUserWithId(userId), restoreLink);
 		Thread.sleep(100);
 		verify(javaMailSender,times(tryCount)).createMimeMessage();
 		verify(javaMailSender,times(tryCount)).send((MimeMessage) anyObject());
@@ -90,7 +87,7 @@ public class AsyncEmailNotificationServiceTest {
 	@Test(timeout = 200)
 	public final void testSendRestoreAccessLinkWithBlankEmail() throws Exception {
 		when(javaMailSender.createMimeMessage()).thenReturn(mimeMessage);
-		for (User user : usersWithIncorrectEmail) {
+		for (User user : usersWithBlankEmail) {
 			notificationService.sendRestoreAccessLink(user, restoreLink);
 			Thread.sleep(50);
 		}
@@ -100,10 +97,10 @@ public class AsyncEmailNotificationServiceTest {
 	@Test(timeout = 100)
 	public final void testSendRestoreAccessLinkSuccess() throws Exception {
 		when(javaMailSender.createMimeMessage()).thenReturn(mimeMessage);
-		notificationService.sendRestoreAccessLink(user, restoreLink);
+		notificationService.sendRestoreAccessLink(TestUtils.getTestUserWithId(userId), restoreLink);
 		Thread.sleep(50);
 		verify(javaMailSender,times(1)).createMimeMessage();
-		verify(javaMailSender,times(1)).send(argThat(new MimeMessageArgumentMatcher(user)));
+		verify(javaMailSender,times(1)).send(argThat(new MimeMessageArgumentMatcher(TestUtils.getTestUserWithId(userId))));
 	}
 
 	private class MimeMessageArgumentMatcher extends ArgumentMatcher<MimeMessage>{
