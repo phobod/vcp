@@ -27,6 +27,9 @@ public class FileStorageVideoService implements VideoService{
 	}
 
 	private String saveVideoInternal(Path tempFilePath) throws IOException {
+		if (tempFilePath == null) {
+			throw new CantProcessMediaContentException("Can't save video. File path is Null");
+		}
 		String uniqueVideoFileName = generateUniqueVideoFileName();
 		Path videoFilePath = Paths.get(mediaDir + "/video/" + uniqueVideoFileName);
 		Files.copy(tempFilePath, videoFilePath);

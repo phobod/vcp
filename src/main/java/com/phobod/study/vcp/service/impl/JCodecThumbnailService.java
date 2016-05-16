@@ -33,6 +33,9 @@ public class JCodecThumbnailService implements ThumbnailService{
 	}
 
 	private byte[] createThumbnailInternal(Path videoFilePath) throws IOException, JCodecException{
+    	if (videoFilePath == null) {
+    		throw new CantProcessMediaContentException("Create thumbnail failed. Video file path is Null");
+		}
 		Picture nativeFrame = getVideoFrameBySecond(videoFilePath, 0);
 		if (nativeFrame == null) {
 			throw new CantProcessMediaContentException("Can't create thumbnail for file " + videoFilePath.getFileName());
@@ -45,8 +48,12 @@ public class JCodecThumbnailService implements ThumbnailService{
 	}
 
 	private Picture getVideoFrameBySecond(Path videoFilePath, double second) throws IOException, JCodecException{
-		FrameGrab grab = new FrameGrab(new FileChannelWrapper(FileChannel.open(videoFilePath)));
-		return grab.seekToSecondPrecise(second).getNativeFrame();
+		try {
+			FrameGrab grab = new FrameGrab(new FileChannelWrapper(FileChannel.open(videoFilePath)));
+			return grab.seekToSecondPrecise(second).getNativeFrame();
+		} catch (NullPointerException e) {
+			throw new CantProcessMediaContentException("Can't create thumbnail for file " + videoFilePath.getFileName() + ". The file type is not supported.");
+		}
 	}
 
 	private BufferedImage resizeThubnail(BufferedImage originalImage, int width, int height) {

@@ -33,18 +33,21 @@ public class FFmpegThumbnailService implements ThumbnailService{
 	@Override
 	public byte[] createThumbnail(Path videoFilePath) throws CantProcessMediaContentException {
 		try {
-            return createThumbnailInternal(videoFilePath.toString());
-        } catch (IOException | InterruptedException e) {
+            return createThumbnailInternal(videoFilePath);
+        } catch (IOException | InterruptedException | NumberFormatException e) {
             throw new CantProcessMediaContentException("Create thumbnail failed: " + e.getMessage(), e);
         }
 	}
 
-    private byte[] createThumbnailInternal(String videoFile) throws IOException, InterruptedException {
-        int duration = getDuration(videoFile);
-        return getThumbnailBySecond(duration / 2, videoFile);
+    private byte[] createThumbnailInternal(Path videoFilePath) throws IOException, InterruptedException, CantProcessMediaContentException {
+    	if (videoFilePath == null) {
+    		throw new CantProcessMediaContentException("Create thumbnail failed. Video file path is Null");
+		}
+        int duration = getDuration(videoFilePath.toString());
+        return getThumbnailBySecond(duration / 2, videoFilePath.toString());
     }
 
-    private int getDuration(String filename) throws IOException{
+    private int getDuration(String filename) throws IOException, NumberFormatException{
         ProcessBuilder pb = new ProcessBuilder(ffprobe, "-v", "error", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1", filename);
         pb.redirectErrorStream(true);
         String duration;

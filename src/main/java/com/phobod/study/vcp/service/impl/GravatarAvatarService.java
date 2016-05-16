@@ -14,8 +14,19 @@ public class GravatarAvatarService implements AvatarService {
 	
 	@Override
 	public String generateAvatarUrl(String email) {
+		try {
+			return generateAvatarUrlInternal(email); 
+		} catch (CantProcessUserException e) {
+			throw new CantProcessUserException("Can't hash email for avatar url: " + e.getMessage(), e);
+		}
+	}
+
+	private String generateAvatarUrlInternal(String email) {
+		if (email == null) {
+			throw new CantProcessUserException("Can't hash email for avatar url. Email is Null");
+		}
 		String hash = md5Hex(prepareEmail(email));
-		return "http://www.gravatar.com/avatar/" + hash + "?d=mm"; 
+		return "http://www.gravatar.com/avatar/" + hash + "?d=mm";
 	}
 
 	private String prepareEmail(String email){

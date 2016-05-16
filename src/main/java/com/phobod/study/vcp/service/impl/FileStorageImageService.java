@@ -14,7 +14,6 @@ import com.phobod.study.vcp.service.ImageService;
 
 @Service
 public class FileStorageImageService implements ImageService {
-
 	@Value("${media.dir}")
 	private String mediaDir;
 	
@@ -28,6 +27,9 @@ public class FileStorageImageService implements ImageService {
 	}
 
 	private String saveImageDataInternal(byte[] imageBytes) throws IOException {
+		if (imageBytes == null) {
+			throw new CantProcessMediaContentException("Can't save image data. ImageBytes is Null");
+		}
 		String uniquieThumbnailFileName = generateUniquieThumbnailFileName();
 		Path path = Paths.get(mediaDir + "/thumbnail/"+uniquieThumbnailFileName);
 		Files.write(path, imageBytes);

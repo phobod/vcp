@@ -5,11 +5,11 @@ public class RecoveryForm {
 	private String hash;
 	private String password;
 	
-	private RecoveryForm() {
+	public RecoveryForm() {
 		super();
 	}
 	
-	private RecoveryForm(String id, String hash, String password) {
+	public RecoveryForm(String id, String hash, String password) {
 		super();
 		this.id = id;
 		this.hash = hash;
