@@ -1,6 +1,6 @@
 # VCP
 
-Demo: http://52.35.221.43:8080
+Demo: http://52.35.221.43
 
 Test User account: login - user , password - 1111
 
