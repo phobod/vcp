@@ -37,7 +37,7 @@ angular.module('app-services', [ 'ngResource', 'ngFileUpload' ])
 			return $resource('my-account/video/:videoId',{videoId:videoId}).save({},{'title': title, 'description': description});
 		},
 		deleteVideo : function(videoId){
-			return $resource('my-account/video/:videoId',{videoId:videoId}).delete();
+			return $resource('my-account/video/:videoId',{videoId:videoId}).remove({});
 		}
 	}
 }])
@@ -84,10 +84,10 @@ angular.module('app-services', [ 'ngResource', 'ngFileUpload' ])
 			return $resource('admin/company').save({},company);
 		},
 		deleteUser : function(userId) {
-			return $resource('admin/account/:userId',{userId:userId}).delete();
+			return $resource('admin/account/:userId',{userId:userId}).remove({});
 		},
 		deleteCompany : function(companyId) {
-			return $resource('admin/company/:companyId',{companyId:companyId}).delete();
+			return $resource('admin/company/:companyId',{companyId:companyId}).remove({});
 		},
 		listVideoStatistics : function() {
 			return $resource('/admin/statistics').query();

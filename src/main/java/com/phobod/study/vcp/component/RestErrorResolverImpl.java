@@ -85,7 +85,7 @@ public class RestErrorResolverImpl implements RestErrorResolver {
 	}
 
 	private RestError handleValidationError(Exception ex, HttpServletRequest request, Object handler) throws IOException {
-		if (ex instanceof DuplicateKeyException) {
+		if (ex.getCause() instanceof DuplicateKeyException) {
 			return new RestError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Not valid", getDescriptionFromDuplicateKeyException(ex));
 		}
 		return new RestError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error during processing", "An error occurred during the processing or incorrect data. Please try again.");

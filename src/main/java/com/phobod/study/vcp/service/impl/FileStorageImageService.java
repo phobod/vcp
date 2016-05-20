@@ -31,7 +31,7 @@ public class FileStorageImageService implements ImageService {
 			throw new CantProcessMediaContentException("Can't save image data. ImageBytes is Null");
 		}
 		String uniquieThumbnailFileName = generateUniquieThumbnailFileName();
-		Path path = Paths.get(mediaDir + "/thumbnail/"+uniquieThumbnailFileName);
+		Path path = Paths.get(mediaDir + "/thumbnail/" + uniquieThumbnailFileName);
 		Files.write(path, imageBytes);
 		return "/media/thumbnail/" + uniquieThumbnailFileName;
 	}

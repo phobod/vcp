@@ -1,5 +1,5 @@
 angular.module('user-controllers', ['ngRoute'])
-	.config(function($routeProvider){
+	.config(['$routeProvider', function($routeProvider){
 		$routeProvider.when('/my-account/video', {
 			templateUrl : 'static/html/page/myaccount.html',
 			controller : 'allListVideoMyAccountController'
@@ -12,7 +12,7 @@ angular.module('user-controllers', ['ngRoute'])
 			templateUrl : 'static/html/page/editvideo.html',
 			controller : 'editVideoController'
 		});
-	})
+	}])
 
 	.controller('allListVideoMyAccountController',[ '$scope', '$window', 'userService', 'controllersFactory', function($scope, $window, userService, controllersFactory) {
 		controllersFactory.createPaginationController($scope, {getData : userService.listVideos});
@@ -29,18 +29,21 @@ angular.module('user-controllers', ['ngRoute'])
 	.controller('uploadVideoController', ['$scope', '$window', '$location', 'userService', function ($scope, $window, $location, userService) {
 		$scope.submit = function(){
 			userService.uploadVideo($scope.title, $scope.description, $scope.file).then(function(resp){
-				$scope.clearData();
 				$window.alert("File upload SUCCESS");
-				$location.path('/my-account/video');
-			}, function(resp){
 				$scope.clearData();
+			}, function(resp){
 				$window.alert("File upload FAILED");
+				$scope.clearData();
+			}, function(evt){
+				$scope.progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
 			});
+//			$location.path('/my-account/video');
 		};
 		$scope.clearData = function(){
 	        $scope.title = null;
 	        $scope.description = null;
-	        $scope.file = null;				
+	        $scope.file = null;	
+	        $scope.progressPercentage = null;
 		};
 	}])
 	

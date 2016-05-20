@@ -1,5 +1,29 @@
 angular.module('common-controllers', ['ngRoute'])
-		.config(function($routeProvider) {
+		.config(['$routeProvider', function($routeProvider) {
+			$routeProvider.when('/admin/account', {
+				templateUrl : 'static/html/page/account.html',
+				controller : 'accountController'
+			});
+			$routeProvider.when('/admin/company', {
+				templateUrl : 'static/html/page/company.html',
+				controller : 'companyController'
+			});
+			$routeProvider.when('/admin/statistics', {
+				templateUrl : 'static/html/page/statistics.html',
+				controller : 'statisticsController'
+			});
+			$routeProvider.when('/my-account/video', {
+				templateUrl : 'static/html/page/myaccount.html',
+				controller : 'allListVideoMyAccountController'
+			});
+			$routeProvider.when('/my-account/upload', {
+				templateUrl : 'static/html/page/upload.html',
+				controller : 'uploadVideoController'
+			});
+			$routeProvider.when('/my-account/video/:videoId', {
+				templateUrl : 'static/html/page/editvideo.html',
+				controller : 'editVideoController'
+			});
 			$routeProvider.when('/main', {
 				templateUrl : 'static/html/page/main.html',
 				controller : 'allListVideoController'
@@ -37,7 +61,7 @@ angular.module('common-controllers', ['ngRoute'])
 			$routeProvider.otherwise({
 				redirectTo : '/main'
 			});
-		})
+		}])
 		
 		.factory('controllersFactory',function(){
 			return{

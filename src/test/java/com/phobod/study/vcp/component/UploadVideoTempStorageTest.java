@@ -1,12 +1,12 @@
 package com.phobod.study.vcp.component;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doThrow;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 
-import org.aspectj.lang.ProceedingJoinPoint;
-import org.junit.Before;
+import org.aspectj.lang.JoinPoint;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -15,7 +15,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.phobod.study.vcp.exception.CantProcessMediaContentException;
-import com.phobod.study.vcp.form.VideoUploadForm;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UploadVideoTempStorageTest {
@@ -23,33 +22,18 @@ public class UploadVideoTempStorageTest {
 	private UploadVideoTempStorage uploadVideoTempStorage = new UploadVideoTempStorage();
 	
 	@Mock
-	private ProceedingJoinPoint proceedingJoinPoint;
+	private JoinPoint joinPoint;
 	
 	@Mock
 	private ThreadLocal<Path> tempUploadedVideoPathStorage;
 	
 	@Mock
 	private MultipartFile file;
-
-	private VideoUploadForm[] videoUploadForm;
-	
-	@Before
-	public void setUp() throws Exception {
-		videoUploadForm = new VideoUploadForm[]{new VideoUploadForm("title","description",file)};
-	}
 	
 	@Test(expected = CantProcessMediaContentException.class)
-	public final void testAdviceWithException() throws Throwable {
-		when(proceedingJoinPoint.getArgs()).thenReturn(videoUploadForm);
-		when(proceedingJoinPoint.proceed()).thenThrow(new IOException());
-		uploadVideoTempStorage.advice(proceedingJoinPoint);
-	}		
-
-	@Test
-	public final void testAdviceSuccess() throws Throwable {
-		when(proceedingJoinPoint.getArgs()).thenReturn(videoUploadForm);
-		uploadVideoTempStorage.advice(proceedingJoinPoint);
-		verify(proceedingJoinPoint).proceed();
-	}		
+	public final void testCopyDataToTempStorageWithException() throws Throwable {
+		doThrow(new IOException()).when(file).transferTo(any(File.class));
+		uploadVideoTempStorage.copyDataToTempStorage(joinPoint, TestUtils.getVideoUploadFormWithFile(file));
+	}			
 
 }

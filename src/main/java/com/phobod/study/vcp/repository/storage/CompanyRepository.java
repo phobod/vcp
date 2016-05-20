@@ -10,5 +10,4 @@ import com.phobod.study.vcp.domain.Company;
 
 public interface CompanyRepository extends PagingAndSortingRepository<Company, String>{
 	Page<Company> findAllByOrderByNameAsc(Pageable pageable);
-	List<Company> findAllByOrderByNameAsc();
 }

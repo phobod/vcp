@@ -1,10 +1,8 @@
 <div class="main">
 	<div class="show-top-grids" ng-repeat="video in records.content">
-		<div class="col-sm-3 col-sm-offset-2 single-left">
-			<div class="song">
-				<div class="video-grid">
-					<video class="html5-video-content" ng-src="{{video.videoUrl | trusted}}" ng-attr-poster="{{video.thumbnailUrl}}" controls="controls"></video>
-				</div>
+		<div class="col-sm-3 col-sm-offset-2 resent-grid recommended-grid slider-top-grids">
+			<div class="resent-grid-img recommended-grid-img">
+				<a ng-href="#/my-account/video/{{video.id}}"><img ng-src="{{video.thumbnailUrlMedium | trusted}}" alt="{{video.title}}" /></a>
 			</div>
 		</div>
 		<div class="col-md-5 single-right detail-info">

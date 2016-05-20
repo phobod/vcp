@@ -1,10 +1,8 @@
 package com.phobod.study.vcp.service.impl;
 
 import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -17,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.phobod.study.vcp.component.ExternalApplicationUtils;
 import com.phobod.study.vcp.exception.CantProcessMediaContentException;
 import com.phobod.study.vcp.service.ThumbnailService;
 
@@ -47,20 +46,9 @@ public class FFmpegThumbnailService implements ThumbnailService{
         return getThumbnailBySecond(duration / 2, videoFilePath.toString());
     }
 
-    private int getDuration(String filename) throws IOException, NumberFormatException{
-        ProcessBuilder pb = new ProcessBuilder(ffprobe, "-v", "error", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1", filename);
-        pb.redirectErrorStream(true);
-        String duration;
-        Process p = null;
-		try {
-			p = pb.start();
-			BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
-			duration = br.readLine();
-		} finally {
-			if (p != null) {
-				p.destroy();
-			}
-		}
+    private int getDuration(String filename) throws IOException, NumberFormatException, InterruptedException{
+        ProcessBuilder pb = new ProcessBuilder(ffprobe, "-v", "error", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1", filename);     
+        String duration = ExternalApplicationUtils.execution(pb);
         if (duration != null) {
         	return Double.valueOf(duration).intValue();
         }
@@ -92,21 +80,7 @@ public class FFmpegThumbnailService implements ThumbnailService{
 
 	private void createTempThumbnail(int second, String filename, Path tempProcessedImagePath) throws IOException, InterruptedException {
 		ProcessBuilder pb = new ProcessBuilder(ffmpeg, "-i", filename, "-s", "640X360", "-ss", String.valueOf(second), "-vcodec", "mjpeg", "-vframes", "1", "-f", "image2", tempProcessedImagePath.toString());
-        pb.redirectErrorStream(true);
-        Process p = null;
-        try {
-			p = pb.start();
-			BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
-			String line = null;
-			while ((line = br.readLine()) != null) {
-				LOGGER.debug(line);
-			}
-			LOGGER.debug("wait over " + p.waitFor());
-		} finally {
-			if (p != null) {
-				p.destroy();
-			}
-		}
+        ExternalApplicationUtils.execution(pb);
 	}
     
 	private ByteArrayOutputStream getThumbnailFromTempFile(Path tempProcessedImagePath) throws IOException {

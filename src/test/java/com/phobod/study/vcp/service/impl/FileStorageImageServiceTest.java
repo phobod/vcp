@@ -4,13 +4,16 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.util.Properties;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import com.phobod.study.vcp.component.TestUtils;
 import com.phobod.study.vcp.exception.CantProcessMediaContentException;
 import com.phobod.study.vcp.service.ImageService;
 
@@ -18,9 +21,12 @@ import com.phobod.study.vcp.service.ImageService;
 public class FileStorageImageServiceTest {
 	private ImageService imageService = new FileStorageImageService();
 	
+	private String mediaDir;
+	
 	@Before
-	public void setUp() throws Exception {
-		setUpPrivateField("mediaDir","D:/Developing/workspace/vcp/src/main/webapp/media");
+	public void setUp() throws Exception {	
+        mediaDir = TestUtils.getPropertiec().getProperty("media.dir");
+		setUpPrivateField("mediaDir",mediaDir);
 	}
 
 	private void setUpPrivateField(String name, Object value) throws NoSuchFieldException, IllegalAccessException {
@@ -38,7 +44,7 @@ public class FileStorageImageServiceTest {
 	public final void testSaveImageDataSuccess() {
 		String ThumbnailFileName = imageService.saveImageData(new byte[1024]);
 		assertNotNull(ThumbnailFileName);
-		File file = new File("D:/Developing/workspace/vcp/src/main/webapp/", ThumbnailFileName);
+		File file = new File(mediaDir.substring(0, mediaDir.lastIndexOf("/media")), ThumbnailFileName);
 		assertTrue(file.exists());
 		if (file.exists()) {
 			file.delete();

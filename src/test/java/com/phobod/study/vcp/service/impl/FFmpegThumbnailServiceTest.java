@@ -2,14 +2,18 @@ package com.phobod.study.vcp.service.impl;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.nio.file.Paths;
+import java.util.Properties;
 
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import com.phobod.study.vcp.component.TestUtils;
 import com.phobod.study.vcp.exception.CantProcessMediaContentException;
 import com.phobod.study.vcp.service.ThumbnailService;
 
@@ -19,8 +23,8 @@ public class FFmpegThumbnailServiceTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		setUpPrivateField("ffmpeg","D:/ffmpeg/bin/ffmpeg.exe");
-		setUpPrivateField("ffprobe","D:/ffmpeg/bin/ffprobe.exe");
+        setUpPrivateField("ffmpeg",TestUtils.getPropertiec().getProperty("ffmpeg"));
+		setUpPrivateField("ffprobe",TestUtils.getPropertiec().getProperty("ffprobe"));
 	}
 
 	private void setUpPrivateField(String name, Object value) throws NoSuchFieldException, IllegalAccessException {

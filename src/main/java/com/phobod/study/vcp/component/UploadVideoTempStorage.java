@@ -3,10 +3,13 @@ package com.phobod.study.vcp.component;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -18,32 +21,35 @@ import com.phobod.study.vcp.form.VideoUploadForm;
 @Component
 public class UploadVideoTempStorage {
 	private static final Logger LOGGER = LoggerFactory.getLogger(UploadVideoTempStorage.class);
-	private final ThreadLocal<Path> tempUploadedVideoPathStorage = new ThreadLocal<>();
+	private Map<VideoUploadForm, Path> tempUploadedVideoPathStorage = new HashMap<>();
 	
-	public Path getTempUploadedVideoPath() {
-		return tempUploadedVideoPathStorage.get();
+	public Path getTempUploadedVideoPath(VideoUploadForm videoUploadForm) {
+		return tempUploadedVideoPathStorage.get(videoUploadForm);
 	}
 	
-	@Around("execution(* com.phobod.study.vcp.service.impl.SimpleVideoProcessorService.processVideo(..))")
-	public Object advice(ProceedingJoinPoint pjp) throws Throwable {
-		VideoUploadForm form = (VideoUploadForm) pjp.getArgs()[0];
+	@Before("execution(* com.phobod.study.vcp.service.impl.AsyncVideoProcessorService.processVideo(..)) && args(videoUploadForm,..)")
+	public void copyDataToTempStorage(JoinPoint joinPoint, VideoUploadForm videoUploadForm) throws Throwable{
 		Path tempUploadedVideoPath = null;
 		try {
 			tempUploadedVideoPath = Files.createTempFile("upload", ".video");
-			form.getFile().transferTo(tempUploadedVideoPath.toFile());
-			tempUploadedVideoPathStorage.set(tempUploadedVideoPath);
-			return pjp.proceed();
+			videoUploadForm.getFile().transferTo(tempUploadedVideoPath.toFile());
+			tempUploadedVideoPathStorage.put(videoUploadForm, tempUploadedVideoPath);
 		} catch (IOException e) {
 			throw new CantProcessMediaContentException("Can't save video content to temp file: " + e.getMessage(), e);
-		} finally {
-			tempUploadedVideoPathStorage.remove();
-			if (tempUploadedVideoPath != null) {
-				try {
-					Files.deleteIfExists(tempUploadedVideoPath);
-				} catch (Exception e) {
-					LOGGER.warn("Can't remove temp file: " + tempUploadedVideoPath, e);
-				}
+		}
+	}
+	
+	@After("execution(* com.phobod.study.vcp.service.impl.SimpleVideoProcessorService.processVideo(..)) && args(videoUploadForm,..)")
+	public void releaseTempStorage(JoinPoint joinPoint, VideoUploadForm videoUploadForm){
+		Path tempUploadedVideoPath = getTempUploadedVideoPath(videoUploadForm);
+		tempUploadedVideoPathStorage.remove(videoUploadForm);
+		if (tempUploadedVideoPath != null) {
+			try {
+				Files.deleteIfExists(tempUploadedVideoPath);
+			} catch (Exception e) {
+				LOGGER.warn("Can't remove temp file: " + tempUploadedVideoPath, e);
 			}
 		}
 	}
+	
 }

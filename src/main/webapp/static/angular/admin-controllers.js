@@ -1,5 +1,5 @@
 angular.module('admin-controllers', ['ngRoute'])
-	.config(function($routeProvider){
+	.config(['$routeProvider', function($routeProvider){
 		$routeProvider.when('/admin/account', {
 			templateUrl : 'static/html/page/account.html',
 			controller : 'accountController'
@@ -12,7 +12,7 @@ angular.module('admin-controllers', ['ngRoute'])
 			templateUrl : 'static/html/page/statistics.html',
 			controller : 'statisticsController'
 		});
-	})
+	}])
 
 	.controller('accountController', ['$scope', 'adminService', 'controllersFactory', function($scope, adminService, controllersFactory){
 		controllersFactory.createPaginationController($scope, {getData : adminService.listAllUsers});

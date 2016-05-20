@@ -32,7 +32,7 @@ public class AsyncVideoProcessorService implements VideoProcessorService{
 	
 	@Override
 	public Video processVideo(VideoUploadForm uploadForm) {
-		Video video = new Video("/static/video/video-stub.mp4", "/static/img/thumbnail-stub.jpg");
+		Video video = new Video("/static/img/thumbnail-stub.jpg", "/static/img/thumbnail-stub.jpg", "/static/img/thumbnail-stub.jpg", "/static/video/video-stub.mp4");
 		executorService.submit(new VideoItem(uploadForm, video));
 		return video;
 	}
@@ -52,6 +52,8 @@ public class AsyncVideoProcessorService implements VideoProcessorService{
 			Video processedVideo = simpleVideoProcessorService.processVideo(uploadForm);
 			video.setVideoUrl(processedVideo.getVideoUrl());
 			video.setThumbnailUrl(processedVideo.getThumbnailUrl());
+			video.setThumbnailUrlMedium(processedVideo.getThumbnailUrlMedium());
+			video.setThumbnailUrlSmall(processedVideo.getThumbnailUrlSmall());
 			videoRepository.save(video);
 		}
 		

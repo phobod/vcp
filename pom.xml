@@ -11,67 +11,131 @@
 	<build>
 		<finalName>ROOT</finalName>
 		<pluginManagement>
- 			<plugins>
- 				<plugin>
- 					<groupId>org.apache.maven.plugins</groupId>
- 					<artifactId>maven-compiler-plugin</artifactId>
- 					<configuration>
- 						<source>1.7</source>
- 						<target>1.7</target>
- 						<showWarnings>true</showWarnings>
- 						<showDeprecation>true</showDeprecation>
- 						<debug>true</debug>
- 					</configuration>
- 				</plugin>
- 				<plugin>
- 					<groupId>org.apache.maven.plugins</groupId>
- 					<artifactId>maven-war-plugin</artifactId>
- 					<version>2.6</version>
- 					<configuration>
- 						<warSourceDirectory>src/main/webapp</warSourceDirectory>
- 						<failOnMissingWebXml>false</failOnMissingWebXml>
- 					</configuration>
- 				</plugin>
- 			</plugins>
- 		</pluginManagement>
- 		<plugins>
- 			<plugin>
- 				<artifactId>maven-antrun-plugin</artifactId>
- 				<version>1.8</version>
- 				<executions>
- 					<!-- clean -->
- 					<execution>
- 						<id>clean-lib</id>
- 						<phase>clean</phase>
- 						<configuration>
- 							<tasks>
- 								<delete dir="${basedir}/src/main/webapp/WEB-INF/lib" />
- 							</tasks>
- 						</configuration>
- 						<goals>
- 							<goal>run</goal>
- 						</goals>
- 					</execution>
- 					<!-- build -->
- 					<execution>
- 						<id>copy-lib</id>
- 						<phase>package</phase>
- 						<configuration>
- 							<tasks>
- 								<delete dir="${basedir}/src/main/webapp/WEB-INF/lib" />
- 								<copy todir="${basedir}/src/main/webapp/WEB-INF/lib">
- 									<fileset
- 										dir="${basedir}/target/${project.build.finalName}/WEB-INF/lib" />
- 								</copy>
- 							</tasks>
- 						</configuration>
- 						<goals>
- 							<goal>run</goal>
- 						</goals>
- 					</execution>
- 				</executions>
- 			</plugin>
- 		</plugins>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<configuration>
+						<source>1.8</source>
+						<target>1.8</target>
+						<showWarnings>true</showWarnings>
+						<showDeprecation>true</showDeprecation>
+						<debug>true</debug>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-war-plugin</artifactId>
+					<version>2.6</version>
+					<configuration>
+						<warSourceDirectory>src/main/webapp</warSourceDirectory>
+						<failOnMissingWebXml>false</failOnMissingWebXml>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+		<plugins>
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.8</version>
+				<executions>
+					<!-- clean -->
+					<execution>
+						<id>clean-lib</id>
+						<phase>clean</phase>
+						<configuration>
+							<target>
+								<delete dir="${basedir}/src/main/webapp/WEB-INF/lib" />
+								<delete file="${basedir}/src/main/webapp/static/js/js-final.min.js" />
+								<delete file="${basedir}/src/main/webapp/static/css/css-final.min.css" />
+							</target>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+					<!-- build -->
+					<execution>
+						<id>copy-lib</id>
+						<phase>package</phase>
+						<configuration>
+							<target>
+								<delete dir="${basedir}/src/main/webapp/WEB-INF/lib" />
+								<copy todir="${basedir}/src/main/webapp/WEB-INF/lib"> <fileset dir="${basedir}/target/${project.build.finalName}/WEB-INF/lib" /></copy>
+ 								
+								<delete file="${basedir}/src/main/webapp/static/js/js-final.min.js" />
+								<delete file="${basedir}/src/main/webapp/static/css/css-final.min.css" />
+								<copy file="${basedir}/target/${project.build.finalName}/static/js/js-final.min.js" tofile="${basedir}/src/main/webapp/static/js/js-final.min.js" />
+								<copy file="${basedir}/target/${project.build.finalName}/static/css/css-final.min.css" tofile="${basedir}/src/main/webapp/static/css/css-final.min.css" />
+							
+							</target>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+
+			<plugin>
+				<groupId>net.alchim31.maven</groupId>
+				<artifactId>yuicompressor-maven-plugin</artifactId>
+				<version>1.5.1</version>
+				<executions>
+					<execution>
+						<id>compress</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>compress</goal>
+						</goals>
+						<inherited>false</inherited>
+						<configuration>
+							<nosuffix>true</nosuffix>
+							<aggregations>
+								<!-- Aggregate the JavaScript. -->
+								<aggregation>
+									<insertNewLine>true</insertNewLine>
+									<inputDir>${project.build.directory}/${project.build.finalName}/static</inputDir>
+									<output>${project.build.directory}/${project.build.finalName}/static/js/js-final.min.js</output>
+									<includes>
+										<include>**/js/jquery-1.12.3.js</include>
+										<include>**/js/angular.js</include>
+										<include>**/js/angular-route.js</include>
+										<include>**/js/angular-resource.js</include>
+										<include>**/js/bootstrap.js</include>
+										<include>**/js/ng-file-upload.js</include>
+										<include>**/js/angular-validation-match.js</include>
+										<include>**/angular/app.js</include>
+										<include>**/angular/app-interceptors.js</include>
+										<include>**/angular/app-filters.js</include>
+										<include>**/angular/app-services.js</include>
+										<include>**/angular/common-controllers.js</include>
+										<include>**/angular/admin-controllers.js</include>
+										<include>**/angular/user-controllers.js</include>
+									</includes>
+								</aggregation>
+								<!-- Aggregate the CSS. -->
+								<aggregation>
+									<insertNewLine>true</insertNewLine>
+									<inputDir>${project.build.directory}/${project.build.finalName}/static/css</inputDir>
+									<output>${project.build.directory}/${project.build.finalName}/static/css/css-final.min.css</output>
+									<includes>
+										<include>**/bootstrap.css</include>
+										<include>**/bootstrap-theme.css</include>
+										<include>**/dashboard.css</include>
+										<include>**/style.css</include>
+										<include>**/app.css</include>
+									</includes>
+								</aggregation>
+							</aggregations>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+
+		</plugins>
 	</build>
 
 	<dependencies>
@@ -94,11 +158,11 @@
 			<version>2.0.1.RELEASE</version>
 		</dependency>
 
-	    <dependency>
-	        <groupId>org.springframework.data</groupId>
-	        <artifactId>spring-data-redis</artifactId>
-	        <version>1.7.1.RELEASE</version>
-	    </dependency>
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-redis</artifactId>
+			<version>1.7.1.RELEASE</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -111,13 +175,13 @@
 			<artifactId>spring-webmvc</artifactId>
 			<version>4.2.5.RELEASE</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-aspects</artifactId>
 			<version>4.2.5.RELEASE</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-config</artifactId>
@@ -129,19 +193,19 @@
 			<artifactId>spring-security-web</artifactId>
 			<version>4.0.4.RELEASE</version>
 		</dependency>
-		
-	    <dependency>
-	        <groupId>org.springframework.hateoas</groupId>
-	        <artifactId>spring-hateoas</artifactId>
-	        <version>0.19.0.RELEASE</version>
-	    </dependency>
-    
-	    <dependency>
-	        <groupId>commons-fileupload</groupId>
-	        <artifactId>commons-fileupload</artifactId>
-	        <version>1.3.1</version>
-	    </dependency>
-    
+
+		<dependency>
+			<groupId>org.springframework.hateoas</groupId>
+			<artifactId>spring-hateoas</artifactId>
+			<version>0.19.0.RELEASE</version>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-fileupload</groupId>
+			<artifactId>commons-fileupload</artifactId>
+			<version>1.3.1</version>
+		</dependency>
+
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
@@ -165,7 +229,7 @@
 			<artifactId>jsr305</artifactId>
 			<version>3.0.1</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>javax.mail</groupId>
 			<artifactId>mail</artifactId>
@@ -179,17 +243,23 @@
 		</dependency>
 
 		<dependency>
-		    <groupId>junit</groupId>
-		    <artifactId>junit</artifactId>
-		    <version>4.12</version>
-		    <scope>test</scope>
+			<groupId>jstl</groupId>
+			<artifactId>jstl</artifactId>
+			<version>1.2</version>
 		</dependency>
-		
+
 		<dependency>
-		    <groupId>org.mockito</groupId>
-		    <artifactId>mockito-all</artifactId>
-		    <version>1.10.19</version>
-		    <scope>test</scope>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<version>1.10.19</version>
+			<scope>test</scope>
 		</dependency>
 
 	</dependencies>

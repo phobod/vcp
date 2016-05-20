@@ -74,7 +74,7 @@ public class AsyncEmailNotificationServiceTest {
 		fromEmailField.set(notificationService,value);
 	}
 
-	@Test(timeout = 200)
+	@Test(timeout = 300)
 	public final void testSendRestoreAccessLinkWithFailure() throws Exception {
 		doThrow(new MailSendException("")).when(javaMailSender).send((MimeMessage) anyObject());
 		when(javaMailSender.createMimeMessage()).thenReturn(mimeMessage);

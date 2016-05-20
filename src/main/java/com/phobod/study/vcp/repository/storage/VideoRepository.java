@@ -12,5 +12,6 @@ public interface VideoRepository extends PagingAndSortingRepository<Video, Strin
 	List<Video> findTop3ByOrderByViewsDesc();
 	Page<Video> findByOwnerIdOrderByViewsDesc(Pageable pageable, String userId);
 	Page<Video> findByIdNotAndOwnerIdOrderByViewsDesc(Pageable pageable, String excludedVideoId, String userId);
+	List<Video> findByOwnerId(String userId);
 	Long deleteByOwnerId(String userId);
 }

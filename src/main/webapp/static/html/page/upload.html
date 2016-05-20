@@ -22,7 +22,10 @@
 					    <div style="font:smaller">{{file.name}}</div>     		
 					</div>
 				</div>
-				<button type="submit" class="btn btn-success" ng-disabled="!form.$valid" ng-click='submit()'>Submit</button>
+				<button type="submit" class="btn btn-success" ng-hide="progressPercentage > 0" ng-disabled="!form.$valid" ng-click='submit()'>Submit</button>
+				<div class="progress progress-bar-success" ng-show="progressPercentage > 0" role="progressbar" aria-valuenow="{{progressPercentage}}" aria-valuemin="0" aria-valuemax="100" ng-style="{width : ( progressPercentage + '%' ) }">
+					<span>{{progressPercentage}}% Complete</span>
+				</div>
 			</form>
 		</div>
 	</div>

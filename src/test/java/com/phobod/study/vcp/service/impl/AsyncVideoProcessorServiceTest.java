@@ -29,9 +29,9 @@ public class AsyncVideoProcessorServiceTest {
 
 	@Test
 	public final void testProcessVideo() throws Exception {
-		videoProcessorService.processVideo(TestUtils.getVideoUploadForm());
 		when(simpleVideoProcessorService.processVideo(TestUtils.getVideoUploadForm())).thenReturn(TestUtils.getTestVideoWithoutId());
-		Thread.sleep(100);
+		videoProcessorService.processVideo(TestUtils.getVideoUploadForm());
+		Thread.sleep(300);
 		verify(simpleVideoProcessorService).processVideo(TestUtils.getVideoUploadForm());
 		verify(videoRepository).save(argThat(new VideoArgumentMatcher()));
 	}

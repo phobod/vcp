@@ -3,6 +3,7 @@ package com.phobod.study.vcp.domain;
 import java.io.Serializable;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -17,27 +18,37 @@ public class Video implements Serializable{
 	private String description;
 	@Field("thumbnail-url")
 	private String thumbnailUrl;
+	@Field("thumbnail-url-medium")
+	private String thumbnailUrlMedium;
+	@Field("thumbnail-url-small")
+	private String thumbnailUrlSmall;
 	@Field("video-url")
 	private String videoUrl;
+	@Indexed
 	private int views;
 	@DBRef
+	@Indexed
 	private User owner;
 
 	public Video() {
 		super();
 	}
 
-	public Video(String thumbnailUrl, String videoUrl) {
+	public Video(String thumbnailUrl, String thumbnailUrlMedium, String thumbnailUrlSmall, String videoUrl) {
 		super();
 		this.thumbnailUrl = thumbnailUrl;
+		this.thumbnailUrlMedium = thumbnailUrlMedium;
+		this.thumbnailUrlSmall = thumbnailUrlSmall;
 		this.videoUrl = videoUrl;
 	}
 
-	public Video(String title, String description, String thumbnailUrl, String videoUrl) {
+	public Video(String title, String description, String thumbnailUrl, String thumbnailUrlMedium, String thumbnailUrlSmall, String videoUrl) {
 		super();
 		this.title = title;
 		this.description = description;
 		this.thumbnailUrl = thumbnailUrl;
+		this.thumbnailUrlMedium = thumbnailUrlMedium;
+		this.thumbnailUrlSmall = thumbnailUrlSmall;
 		this.videoUrl = videoUrl;
 	}
 
@@ -96,6 +107,22 @@ public class Video implements Serializable{
 
 	public void setOwner(User owner) {
 		this.owner = owner;
+	}
+
+	public String getThumbnailUrlMedium() {
+		return thumbnailUrlMedium;
+	}
+
+	public void setThumbnailUrlMedium(String thumbnailUrlMedium) {
+		this.thumbnailUrlMedium = thumbnailUrlMedium;
+	}
+
+	public String getThumbnailUrlSmall() {
+		return thumbnailUrlSmall;
+	}
+
+	public void setThumbnailUrlSmall(String thumbnailUrlSmall) {
+		this.thumbnailUrlSmall = thumbnailUrlSmall;
 	}
 
 	@Override

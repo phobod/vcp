@@ -1,7 +1,15 @@
 package com.phobod.study.vcp.service.impl;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
@@ -17,6 +25,10 @@ import com.phobod.study.vcp.service.VideoProcessorService;
 
 @Service
 public class UserServiceImpl implements UserService {
+	private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
+	
+	@Value("${media.dir}")
+	private String mediaDir;
 
 	@Autowired
 	private VideoRepository videoRepository;
@@ -25,7 +37,7 @@ public class UserServiceImpl implements UserService {
 	private VideoSearchRepository videoSearchRepository;
 	
 	@Autowired
-	@Qualifier("simpleVideoProcessorService")
+	@Qualifier("asyncVideoProcessorService")
 	private VideoProcessorService videoProcessorService;
 
 	@Override
@@ -71,12 +83,35 @@ public class UserServiceImpl implements UserService {
 		}
 		videoRepository.delete(videoId);
 		videoSearchRepository.delete(videoId);
+		deleteMediaData(video);
 	}
 
 	@Override
 	public void deleteAllVideosByUser(String userId) {
+		for (Video video : videoRepository.findByOwnerId(userId)) {
+			deleteMediaData(video);
+		}
 		videoRepository.deleteByOwnerId(userId);
 		videoSearchRepository.deleteByOwnerId(userId);
+	}
+	
+	private void deleteMediaData(Video video){
+		deleteFile(video.getVideoUrl()); 
+		deleteFile(video.getThumbnailUrl()); 
+		deleteFile(video.getThumbnailUrlMedium()); 
+		deleteFile(video.getThumbnailUrlSmall()); 
+	}
+	
+	private void deleteFile(String fileUrl){
+		if (!fileUrl.startsWith("/media/thumbnail/") && !fileUrl.startsWith("/media/video/")) {
+			return;
+		}
+		Path path = Paths.get(mediaDir + fileUrl.replaceFirst("/media", ""));
+		try {
+			Files.deleteIfExists(path);
+		} catch (IOException e) {
+			LOGGER.warn("Can't delete file: " + path, e);
+		}
 	}
 
 }

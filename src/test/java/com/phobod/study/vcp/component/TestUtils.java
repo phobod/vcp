@@ -1,7 +1,12 @@
 package com.phobod.study.vcp.component;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.phobod.study.vcp.Constants.Role;
 import com.phobod.study.vcp.domain.Company;
@@ -17,12 +22,13 @@ public class TestUtils {
 	private static Company companyWithId = new Company("Test Company", "Test Address", "company@email.com", "+1-111-111-1111");
 	private static Company companyWithoutId = new Company("Test Company", "Test Address", "company@email.com", "+1-111-111-1111");
 
-	private static Video videoWithId = new Video("Test Title", "Test Description", "testThumbnailUrl", "testVideoUrl");
-	private static Video videoWithIdAndUser = new Video("Test Title", "Test Description", "testThumbnailUrl", "testVideoUrl");
-	private static Video videoWithoutId = new Video("Test Title", "Test Description", "testThumbnailUrl", "testVideoUrl");
+	private static Video videoWithId = new Video("Test Title", "Test Description", "testThumbnailUrl", "testThumbnailUrlMedium", "testThumbnailUrlSmall", "testVideoUrl");
+	private static Video videoWithIdAndUser = new Video("Test Title", "Test Description", "testThumbnailUrl", "testThumbnailUrlMedium", "testThumbnailUrlSmall", "testVideoUrl");
+	private static Video videoWithoutId = new Video("Test Title", "Test Description", "testThumbnailUrl", "testThumbnailUrlMedium", "testThumbnailUrlSmall", "testVideoUrl");
 	
 	private static Pageable pageable = new PageRequest(0, 10);
 	private static VideoUploadForm videoUploadForm = new VideoUploadForm("title","description",null);
+	private static VideoUploadForm videoUploadFormWithFile = new VideoUploadForm("title","description",null);
 	
 	public static User getTestUserWithId(String id){
 		userWithId.setId(id);
@@ -90,6 +96,18 @@ public class TestUtils {
 	
 	public static VideoUploadForm getVideoUploadForm(){
 		return videoUploadForm;
+	}
+	
+	public static VideoUploadForm getVideoUploadFormWithFile(MultipartFile file){
+		videoUploadFormWithFile.setFile(file);
+		return videoUploadFormWithFile;
+	}
+	
+	public static Properties getPropertiec() throws IOException{
+        Properties props = new Properties();
+        InputStream fileIn = TestUtils.class.getResourceAsStream("/test.properties");
+        props.load(fileIn);	
+        return props;
 	}
 	
 }

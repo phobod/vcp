@@ -54,9 +54,6 @@ public class AdminServiceImpl implements AdminService{
 
 	private User saveUserInternal(User user) {
 		if (!checkEmailWithRegExp(user.getEmail()) || user.getPassword() == null || (!checkPasswordWithRegExp(user.getPassword()) & user.getId() == null)) {
-			System.out.println("user.getEmail() = " + user.getEmail());
-			System.out.println("user.getPassword() = " + user.getPassword());
-			System.out.println("user.getId() = " + user.getId());
 			throw new ValidationException("Can't save user. The data entered is not correct!");
 		}
 		if (user.getId() == null) {

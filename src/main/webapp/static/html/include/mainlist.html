@@ -1,6 +1,6 @@
 <div class="col-md-3 resent-grid recommended-grid" ng-repeat="video in records.content">
 	<div class="resent-grid-img recommended-grid-img">
-		<a ng-href="#/user/{{video.owner.id}}/video/{{video.id}}"><img ng-src="{{video.thumbnailUrl | trusted}}" alt="{{video.title}}" /></a>
+		<a ng-href="#/user/{{video.owner.id}}/video/{{video.id}}"><img ng-src="{{video.thumbnailUrlMedium | trusted}}" alt="{{video.title}}" /></a>
 	</div>
 	<div class="resent-grid-info recommended-grid-info video-info-grid">
 		<h5>
