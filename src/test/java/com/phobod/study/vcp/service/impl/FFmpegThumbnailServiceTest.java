@@ -2,13 +2,10 @@ package com.phobod.study.vcp.service.impl;
 
 import static org.junit.Assert.assertNotNull;
 
-import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.nio.file.Paths;
-import java.util.Properties;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -23,8 +20,8 @@ public class FFmpegThumbnailServiceTest {
 	
 	@Before
 	public void setUp() throws Exception {
-        setUpPrivateField("ffmpeg",TestUtils.getPropertiec().getProperty("ffmpeg"));
-		setUpPrivateField("ffprobe",TestUtils.getPropertiec().getProperty("ffprobe"));
+        setUpPrivateField("ffmpeg",TestUtils.getProperties().getProperty("ffmpeg"));
+		setUpPrivateField("ffprobe",TestUtils.getProperties().getProperty("ffprobe"));
 	}
 
 	private void setUpPrivateField(String name, Object value) throws NoSuchFieldException, IllegalAccessException {

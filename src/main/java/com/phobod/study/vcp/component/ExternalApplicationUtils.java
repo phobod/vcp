@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 public class ExternalApplicationUtils {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ExternalApplicationUtils.class);
 	
-	public static String execution(ProcessBuilder pb) throws IOException, InterruptedException {
+	public static String execute(ProcessBuilder pb) throws IOException, InterruptedException {
 		StringBuffer sb = new StringBuffer();
 		pb.redirectErrorStream(true);
         Process p = null;

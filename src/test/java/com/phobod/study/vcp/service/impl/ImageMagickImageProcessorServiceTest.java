@@ -3,9 +3,7 @@ package com.phobod.study.vcp.service.impl;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.io.InputStream;
 import java.lang.reflect.Field;
-import java.util.Properties;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -25,8 +23,8 @@ public class ImageMagickImageProcessorServiceTest {
 
 	@Before
 	public void setUp() throws Exception {
-		setUpPrivateField("imageMagicConvert",TestUtils.getPropertiec().getProperty("imageMagicConvert"));
-		setUpPrivateField("jpegtran",TestUtils.getPropertiec().getProperty("jpegtran"));
+		setUpPrivateField("imageMagicConvert",TestUtils.getProperties().getProperty("imageMagicConvert"));
+		setUpPrivateField("jpegtran",TestUtils.getProperties().getProperty("jpegtran"));
 		sourceFile = System.getProperty("user.dir") + "/src/test/resources/img/image-stub.jpg";
 		targerFile = System.getProperty("user.dir") + "/src/test/resources/img/test-image-stub.jpg";		
 	}

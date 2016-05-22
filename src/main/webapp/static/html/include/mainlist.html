@@ -9,7 +9,7 @@
 		<p class="descr descr-info" ng-bind="video.description"></p>
 		<div>
 			<div class="media-left">
-				<img class="media-object mini-avatar thumbnail" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" ng-src="{{video.owner.avatarUrl | trusted}}" alt="avatar">
+				<img class="media-object mini-avatar thumbnail" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" ng-src="{{video.owner.avatarUrl + '&s=50' | trusted}}" alt="avatar">
 			</div>
 			<div class="media-body">
 				<p class="author author-info">

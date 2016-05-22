@@ -12,7 +12,7 @@
 				<div class="caption">
  					<div class="media">
  						<div class="media-left">
- 							<img class="media-object small-avatar thumbnail" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" ng-src="{{currentVideo.owner.avatarUrl | trusted}}" alt="avatar">
+ 							<img class="media-object small-avatar thumbnail" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" ng-src="{{currentVideo.owner.avatarUrl + '&s=100' | trusted}}" alt="avatar">
  						</div>
  						<div class="media-body">
  							<h4 class="media-heading" ng-bind="currentVideo.owner.name + ' ' + currentVideo.owner.surname"></h4>
@@ -40,7 +40,7 @@
 						<p class="descr descr-info" ng-bind="video.description"></p>
 						<div>
 							<div class="media-left">
-								<img class="media-object mini-avatar thumbnail" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" ng-src="{{video.owner.avatarUrl | trusted}}" alt="avatar">
+								<img class="media-object mini-avatar thumbnail" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" ng-src="{{video.owner.avatarUrl + '&s=50' | trusted}}" alt="avatar">
 							</div>
 							<div  class="media-body">
 								<p class="author author-info"><a ng-href="#/user/{{video.owner.id}}/video" class="author" ng-bind="video.owner.name + ' ' + video.owner.surname"></a></p>

@@ -19,7 +19,6 @@ public class TestUtils {
 	private static User otherUserWithId = new User("TestUserName1", "TestUserSurname1", "TestUserLogin1", "111AAAaaa1", "user1@email.com", new Company(), Role.USER, "http://www.gravatar.com/avatar/00000000000000000000000000000000?d=mm");
 	private static User userWithoutId = new User("TestUserName", "TestUserSurname", "TestUserLogin", "111AAAaaa", "user@email.com", new Company(), Role.USER, "http://www.gravatar.com/avatar/00000000000000000000000000000000?d=mm");
 
-	private static Company companyWithId = new Company("Test Company", "Test Address", "company@email.com", "+1-111-111-1111");
 	private static Company companyWithoutId = new Company("Test Company", "Test Address", "company@email.com", "+1-111-111-1111");
 
 	private static Video videoWithId = new Video("Test Title", "Test Description", "testThumbnailUrl", "testThumbnailUrlMedium", "testThumbnailUrlSmall", "testVideoUrl");
@@ -43,10 +42,6 @@ public class TestUtils {
 	public static User getTestUserWithoutId(){
 		return userWithoutId;
 	}
-
-	public static User getNewUserObject(){
-		return new User();
-	}
 	
 	public static User getNewUserObjectWithEmailAndPassword(String email, String password){
 		User user = new User();
@@ -55,17 +50,8 @@ public class TestUtils {
 		return user;
 	}
 	
-	public static Company getTestCompanyWithId(String id){
-		companyWithId.setId(id);
-		return companyWithId;
-	}
-	
 	public static Company getTestCompanyWithoutId(){
 		return companyWithoutId;
-	}
-
-	public static Company getNewCompanyObject(){
-		return new Company();
 	}
 	
 	public static Company getNewCompanyObjectWithEmailAndPhone(String email, String phone){
@@ -103,7 +89,7 @@ public class TestUtils {
 		return videoUploadFormWithFile;
 	}
 	
-	public static Properties getPropertiec() throws IOException{
+	public static Properties getProperties() throws IOException{
         Properties props = new Properties();
         InputStream fileIn = TestUtils.class.getResourceAsStream("/test.properties");
         props.load(fileIn);	

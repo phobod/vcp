@@ -4,10 +4,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.nio.file.Paths;
-import java.util.Properties;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -26,7 +24,7 @@ public class FileStorageVideoServiceTest {
 	
 	@Before
 	public void setUp() throws Exception {
-        mediaDir = TestUtils.getPropertiec().getProperty("media.dir");
+        mediaDir = TestUtils.getProperties().getProperty("media.dir");
 		setUpPrivateField("mediaDir",mediaDir);
 	}
 	

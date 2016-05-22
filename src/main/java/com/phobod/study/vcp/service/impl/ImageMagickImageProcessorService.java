@@ -31,7 +31,7 @@ public class ImageMagickImageProcessorService implements ImageProcessorService{
 			throw new CantProcessMediaContentException("Resize image failed. Source Image file name, Target Image file name or size is Null");
 		}
 		ProcessBuilder pb = new ProcessBuilder(imageMagicConvert, "-size", size, "-thumbnail", size+"^", "-crop" , size+"+0+0", "+repage", "-gravity", "center", sourceFile, targerFile);
-        String resultExternalExecutionCommand = ExternalApplicationUtils.execution(pb);
+        String resultExternalExecutionCommand = ExternalApplicationUtils.execute(pb);
 		if (resultExternalExecutionCommand == null){
         	throw new CantProcessMediaContentException("Resize image failed. Error during processing: " + resultExternalExecutionCommand);
         }
@@ -51,7 +51,7 @@ public class ImageMagickImageProcessorService implements ImageProcessorService{
 			throw new CantProcessMediaContentException("Optimize image failed. Image file name is Null");
 		}
 		ProcessBuilder pb = new ProcessBuilder(jpegtran, "-progressive", targerFile);
-		ExternalApplicationUtils.execution(pb);
+		ExternalApplicationUtils.execute(pb);
 	}
 
 }

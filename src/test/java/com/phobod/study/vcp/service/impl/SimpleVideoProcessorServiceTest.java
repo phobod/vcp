@@ -6,11 +6,9 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Properties;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -60,7 +58,7 @@ public class SimpleVideoProcessorServiceTest {
 		videoUrl = "videoUrl";
 		thumbnailImageData = new byte[1024];
 		thumbnailImageUrl = "thumbnailImageUrl";
-		setUpPrivateField("mediaDir",TestUtils.getPropertiec().getProperty("media.dir"));
+		setUpPrivateField("mediaDir",TestUtils.getProperties().getProperty("media.dir"));
 	}
 
 	private void setUpPrivateField(String name, Object value) throws NoSuchFieldException, IllegalAccessException {

@@ -48,7 +48,7 @@ public class FFmpegThumbnailService implements ThumbnailService{
 
     private int getDuration(String filename) throws IOException, NumberFormatException, InterruptedException{
         ProcessBuilder pb = new ProcessBuilder(ffprobe, "-v", "error", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1", filename);     
-        String duration = ExternalApplicationUtils.execution(pb);
+        String duration = ExternalApplicationUtils.execute(pb);
         if (duration != null) {
         	return Double.valueOf(duration).intValue();
         }
@@ -80,7 +80,7 @@ public class FFmpegThumbnailService implements ThumbnailService{
 
 	private void createTempThumbnail(int second, String filename, Path tempProcessedImagePath) throws IOException, InterruptedException {
 		ProcessBuilder pb = new ProcessBuilder(ffmpeg, "-i", filename, "-s", "640X360", "-ss", String.valueOf(second), "-vcodec", "mjpeg", "-vframes", "1", "-f", "image2", tempProcessedImagePath.toString());
-        ExternalApplicationUtils.execution(pb);
+        ExternalApplicationUtils.execute(pb);
 	}
     
 	private ByteArrayOutputStream getThumbnailFromTempFile(Path tempProcessedImagePath) throws IOException {

@@ -61,7 +61,7 @@ public class AdminServiceImpl implements AdminService{
 		} else {
 			User existUser = userRepository.findOne(user.getId());
 			if (!existUser.getPassword().equals(user.getPassword())) {
-				throw new ValidationException("Can't save user. The data entered is not correct!");
+				throw new ValidationException("Can't save user. The password for the existing user doesn't match!");
 			}
 		}
 		return userRepository.save(user);
