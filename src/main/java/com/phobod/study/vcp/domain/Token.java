@@ -10,13 +10,13 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.web.authentication.rememberme.PersistentRememberMeToken;
 
 @Document
-@CompoundIndexes({
-    @CompoundIndex(name = "i_username", def = "{'username': 1}"),
-    @CompoundIndex(name = "i_series", def = "{'series': 1}")
-})
-public class Token extends PersistentRememberMeToken{
+@CompoundIndexes({ 
+	@CompoundIndex(name = "i_username", def = "{'username': 1}"), 
+	@CompoundIndex(name = "i_series", def = "{'series': 1}") 
+	})
+public class Token extends PersistentRememberMeToken {
 	@Id
-    private final String id;
+	private final String id;
 
 	@PersistenceConstructor
 	public Token(String id, String username, String series, String tokenValue, Date date) {
@@ -25,6 +25,6 @@ public class Token extends PersistentRememberMeToken{
 	}
 
 	public String getId() {
-        return id;
-    }
+		return id;
+	}
 }

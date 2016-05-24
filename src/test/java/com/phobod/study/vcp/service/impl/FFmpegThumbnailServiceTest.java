@@ -17,19 +17,19 @@ import com.phobod.study.vcp.service.ThumbnailService;
 @RunWith(MockitoJUnitRunner.class)
 public class FFmpegThumbnailServiceTest {
 	private ThumbnailService thumbnailService = new FFmpegThumbnailService();
-	
+
 	@Before
 	public void setUp() throws Exception {
-        setUpPrivateField("ffmpeg",TestUtils.getProperties().getProperty("ffmpeg"));
-		setUpPrivateField("ffprobe",TestUtils.getProperties().getProperty("ffprobe"));
+		setUpPrivateField("ffmpeg", TestUtils.getProperties().getProperty("ffmpeg"));
+		setUpPrivateField("ffprobe", TestUtils.getProperties().getProperty("ffprobe"));
 	}
 
 	private void setUpPrivateField(String name, Object value) throws NoSuchFieldException, IllegalAccessException {
 		Field fromEmailField = thumbnailService.getClass().getDeclaredField(name);
 		fromEmailField.setAccessible(true);
-		fromEmailField.set(thumbnailService,value);
+		fromEmailField.set(thumbnailService, value);
 	}
-	
+
 	@Test(expected = CantProcessMediaContentException.class)
 	public final void testCreateThumbnailWithNull() {
 		thumbnailService.createThumbnail(null);

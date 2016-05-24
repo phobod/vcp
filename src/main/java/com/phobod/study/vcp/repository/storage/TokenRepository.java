@@ -6,7 +6,8 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 import com.phobod.study.vcp.domain.Token;
 
-public interface TokenRepository extends MongoRepository<Token, String>{
+public interface TokenRepository extends MongoRepository<Token, String> {
 	Token findBySeries(String series);
+
 	List<Token> findByUsername(String username);
 }

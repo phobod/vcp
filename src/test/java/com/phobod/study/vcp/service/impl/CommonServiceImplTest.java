@@ -33,25 +33,25 @@ import com.phobod.study.vcp.service.VideoStatisticsService;
 public class CommonServiceImplTest {
 	@InjectMocks
 	private CommonService commonService = new CommonServiceImpl();
-	
+
 	@Mock
 	private VideoRepository videoRepository;
-	
+
 	@Mock
 	private VideoSearchRepository videoSearchRepository;
 
 	@Mock
 	private UserRepository userRepository;
-	
+
 	@Mock
 	private NotificationService notificationService;
-	
+
 	@Mock
 	private VideoStatisticsService videoStatisticsService;
-	
+
 	@Mock
 	private PasswordEncoder passwordEncoder;
-	
+
 	private String userId;
 	private String login;
 	private String videoId;
@@ -67,13 +67,13 @@ public class CommonServiceImplTest {
 		vcpUrl = "testHostUrl";
 		testHash = "testHash";
 		correctPassword = "123ASfsd";
-		setUpPrivateField("vcpUrl",vcpUrl);
+		setUpPrivateField("vcpUrl", vcpUrl);
 	}
-	
+
 	private void setUpPrivateField(String name, Object value) throws NoSuchFieldException, IllegalAccessException {
 		Field fromEmailField = commonService.getClass().getDeclaredField(name);
 		fromEmailField.setAccessible(true);
-		fromEmailField.set(commonService,value);
+		fromEmailField.set(commonService, value);
 	}
 
 	@Test
@@ -126,32 +126,35 @@ public class CommonServiceImplTest {
 	@Test(expected = CantProcessAccessRecoveryException.class)
 	public final void testRestorePasswordWithIncorrectHash() {
 		when(userRepository.findOne(userId)).thenReturn(TestUtils.getTestUserWithId(userId));
-		commonService.restorePassword(new RecoveryForm(userId,testHash + "01",correctPassword));;
+		commonService.restorePassword(new RecoveryForm(userId, testHash + "01", correctPassword));
+		;
 	}
 
 	@Test(expected = CantProcessAccessRecoveryException.class)
 	public final void testRestorePasswordWithNullHash() {
 		when(userRepository.findOne(userId)).thenReturn(TestUtils.getTestUserWithId(userId));
-		commonService.restorePassword(new RecoveryForm(userId,null,correctPassword));;
+		commonService.restorePassword(new RecoveryForm(userId, null, correctPassword));
+		;
 	}
 
 	@Test(expected = CantProcessAccessRecoveryException.class)
 	public final void testRestorePasswordWithUserWithoutHash() {
 		TestUtils.getTestUserWithId(userId).setHash(null);
 		when(userRepository.findOne(userId)).thenReturn(TestUtils.getTestUserWithId(userId));
-		commonService.restorePassword(new RecoveryForm(userId,testHash,correctPassword));;
+		commonService.restorePassword(new RecoveryForm(userId, testHash, correctPassword));
+		;
 	}
 
 	@Test(expected = CantProcessAccessRecoveryException.class)
 	public final void testRestorePasswordWithIncorrectPassword() {
-		commonService.restorePassword(new RecoveryForm(userId,testHash,"1111"));
+		commonService.restorePassword(new RecoveryForm(userId, testHash, "1111"));
 	}
 
 	@Test
 	public final void testRestorePasswordSuccess() {
 		TestUtils.getTestUserWithId(userId).setHash(testHash);
 		when(userRepository.findOne(userId)).thenReturn(TestUtils.getTestUserWithId(userId));
-		commonService.restorePassword(new RecoveryForm(userId,testHash,correctPassword));
+		commonService.restorePassword(new RecoveryForm(userId, testHash, correctPassword));
 		verify(userRepository).findOne(userId);
 		verify(passwordEncoder).encode(correctPassword);
 		verify(userRepository).save(TestUtils.getTestUserWithId(userId));

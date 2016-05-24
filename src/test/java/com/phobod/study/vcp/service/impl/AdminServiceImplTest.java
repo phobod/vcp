@@ -31,24 +31,24 @@ import com.phobod.study.vcp.service.UserService;
 public class AdminServiceImplTest {
 	@InjectMocks
 	private AdminService adminService = new AdminServiceImpl();
-	
-	@Mock	
+
+	@Mock
 	private UserRepository userRepository;
-	
-	@Mock	
+
+	@Mock
 	private CompanyRepository companyRepository;
-	
+
 	@Mock
 	private UserService userService;
-	
-	@Mock	
+
+	@Mock
 	private PasswordEncoder passwordEncoder;
-	
+
 	@Rule
-    public ExpectedException thrown= ExpectedException.none();
-	
-	private String userId;	
-	private String companyId;	
+	public ExpectedException thrown = ExpectedException.none();
+
+	private String userId;
+	private String companyId;
 
 	@Before
 	public void setUp() throws Exception {
@@ -69,7 +69,7 @@ public class AdminServiceImplTest {
 	}
 
 	@Test
-	public void testSaveUserWithDuplicateKey() throws ValidationException{
+	public void testSaveUserWithDuplicateKey() throws ValidationException {
 		thrown.expect(ValidationException.class);
 		thrown.expectMessage("Can't save user. User with the same parameter already exists");
 		when(userRepository.findOne(userId)).thenReturn(TestUtils.getTestUserWithId(userId));
@@ -78,17 +78,17 @@ public class AdminServiceImplTest {
 	}
 
 	@Test(expected = ValidationException.class)
-	public void testSaveUserWithIncorrectEmail() throws ValidationException{
+	public void testSaveUserWithIncorrectEmail() throws ValidationException {
 		adminService.saveUser(TestUtils.getNewUserObjectWithEmailAndPassword("ds@ds", "111AAAaaa"));
 	}
 
 	@Test(expected = ValidationException.class)
-	public void testSaveUserWithIncorrectPassword() throws ValidationException{
+	public void testSaveUserWithIncorrectPassword() throws ValidationException {
 		adminService.saveUser(TestUtils.getNewUserObjectWithEmailAndPassword("ds@ds.com", "111"));
 	}
 
 	@Test
-	public void testSaveNewUser() throws ValidationException{
+	public void testSaveNewUser() throws ValidationException {
 		when(passwordEncoder.encode(TestUtils.getTestUserWithoutId().getPassword())).thenReturn(TestUtils.getTestUserWithoutId().getPassword());
 		adminService.saveUser(TestUtils.getTestUserWithoutId());
 		verify(passwordEncoder).encode(TestUtils.getTestUserWithoutId().getPassword());
@@ -96,7 +96,7 @@ public class AdminServiceImplTest {
 	}
 
 	@Test
-	public void testUpdateUser() throws ValidationException{
+	public void testUpdateUser() throws ValidationException {
 		when(userRepository.findOne(userId)).thenReturn(TestUtils.getTestUserWithId(userId));
 		adminService.saveUser(TestUtils.getTestUserWithId(userId));
 		verify(passwordEncoder, times(0)).encode(TestUtils.getTestUserWithId(userId).getPassword());
@@ -116,7 +116,7 @@ public class AdminServiceImplTest {
 	public void testSaveCompanyWithIncorrectEmail() {
 		adminService.saveCompany(TestUtils.getNewCompanyObjectWithEmailAndPhone("ew@wew", "1234567"));
 	}
-	
+
 	@Test(expected = ValidationException.class)
 	public void testSaveCompanyWithIncorrectPhone() {
 		adminService.saveCompany(TestUtils.getNewCompanyObjectWithEmailAndPhone("ew@wew.com", "asd1"));

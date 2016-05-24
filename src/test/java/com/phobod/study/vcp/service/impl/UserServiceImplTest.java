@@ -24,16 +24,16 @@ import com.phobod.study.vcp.service.VideoProcessorService;
 public class UserServiceImplTest {
 	@InjectMocks
 	private UserService userService = new UserServiceImpl();
-	
+
 	@Mock
 	private VideoRepository videoRepository;
 
 	@Mock
 	private VideoSearchRepository videoSearchRepository;
-	
+
 	@Mock
 	private VideoProcessorService videoProcessorService;
-	
+
 	private String videoId;
 	private String userId;
 
@@ -99,13 +99,14 @@ public class UserServiceImplTest {
 		verify(videoRepository).deleteByOwnerId(userId);
 		verify(videoSearchRepository).deleteByOwnerId(userId);
 	}
-	
-	private class SavedVideoArgumentMatcher extends ArgumentMatcher<Video>{
+
+	private class SavedVideoArgumentMatcher extends ArgumentMatcher<Video> {
 		@Override
 		public boolean matches(Object argument) {
 			if (argument instanceof Video) {
-				Video savedVideo = (Video)argument;
-				if (TestUtils.getVideoUploadForm().getTitle().equals(savedVideo.getTitle()) && TestUtils.getVideoUploadForm().getDescription().equals(savedVideo.getDescription())) {
+				Video savedVideo = (Video) argument;
+				if (TestUtils.getVideoUploadForm().getTitle().equals(savedVideo.getTitle())
+						&& TestUtils.getVideoUploadForm().getDescription().equals(savedVideo.getDescription())) {
 					return true;
 				}
 			}

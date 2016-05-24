@@ -16,11 +16,11 @@ public class CsrfTokenGeneratorFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 		CsrfToken token = (CsrfToken) request.getAttribute("_csrf");
 		if (token != null) {
-	        response.setHeader("X-CSRF-HEADER", token.getHeaderName());
-	        response.setHeader("X-CSRF-PARAM", token.getParameterName());
-	        response.setHeader("X-CSRF-TOKEN", token.getToken());
+			response.setHeader("X-CSRF-HEADER", token.getHeaderName());
+			response.setHeader("X-CSRF-PARAM", token.getParameterName());
+			response.setHeader("X-CSRF-TOKEN", token.getToken());
 		}
-        filterChain.doFilter(request, response);		
+		filterChain.doFilter(request, response);
 	}
 
 }

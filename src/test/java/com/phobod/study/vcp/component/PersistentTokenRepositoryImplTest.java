@@ -26,10 +26,10 @@ import com.phobod.study.vcp.repository.storage.TokenRepository;
 public class PersistentTokenRepositoryImplTest {
 	@InjectMocks
 	private PersistentTokenRepository persistentTokenRepository = new PersistentTokenRepositoryImpl();
-	
+
 	@Mock
-    TokenRepository repository;
-    
+	TokenRepository repository;
+
 	private PersistentRememberMeToken token;
 	private String tokenId;
 	private String userName;
@@ -37,7 +37,7 @@ public class PersistentTokenRepositoryImplTest {
 	private String tokenValue;
 	private Date date;
 	private Token oldToken;
-	
+
 	@Before
 	public void setUp() throws Exception {
 		tokenId = "tokenId";
@@ -58,7 +58,7 @@ public class PersistentTokenRepositoryImplTest {
 	@Test
 	public final void testUpdateToken() {
 		when(repository.findBySeries(series)).thenReturn(oldToken);
-		persistentTokenRepository.updateToken(series,tokenValue,date);
+		persistentTokenRepository.updateToken(series, tokenValue, date);
 		verify(repository).findBySeries(series);
 		verify(repository).save(argThat(new TokenArgumentMatcher()));
 	}
@@ -78,12 +78,11 @@ public class PersistentTokenRepositoryImplTest {
 		verify(repository).delete(list);
 	}
 
-	
-	private class TokenArgumentMatcher extends ArgumentMatcher<Token>{
+	private class TokenArgumentMatcher extends ArgumentMatcher<Token> {
 		@Override
 		public boolean matches(Object argument) {
 			if (argument instanceof Token) {
-				Token token = (Token)argument;
+				Token token = (Token) argument;
 				if (tokenId.equals(token.getId()) && userName.equals(token.getUsername()) && series.equals(token.getSeries()) && tokenValue.equals(token.getTokenValue())) {
 					return true;
 				}

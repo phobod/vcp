@@ -16,17 +16,17 @@ public class ElasticSearchConfig {
 
 	@Value("${elasticsearch.home}")
 	private String elasticSearchHome;
-	
+
 	@Bean
-	public Node node(){
+	public Node node() {
 		return new NodeBuilder()
 				.local(true)
 				.settings(Settings.builder().put("path.home", elasticSearchHome))
 				.node();
 	}
-	
+
 	@Bean
-    public ElasticsearchOperations elasticsearchTemplate() {
-        return new ElasticsearchTemplate(node().client());
-    }
+	public ElasticsearchOperations elasticsearchTemplate() {
+		return new ElasticsearchTemplate(node().client());
+	}
 }

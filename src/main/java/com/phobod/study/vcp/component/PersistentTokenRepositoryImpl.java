@@ -12,24 +12,20 @@ import com.phobod.study.vcp.domain.Token;
 import com.phobod.study.vcp.repository.storage.TokenRepository;
 
 @Component
-public class PersistentTokenRepositoryImpl implements PersistentTokenRepository{
+public class PersistentTokenRepositoryImpl implements PersistentTokenRepository {
 
 	@Autowired
-    TokenRepository repository;
-	
+	TokenRepository repository;
+
 	@Override
 	public void createNewToken(PersistentRememberMeToken token) {
-		repository.save(new Token(null,
-                token.getUsername(),
-                token.getSeries(),
-                token.getTokenValue(),
-                token.getDate()));
+		repository.save(new Token(null, token.getUsername(), token.getSeries(), token.getTokenValue(), token.getDate()));
 	}
 
 	@Override
 	public void updateToken(String series, String tokenValue, Date lastUsed) {
 		Token token = repository.findBySeries(series);
-        repository.save(new Token(token.getId(), token.getUsername(), series, tokenValue, lastUsed));
+		repository.save(new Token(token.getId(), token.getUsername(), series, tokenValue, lastUsed));
 	}
 
 	@Override
@@ -40,7 +36,7 @@ public class PersistentTokenRepositoryImpl implements PersistentTokenRepository{
 	@Override
 	public void removeUserTokens(String username) {
 		List<Token> tokens = repository.findByUsername(username);
-        repository.delete(tokens);
+		repository.delete(tokens);
 	}
 
 }

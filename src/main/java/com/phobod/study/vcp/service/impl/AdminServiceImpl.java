@@ -19,20 +19,20 @@ import com.phobod.study.vcp.service.AdminService;
 import com.phobod.study.vcp.service.UserService;
 
 @Service
-public class AdminServiceImpl implements AdminService{
+public class AdminServiceImpl implements AdminService {
 
 	@Autowired
 	private UserRepository userRepository;
-	
+
 	@Autowired
 	private CompanyRepository companyRepository;
-	
+
 	@Autowired
 	private UserService userService;
-	
+
 	@Autowired
 	private PasswordEncoder passwordEncoder;
-	
+
 	@Override
 	public Page<User> listAllUsers(Pageable pageable) {
 		return userRepository.findAllByOrderByNameAsc(pageable);
@@ -44,7 +44,7 @@ public class AdminServiceImpl implements AdminService{
 	}
 
 	@Override
-	public User saveUser(User user) throws ValidationException{
+	public User saveUser(User user) throws ValidationException {
 		try {
 			return saveUserInternal(user);
 		} catch (DuplicateKeyException e) {
@@ -68,7 +68,7 @@ public class AdminServiceImpl implements AdminService{
 	}
 
 	@Override
-	public Company saveCompany(Company company) throws ValidationException{
+	public Company saveCompany(Company company) throws ValidationException {
 		try {
 			return saveCompanyInternal(company);
 		} catch (DuplicateKeyException e) {
@@ -98,18 +98,18 @@ public class AdminServiceImpl implements AdminService{
 		companyRepository.delete(companyId);
 	}
 
-    private boolean checkPasswordWithRegExp(String password){  
-        Pattern p = Pattern.compile("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{6,12}$");  
-        return p.matcher(password).matches();  
-    } 
+	private boolean checkPasswordWithRegExp(String password) {
+		Pattern p = Pattern.compile("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{6,12}$");
+		return p.matcher(password).matches();
+	}
 
-    private boolean checkEmailWithRegExp(String password){  
-        Pattern p = Pattern.compile("^\\w+[\\w-\\.]*\\@\\w+((-\\w+)|(\\w*))\\.[a-z]{2,3}$");  
-        return p.matcher(password).matches();  
-    } 
+	private boolean checkEmailWithRegExp(String password) {
+		Pattern p = Pattern.compile("^\\w+[\\w-\\.]*\\@\\w+((-\\w+)|(\\w*))\\.[a-z]{2,3}$");
+		return p.matcher(password).matches();
+	}
 
-    private boolean checkPhoneNumberWithRegExp(String password){  
-        Pattern p = Pattern.compile("(\\+)?(\\()?(\\d+){1,4}(\\))?(-)?(\\d+){1,3}?(-)?(\\d+){1,4}?(-)?(\\d+){1,4}?(-)?(\\d+){1,4}");  
-        return p.matcher(password).matches();  
-    } 
+	private boolean checkPhoneNumberWithRegExp(String password) {
+		Pattern p = Pattern.compile("(\\+)?(\\()?(\\d+){1,4}(\\))?(-)?(\\d+){1,3}?(-)?(\\d+){1,4}?(-)?(\\d+){1,4}?(-)?(\\d+){1,4}");
+		return p.matcher(password).matches();
+	}
 }

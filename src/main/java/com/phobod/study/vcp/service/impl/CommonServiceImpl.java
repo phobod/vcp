@@ -34,30 +34,30 @@ import com.phobod.study.vcp.service.VideoStatisticsService;
 public class CommonServiceImpl implements CommonService {
 	@Value("${vcp.url}")
 	private String vcpUrl;
-	
+
 	@Autowired
 	private VideoRepository videoRepository;
-	
+
 	@Autowired
 	private VideoSearchRepository videoSearchRepository;
 
 	@Autowired
 	private UserRepository userRepository;
-	
+
 	@Autowired
 	private NotificationService notificationService;
-	
+
 	@Autowired
 	private VideoStatisticsService videoStatisticsService;
-	
+
 	@Autowired
 	private PasswordEncoder passwordEncoder;
-	
+
 	@Override
 	public List<Video> listPopularVideos() {
 		return videoRepository.findTop3ByOrderByViewsDesc();
 	}
-	
+
 	@Override
 	public Page<Video> listAllVideos(Pageable pageable) {
 		return videoRepository.findAll(pageable);
@@ -93,14 +93,13 @@ public class CommonServiceImpl implements CommonService {
 						.type(MultiMatchQueryBuilder.Type.BEST_FIELDS)
 						.fuzziness(Fuzziness.TWO)
 						.operator(Operator.OR))
-				.withSort(SortBuilders.fieldSort("views").order(SortOrder.DESC))
-				.build();
+				.withSort(SortBuilders.fieldSort("views").order(SortOrder.DESC)).build();
 		searchQuery.setPageable(pageable);
 		return searchQuery;
 	}
 
 	@Override
-	public void sendRestoreEmail(String login) throws CantProcessAccessRecoveryException{
+	public void sendRestoreEmail(String login) throws CantProcessAccessRecoveryException {
 		try {
 			sendRestoreEmailInternal(login);
 		} catch (Exception e) {
@@ -123,9 +122,9 @@ public class CommonServiceImpl implements CommonService {
 	private String generateUniqueHash() {
 		return UUID.randomUUID().toString();
 	}
-	
+
 	@Override
-	public void restorePassword(RecoveryForm form) throws CantProcessAccessRecoveryException{
+	public void restorePassword(RecoveryForm form) throws CantProcessAccessRecoveryException {
 		try {
 			restorePasswordInternal(form);
 		} catch (CantProcessAccessRecoveryException e) {
@@ -145,10 +144,10 @@ public class CommonServiceImpl implements CommonService {
 		user.setHash(null);
 		userRepository.save(user);
 	}
-	
-    private boolean checkPasswordWithRegExp(String password){  
-        Pattern p = Pattern.compile("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{6,12}$");  
-        return p.matcher(password).matches();  
-    } 
-	
+
+	private boolean checkPasswordWithRegExp(String password) {
+		Pattern p = Pattern.compile("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{6,12}$");
+		return p.matcher(password).matches();
+	}
+
 }

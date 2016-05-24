@@ -26,18 +26,18 @@ import com.phobod.study.vcp.repository.storage.VideoRepository;
 public class ElasticSearchIndexingServiceTest {
 	@InjectMocks
 	private ElasticSearchIndexingService elasticSearchIndexingService = new ElasticSearchIndexingService();
-	
+
 	@Mock
 	private ElasticsearchOperations elasticsearchOperations;
-	
+
 	@Mock
 	private VideoRepository videoRepository;
-	
+
 	@Mock
 	private VideoSearchRepository videoSearchRepository;
-	
+
 	private List<Video> testVideos;
-	
+
 	@Before
 	public void setUp() throws Exception {
 		testVideos = new ArrayList<>();
@@ -49,12 +49,12 @@ public class ElasticSearchIndexingServiceTest {
 	private void setUpPrivateField(String name, Object value) throws NoSuchFieldException, IllegalAccessException {
 		Field fromEmailField = elasticSearchIndexingService.getClass().getDeclaredField(name);
 		fromEmailField.setAccessible(true);
-		fromEmailField.set(elasticSearchIndexingService,value);
+		fromEmailField.set(elasticSearchIndexingService, value);
 	}
-	
+
 	@Test
 	public final void testPostConstructWithIndexAllDuringStartupTrue() throws Exception {
-		setUpPrivateField("indexAllDuringStartup",true);
+		setUpPrivateField("indexAllDuringStartup", true);
 		when(videoRepository.findAll()).thenReturn(testVideos);
 		elasticSearchIndexingService.postConstruct();
 		verify(elasticsearchOperations).deleteIndex(Video.class);
@@ -64,7 +64,7 @@ public class ElasticSearchIndexingServiceTest {
 
 	@Test
 	public final void testPostConstructWithIndexAllDuringStartupFalse() throws Exception {
-		setUpPrivateField("indexAllDuringStartup",false);
+		setUpPrivateField("indexAllDuringStartup", false);
 		elasticSearchIndexingService.postConstruct();
 		verifyZeroInteractions(elasticsearchOperations);
 		verifyZeroInteractions(videoRepository);

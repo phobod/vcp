@@ -24,76 +24,76 @@ public class TestUtils {
 	private static Video videoWithId = new Video("Test Title", "Test Description", "testThumbnailUrl", "testThumbnailUrlMedium", "testThumbnailUrlSmall", "testVideoUrl");
 	private static Video videoWithIdAndUser = new Video("Test Title", "Test Description", "testThumbnailUrl", "testThumbnailUrlMedium", "testThumbnailUrlSmall", "testVideoUrl");
 	private static Video videoWithoutId = new Video("Test Title", "Test Description", "testThumbnailUrl", "testThumbnailUrlMedium", "testThumbnailUrlSmall", "testVideoUrl");
-	
+
 	private static Pageable pageable = new PageRequest(0, 10);
-	private static VideoUploadForm videoUploadForm = new VideoUploadForm("title","description",null);
-	private static VideoUploadForm videoUploadFormWithFile = new VideoUploadForm("title","description",null);
-	
-	public static User getTestUserWithId(String id){
+	private static VideoUploadForm videoUploadForm = new VideoUploadForm("title", "description", null);
+	private static VideoUploadForm videoUploadFormWithFile = new VideoUploadForm("title", "description", null);
+
+	public static User getTestUserWithId(String id) {
 		userWithId.setId(id);
 		return userWithId;
 	}
 
-	public static User getTestOtherUserWithId(String id){
+	public static User getTestOtherUserWithId(String id) {
 		otherUserWithId.setId(id);
 		return otherUserWithId;
 	}
 
-	public static User getTestUserWithoutId(){
+	public static User getTestUserWithoutId() {
 		return userWithoutId;
 	}
-	
-	public static User getNewUserObjectWithEmailAndPassword(String email, String password){
+
+	public static User getNewUserObjectWithEmailAndPassword(String email, String password) {
 		User user = new User();
 		user.setPassword(password);
 		user.setEmail(email);
 		return user;
 	}
-	
-	public static Company getTestCompanyWithoutId(){
+
+	public static Company getTestCompanyWithoutId() {
 		return companyWithoutId;
 	}
-	
-	public static Company getNewCompanyObjectWithEmailAndPhone(String email, String phone){
+
+	public static Company getNewCompanyObjectWithEmailAndPhone(String email, String phone) {
 		Company company = new Company();
 		company.setPhone(phone);
 		company.setEmail(email);
 		return company;
 	}
-	
-	public static Video getTestVideoWithId(String id){
+
+	public static Video getTestVideoWithId(String id) {
 		videoWithId.setId(id);
 		return videoWithId;
 	}
 
-	public static Video getTestVideoWithIdAndUser(String id, User user){
+	public static Video getTestVideoWithIdAndUser(String id, User user) {
 		videoWithIdAndUser.setId(id);
 		videoWithIdAndUser.setOwner(user);
 		return videoWithIdAndUser;
 	}
 
-	public static Video getTestVideoWithoutId(){
+	public static Video getTestVideoWithoutId() {
 		return videoWithoutId;
 	}
-	
-	public static Pageable getTestPageable(){
+
+	public static Pageable getTestPageable() {
 		return pageable;
 	}
-	
-	public static VideoUploadForm getVideoUploadForm(){
+
+	public static VideoUploadForm getVideoUploadForm() {
 		return videoUploadForm;
 	}
-	
-	public static VideoUploadForm getVideoUploadFormWithFile(MultipartFile file){
+
+	public static VideoUploadForm getVideoUploadFormWithFile(MultipartFile file) {
 		videoUploadFormWithFile.setFile(file);
 		return videoUploadFormWithFile;
 	}
-	
-	public static Properties getProperties() throws IOException{
-        Properties props = new Properties();
-        InputStream fileIn = TestUtils.class.getResourceAsStream("/test.properties");
-        props.load(fileIn);	
-        return props;
+
+	public static Properties getProperties() throws IOException {
+		Properties props = new Properties();
+		InputStream fileIn = TestUtils.class.getResourceAsStream("/test.properties");
+		props.load(fileIn);
+		return props;
 	}
-	
+
 }

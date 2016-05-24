@@ -18,21 +18,21 @@ import com.phobod.study.vcp.service.ImageService;
 @RunWith(MockitoJUnitRunner.class)
 public class FileStorageImageServiceTest {
 	private ImageService imageService = new FileStorageImageService();
-	
+
 	private String mediaDir;
-	
+
 	@Before
-	public void setUp() throws Exception {	
-        mediaDir = TestUtils.getProperties().getProperty("media.dir");
-		setUpPrivateField("mediaDir",mediaDir);
+	public void setUp() throws Exception {
+		mediaDir = TestUtils.getProperties().getProperty("media.dir");
+		setUpPrivateField("mediaDir", mediaDir);
 	}
 
 	private void setUpPrivateField(String name, Object value) throws NoSuchFieldException, IllegalAccessException {
 		Field fromEmailField = imageService.getClass().getDeclaredField(name);
 		fromEmailField.setAccessible(true);
-		fromEmailField.set(imageService,value);
+		fromEmailField.set(imageService, value);
 	}
-	
+
 	@Test(expected = CantProcessMediaContentException.class)
 	public final void testSaveImageDataWithNull() {
 		imageService.saveImageData(null);

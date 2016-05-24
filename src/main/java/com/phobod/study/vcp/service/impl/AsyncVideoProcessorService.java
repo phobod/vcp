@@ -15,21 +15,21 @@ import com.phobod.study.vcp.repository.storage.VideoRepository;
 import com.phobod.study.vcp.service.VideoProcessorService;
 
 @Service("asyncVideoProcessorService")
-public class AsyncVideoProcessorService implements VideoProcessorService{
+public class AsyncVideoProcessorService implements VideoProcessorService {
 	private ExecutorService executorService = Executors.newFixedThreadPool(3);
-	
+
 	@Autowired
 	@Qualifier("simpleVideoProcessorService")
 	private VideoProcessorService simpleVideoProcessorService;
-	
+
 	@Autowired
 	private VideoRepository videoRepository;
-	
+
 	@PreDestroy
-	private void preDestroy(){
+	private void preDestroy() {
 		executorService.shutdown();
 	}
-	
+
 	@Override
 	public Video processVideo(VideoUploadForm uploadForm) {
 		Video video = new Video("/static/img/thumbnail-stub.jpg", "/static/img/thumbnail-stub.jpg", "/static/img/thumbnail-stub.jpg", "/static/video/video-stub.mp4");
@@ -37,10 +37,10 @@ public class AsyncVideoProcessorService implements VideoProcessorService{
 		return video;
 	}
 
-	private class VideoItem implements Runnable{
+	private class VideoItem implements Runnable {
 		private VideoUploadForm uploadForm;
 		private Video video;
-		
+
 		public VideoItem(VideoUploadForm uploadForm, Video video) {
 			super();
 			this.uploadForm = uploadForm;
@@ -56,6 +56,6 @@ public class AsyncVideoProcessorService implements VideoProcessorService{
 			video.setThumbnailUrlSmall(processedVideo.getThumbnailUrlSmall());
 			videoRepository.save(video);
 		}
-		
+
 	}
 }

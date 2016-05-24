@@ -1,6 +1,6 @@
 package com.phobod.study.vcp.exception;
 
-public class CantProcessAccessRecoveryException extends ApplicationException{
+public class CantProcessAccessRecoveryException extends ApplicationException {
 	private static final long serialVersionUID = -785639912561583607L;
 
 	public CantProcessAccessRecoveryException(String message) {

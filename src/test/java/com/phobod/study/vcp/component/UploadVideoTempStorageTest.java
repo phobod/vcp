@@ -1,4 +1,5 @@
 package com.phobod.study.vcp.component;
+
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doThrow;
 
@@ -20,20 +21,20 @@ import com.phobod.study.vcp.exception.CantProcessMediaContentException;
 public class UploadVideoTempStorageTest {
 	@InjectMocks
 	private UploadVideoTempStorage uploadVideoTempStorage = new UploadVideoTempStorage();
-	
+
 	@Mock
 	private JoinPoint joinPoint;
-	
+
 	@Mock
 	private ThreadLocal<Path> tempUploadedVideoPathStorage;
-	
+
 	@Mock
 	private MultipartFile file;
-	
+
 	@Test(expected = CantProcessMediaContentException.class)
 	public final void testCopyDataToTempStorageWithException() throws Throwable {
 		doThrow(new IOException()).when(file).transferTo(any(File.class));
 		uploadVideoTempStorage.copyDataToTempStorage(joinPoint, TestUtils.getVideoUploadFormWithFile(file));
-	}			
+	}
 
 }

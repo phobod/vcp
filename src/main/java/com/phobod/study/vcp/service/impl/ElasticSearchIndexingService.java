@@ -16,35 +16,34 @@ import com.phobod.study.vcp.repository.storage.VideoRepository;
 
 @Service
 @DependsOn(value = "createTestDataService")
-public class ElasticSearchIndexingService{
+public class ElasticSearchIndexingService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CreateTestDataService.class);
-	
+
 	@Value("${index.all.during.startup}")
 	private boolean indexAllDuringStartup;
-	
-	@Autowired 
+
+	@Autowired
 	private ElasticsearchOperations elasticsearchOperations;
-	
+
 	@Autowired
 	private VideoRepository videoRepository;
-	
+
 	@Autowired
 	private VideoSearchRepository videoSearchRepository;
-	
+
 	@PostConstruct
-	public void postConstruct(){
-		if(indexAllDuringStartup) {
+	public void postConstruct() {
+		if (indexAllDuringStartup) {
 			LOGGER.info("Detected indexAllDuringStartup command");
 			LOGGER.info("Clear old index");
 			elasticsearchOperations.deleteIndex(Video.class);
 			LOGGER.info("Start indexing for videos");
-			for(Video v : videoRepository.findAll()){
+			for (Video v : videoRepository.findAll()) {
 				videoSearchRepository.save(v);
-				LOGGER.info("Successful indexed video: "+v.getVideoUrl());
+				LOGGER.info("Successful indexed video: " + v.getVideoUrl());
 			}
 			LOGGER.info("Finish indexing of videos");
-		}
-		else{
+		} else {
 			LOGGER.info("indexAllDuringStartup is disabled");
 		}
 	}

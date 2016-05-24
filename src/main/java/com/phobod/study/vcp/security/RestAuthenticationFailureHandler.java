@@ -10,11 +10,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
-public class RestAuthenticationFailureHandler implements AuthenticationFailureHandler{
+public class RestAuthenticationFailureHandler implements AuthenticationFailureHandler {
 
 	@Override
 	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
-		response.sendError(HttpStatus.BAD_REQUEST.value()); 		
+		response.sendError(HttpStatus.BAD_REQUEST.value());
 	}
 
 }

@@ -23,24 +23,24 @@ import com.phobod.study.vcp.domain.User;
 import com.phobod.study.vcp.service.NotificationService;
 
 @Service
-public class AsyncEmailNotificationService implements NotificationService{
+public class AsyncEmailNotificationService implements NotificationService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AsyncEmailNotificationService.class);
-	private final ExecutorService executorService = Executors.newCachedThreadPool(); 
+	private final ExecutorService executorService = Executors.newCachedThreadPool();
 
 	@Autowired
 	private JavaMailSender javaMailSender;
-	
+
 	@Value("${email.sendTryCount}")
 	private int tryCount;
-	
+
 	@Value("${email.fromEmail}")
 	private String fromEmail;
-	
+
 	@Value("${email.fromName}")
 	private String fromName;
-	
+
 	@PreDestroy
-	private void preDestroy(){
+	private void preDestroy() {
 		executorService.shutdown();
 	}
 
@@ -48,7 +48,7 @@ public class AsyncEmailNotificationService implements NotificationService{
 	public void sendRestoreAccessLink(User profile, String restoreLink) {
 		LOGGER.debug("Restore link: {} for account {}", restoreLink, profile.getId());
 		String email = profile.getEmail();
-		if (StringUtils.isNotBlank(email)){
+		if (StringUtils.isNotBlank(email)) {
 			String subject = "Restore access";
 			String content = "To restore access please click on " + restoreLink;
 			String fullName = profile.getName();
@@ -57,15 +57,14 @@ public class AsyncEmailNotificationService implements NotificationService{
 			LOGGER.error("Can't send email to username=" + profile.getId() + ": email not found!");
 		}
 	}
-	
-	private class EmailItem implements Runnable{
+
+	private class EmailItem implements Runnable {
 		private final String subject;
 		private final String content;
 		private final String destinationEmail;
 		private final String name;
 		private int tryCount;
 
-		
 		private EmailItem(String subject, String content, String destinationEmail, String name, int tryCount) {
 			super();
 			this.subject = subject;
@@ -90,7 +89,7 @@ public class AsyncEmailNotificationService implements NotificationService{
 				} else {
 					LOGGER.error("Email not sent to " + destinationEmail);
 				}
-			}			
+			}
 		}
 
 		private MimeMessage prepareEmail() throws MessagingException, UnsupportedEncodingException {
@@ -102,7 +101,7 @@ public class AsyncEmailNotificationService implements NotificationService{
 			MimeMailMessage msg = new MimeMailMessage(message);
 			return msg.getMimeMessage();
 		}
-		
+
 	}
 
 }

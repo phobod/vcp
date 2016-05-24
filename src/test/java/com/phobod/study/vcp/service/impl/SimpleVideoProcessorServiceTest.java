@@ -30,43 +30,42 @@ import com.phobod.study.vcp.service.VideoService;
 public class SimpleVideoProcessorServiceTest {
 	@InjectMocks
 	private VideoProcessorService videoProcessorService = new SimpleVideoProcessorService();
-	
+
 	@Mock
 	private VideoService videoService;
-	
+
 	@Mock
 	private ThumbnailService thumbnailService;
-	
+
 	@Mock
 	private ImageService imageService;
-	
+
 	@Mock
 	private ImageProcessorService imageProcessorService;
 
-	
 	@Mock
 	private UploadVideoTempStorage uploadVideoTempStorage;
-	
+
 	private Path tempUploadedVideoPath;
 	private String videoUrl;
 	private byte[] thumbnailImageData;
 	private String thumbnailImageUrl;
 
 	@Before
-	public void setUp() throws Exception {	
+	public void setUp() throws Exception {
 		tempUploadedVideoPath = Paths.get("tempUploadedVideoPath");
 		videoUrl = "videoUrl";
 		thumbnailImageData = new byte[1024];
 		thumbnailImageUrl = "thumbnailImageUrl";
-		setUpPrivateField("mediaDir",TestUtils.getProperties().getProperty("media.dir"));
+		setUpPrivateField("mediaDir", TestUtils.getProperties().getProperty("media.dir"));
 	}
 
 	private void setUpPrivateField(String name, Object value) throws NoSuchFieldException, IllegalAccessException {
 		Field fromEmailField = videoProcessorService.getClass().getDeclaredField(name);
 		fromEmailField.setAccessible(true);
-		fromEmailField.set(videoProcessorService,value);
+		fromEmailField.set(videoProcessorService, value);
 	}
-	
+
 	@Test
 	public final void testProcessVideo() {
 		when(uploadVideoTempStorage.getTempUploadedVideoPath(TestUtils.getVideoUploadForm())).thenReturn(tempUploadedVideoPath);

@@ -41,19 +41,19 @@ public class AsyncEmailNotificationServiceTest {
 
 	@Mock
 	private JavaMailSender javaMailSender;
-	
-	private List<User> usersWithBlankEmail; 
+
+	private List<User> usersWithBlankEmail;
 	private String userId;
 	private String restoreLink;
 	private int tryCount;
 	private String fromName;
 	private String fromEmail;
 	private MimeMessage mimeMessage;
-	
+
 	@Before
 	public void setUp() throws Exception {
 		userId = "userId";
-		usersWithBlankEmail = Arrays.asList(new User(),new User(null,null,null,null,"",null,null,null),new User(null,null,null,null,"   ",null,null,null));
+		usersWithBlankEmail = Arrays.asList(new User(), new User(null, null, null, null, "", null, null, null), new User(null, null, null, null, "   ", null, null, null));
 		restoreLink = "test link";
 		mimeMessage = new MimeMessage(Session.getDefaultInstance(System.getProperties(), null));
 		setUpNotificationServiceFields();
@@ -61,17 +61,17 @@ public class AsyncEmailNotificationServiceTest {
 
 	private void setUpNotificationServiceFields() throws NoSuchFieldException, IllegalAccessException {
 		tryCount = 3;
-		setUpPrivateField("tryCount",tryCount);
+		setUpPrivateField("tryCount", tryCount);
 		fromName = "TestSenderName";
-		setUpPrivateField("fromName",fromName);
+		setUpPrivateField("fromName", fromName);
 		fromEmail = "test@email.com";
-		setUpPrivateField("fromEmail",fromEmail);
+		setUpPrivateField("fromEmail", fromEmail);
 	}
 
 	private void setUpPrivateField(String name, Object value) throws NoSuchFieldException, IllegalAccessException {
 		Field fromEmailField = notificationService.getClass().getDeclaredField(name);
 		fromEmailField.setAccessible(true);
-		fromEmailField.set(notificationService,value);
+		fromEmailField.set(notificationService, value);
 	}
 
 	@Test(timeout = 300)
@@ -80,8 +80,8 @@ public class AsyncEmailNotificationServiceTest {
 		when(javaMailSender.createMimeMessage()).thenReturn(mimeMessage);
 		notificationService.sendRestoreAccessLink(TestUtils.getTestUserWithId(userId), restoreLink);
 		Thread.sleep(100);
-		verify(javaMailSender,times(tryCount)).createMimeMessage();
-		verify(javaMailSender,times(tryCount)).send((MimeMessage) anyObject());
+		verify(javaMailSender, times(tryCount)).createMimeMessage();
+		verify(javaMailSender, times(tryCount)).send((MimeMessage) anyObject());
 	}
 
 	@Test(timeout = 200)
@@ -99,11 +99,11 @@ public class AsyncEmailNotificationServiceTest {
 		when(javaMailSender.createMimeMessage()).thenReturn(mimeMessage);
 		notificationService.sendRestoreAccessLink(TestUtils.getTestUserWithId(userId), restoreLink);
 		Thread.sleep(50);
-		verify(javaMailSender,times(1)).createMimeMessage();
-		verify(javaMailSender,times(1)).send(argThat(new MimeMessageArgumentMatcher(TestUtils.getTestUserWithId(userId))));
+		verify(javaMailSender, times(1)).createMimeMessage();
+		verify(javaMailSender, times(1)).send(argThat(new MimeMessageArgumentMatcher(TestUtils.getTestUserWithId(userId))));
 	}
 
-	private class MimeMessageArgumentMatcher extends ArgumentMatcher<MimeMessage>{
+	private class MimeMessageArgumentMatcher extends ArgumentMatcher<MimeMessage> {
 		private User user;
 
 		public MimeMessageArgumentMatcher(User user) {
@@ -114,16 +114,18 @@ public class AsyncEmailNotificationServiceTest {
 		@Override
 		public boolean matches(Object argument) {
 			if (argument instanceof MimeMessage) {
-				MimeMessage message = (MimeMessage)argument;
+				MimeMessage message = (MimeMessage) argument;
 				try {
-					if ("Restore access".equals(message.getSubject()) && message.getContent().toString().endsWith(restoreLink) && message.getRecipients(Message.RecipientType.TO).length == 1 && message.getFrom().length == 1) {
+					if ("Restore access".equals(message.getSubject()) && message.getContent().toString().endsWith(restoreLink)
+							&& message.getRecipients(Message.RecipientType.TO).length == 1 && message.getFrom().length == 1) {
 						Address recipientAddress = message.getRecipients(Message.RecipientType.TO)[0];
 						Address senderAddress = message.getFrom()[0];
 						if (recipientAddress instanceof InternetAddress && senderAddress instanceof InternetAddress) {
-							InternetAddress recipientInternetAddress = (InternetAddress)recipientAddress;
-							InternetAddress senderInternetAddress = (InternetAddress)senderAddress;
- 							if (user.getEmail().equals(recipientInternetAddress.getAddress()) && user.getName().equals(recipientInternetAddress.getPersonal()) && fromEmail.equals(senderInternetAddress.getAddress()) && fromName.equals(senderInternetAddress.getPersonal())) {
- 								return true;
+							InternetAddress recipientInternetAddress = (InternetAddress) recipientAddress;
+							InternetAddress senderInternetAddress = (InternetAddress) senderAddress;
+							if (user.getEmail().equals(recipientInternetAddress.getAddress()) && user.getName().equals(recipientInternetAddress.getPersonal())
+									&& fromEmail.equals(senderInternetAddress.getAddress()) && fromName.equals(senderInternetAddress.getPersonal())) {
+								return true;
 							}
 						}
 					}

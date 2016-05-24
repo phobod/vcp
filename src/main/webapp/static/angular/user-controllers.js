@@ -37,7 +37,6 @@ angular.module('user-controllers', ['ngRoute'])
 			}, function(evt){
 				$scope.progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
 			});
-//			$location.path('/my-account/video');
 		};
 		$scope.clearData = function(){
 	        $scope.title = null;

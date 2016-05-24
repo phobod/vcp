@@ -20,19 +20,19 @@ import org.mockito.runners.MockitoJUnitRunner;
 public class ErrorHandlerTest {
 	@InjectMocks
 	private ErrorHandler errorHandler = new ErrorHandler();
-	
-	@Mock	
+
+	@Mock
 	private RestErrorResolver restErrorResolver;
-	
+
 	@Mock
-	private HttpServletRequest request; 
-	
+	private HttpServletRequest request;
+
 	@Mock
-	private HttpServletResponse response; 
+	private HttpServletResponse response;
 
 	private RestError restError;
 	private Exception ex;
-	
+
 	@Before
 	public void setUp() throws Exception {
 		restError = new RestError(500, "message", "description");

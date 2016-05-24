@@ -9,8 +9,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import com.phobod.study.vcp.domain.User;
 
 public class SecurityUtils {
-	
-	public static @Nullable User getCurrentUser(){
+
+	public static @Nullable User getCurrentUser() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		if (authentication == null) {
 			return null;
@@ -22,10 +22,10 @@ public class SecurityUtils {
 			return null;
 		}
 	}
-	
+
 	public static void addPrincipalHeaders(HttpServletResponse resp) {
 		User user = SecurityUtils.getCurrentUser();
-		if(user != null) {
+		if (user != null) {
 			resp.setHeader("PrimcipalId", user.getId());
 			resp.setHeader("PrimcipalName", user.getName());
 			resp.setHeader("PrimcipalRole", user.getRole().name());

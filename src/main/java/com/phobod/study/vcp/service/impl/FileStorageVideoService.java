@@ -13,7 +13,7 @@ import com.phobod.study.vcp.exception.CantProcessMediaContentException;
 import com.phobod.study.vcp.service.VideoService;
 
 @Service
-public class FileStorageVideoService implements VideoService{
+public class FileStorageVideoService implements VideoService {
 	@Value("${media.dir}")
 	private String mediaDir;
 

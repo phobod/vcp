@@ -22,13 +22,13 @@ import com.phobod.study.vcp.service.UserService;
 public class UserController {
 	@Autowired
 	private UserService userService;
-	
+
 	@RequestMapping(value = "/upload", method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.OK)
-	public void uploadVideo(@AuthenticationPrincipal CurrentUser currentUser, VideoUploadForm uploadForm ){
+	public void uploadVideo(@AuthenticationPrincipal CurrentUser currentUser, VideoUploadForm uploadForm) {
 		userService.uploadVideo(currentUser.getUser(), uploadForm);
-	} 
-	
+	}
+
 	@RequestMapping(value = "/video", method = RequestMethod.GET)
 	public Page<Video> listVideos(@AuthenticationPrincipal CurrentUser currentUser, Pageable pageable) {
 		return userService.listVideosByUser(pageable, currentUser.getUser().getId());
@@ -45,6 +45,5 @@ public class UserController {
 	public void deleteVideo(@AuthenticationPrincipal CurrentUser currentUser, @PathVariable String videoId) {
 		userService.deleteVideo(videoId, currentUser.getUser());
 	}
-
 
 }

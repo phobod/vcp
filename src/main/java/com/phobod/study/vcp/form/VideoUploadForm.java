@@ -6,7 +6,7 @@ public class VideoUploadForm {
 	private String title;
 	private String description;
 	private MultipartFile file;
-	
+
 	public VideoUploadForm() {
 		super();
 	}
@@ -41,5 +41,5 @@ public class VideoUploadForm {
 	public void setFile(MultipartFile file) {
 		this.file = file;
 	}
-	
+
 }

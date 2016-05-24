@@ -7,5 +7,6 @@ import javax.annotation.Nonnull;
 import com.phobod.study.vcp.exception.CantProcessMediaContentException;
 
 public interface VideoService {
-	@Nonnull String saveVideo(@Nonnull Path tempFilePath) throws CantProcessMediaContentException;
+	@Nonnull
+	String saveVideo(@Nonnull Path tempFilePath) throws CantProcessMediaContentException;
 }

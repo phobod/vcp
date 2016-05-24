@@ -13,24 +13,24 @@ import com.phobod.study.vcp.domain.VideoStatistics;
 @Configuration
 @EnableRedisRepositories("com.phobod.study.vcp.repository.statistics")
 public class RedisConfig {
-	
+
 	@Value("${redis.host}")
 	private String redisHost;
-	
+
 	@Value("${redis.port}")
 	private int redisPort;
-	
+
 	@Bean
-	public RedisConnectionFactory connectionFactory(){
+	public RedisConnectionFactory connectionFactory() {
 		JedisConnectionFactory jedisConnectionFactory = new JedisConnectionFactory();
 		jedisConnectionFactory.setHostName(redisHost);
 		jedisConnectionFactory.setPort(redisPort);
 		jedisConnectionFactory.setUsePool(true);
 		return jedisConnectionFactory;
 	}
-	
+
 	@Bean
-	public RedisTemplate<VideoStatistics, String> redisTemplate(){
+	public RedisTemplate<VideoStatistics, String> redisTemplate() {
 		RedisTemplate<VideoStatistics, String> template = new RedisTemplate<VideoStatistics, String>();
 		template.setConnectionFactory(connectionFactory());
 		return template;

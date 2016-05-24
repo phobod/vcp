@@ -11,11 +11,11 @@ import com.phobod.study.vcp.service.AvatarService;
 
 @Service
 public class GravatarAvatarService implements AvatarService {
-	
+
 	@Override
 	public String generateAvatarUrl(String email) {
 		try {
-			return generateAvatarUrlInternal(email); 
+			return generateAvatarUrlInternal(email);
 		} catch (CantProcessUserException e) {
 			throw new CantProcessUserException("Can't hash email for avatar url: " + e.getMessage(), e);
 		}
@@ -29,15 +29,15 @@ public class GravatarAvatarService implements AvatarService {
 		return "http://www.gravatar.com/avatar/" + hash + "?d=mm";
 	}
 
-	private String prepareEmail(String email){
+	private String prepareEmail(String email) {
 		return email.trim().toLowerCase();
 	}
-	
-	private String md5Hex(String message) throws CantProcessUserException{
+
+	private String md5Hex(String message) throws CantProcessUserException {
 		try {
 			MessageDigest md = MessageDigest.getInstance("MD5");
 			return hex(md.digest(message.getBytes("CP1252")));
-		} catch (NoSuchAlgorithmException | UnsupportedEncodingException e){
+		} catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
 			throw new CantProcessUserException("Can't hash email for avatar url: " + e.getMessage(), e);
 		}
 	}

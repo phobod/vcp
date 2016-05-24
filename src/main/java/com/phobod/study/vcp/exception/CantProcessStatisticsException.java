@@ -1,6 +1,6 @@
 package com.phobod.study.vcp.exception;
 
-public class CantProcessStatisticsException extends ApplicationException{
+public class CantProcessStatisticsException extends ApplicationException {
 	private static final long serialVersionUID = -2805047660947122072L;
 
 	public CantProcessStatisticsException(String message, Throwable cause) {

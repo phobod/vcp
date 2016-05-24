@@ -22,10 +22,10 @@ import com.phobod.study.vcp.service.VideoStatisticsService;
 @Service
 public class AsyncVideoStatisticsService implements VideoStatisticsService {
 	private final ExecutorService executorService = Executors.newSingleThreadExecutor();
-	
+
 	@Autowired
 	private VideoStatisticsRepository videoStatisticsRepository;
-	
+
 	@PreDestroy
 	private void preDestroy() {
 		executorService.shutdown();
@@ -37,7 +37,7 @@ public class AsyncVideoStatisticsService implements VideoStatisticsService {
 	}
 
 	@Override
-	public List<VideoStatistics> listVideoStatistics() throws CantProcessStatisticsException{
+	public List<VideoStatistics> listVideoStatistics() throws CantProcessStatisticsException {
 		String currentDate = getCurrentTime();
 		try {
 			return videoStatisticsRepository.findByDate(currentDate);
@@ -45,11 +45,11 @@ public class AsyncVideoStatisticsService implements VideoStatisticsService {
 			throw new CantProcessStatisticsException("Can't get statistics for date " + currentDate + ": " + e.getMessage(), e);
 		}
 	}
-	
+
 	private String getCurrentTime() {
 		return LocalDate.now().toString();
 	}
-	
+
 	private class StatisticsItem implements Runnable {
 		private String videoId;
 		private String title;
@@ -69,7 +69,7 @@ public class AsyncVideoStatisticsService implements VideoStatisticsService {
 		@Override
 		public void run() {
 			VideoStatistics videoStatistics = videoStatisticsRepository.findOne(videoId);
-			if (videoStatistics == null){
+			if (videoStatistics == null) {
 				videoStatistics = new VideoStatistics(videoId);
 			}
 			videoStatistics.setDate(date);
@@ -77,15 +77,14 @@ public class AsyncVideoStatisticsService implements VideoStatisticsService {
 			videoStatistics.setViewCount(videoStatistics.getViewCount() + 1);
 			videoStatistics.addUserId(userId);
 			videoStatistics.addIpAddress(ipAddress);
-			videoStatistics.setExpiration(getExpirationTime());		
+			videoStatistics.setExpiration(getExpirationTime());
 			videoStatisticsRepository.save(videoStatistics);
 		}
-		
-	    private long getExpirationTime(){
-	        return ChronoUnit.SECONDS.between(LocalTime.now(),LocalTime.MAX);
-	    }
 
-		
+		private long getExpirationTime() {
+			return ChronoUnit.SECONDS.between(LocalTime.now(), LocalTime.MAX);
+		}
+
 	}
 
 }

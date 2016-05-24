@@ -11,8 +11,8 @@ import com.phobod.study.vcp.repository.storage.UserRepository;
 import com.phobod.study.vcp.security.CurrentUser;
 
 @Service
-public class AuthentificationService implements UserDetailsService{
-	
+public class AuthentificationService implements UserDetailsService {
+
 	@Autowired
 	private UserRepository userRepository;
 

@@ -31,41 +31,41 @@ public class CreateTestDataServiceTest {
 
 	@Mock
 	private MongoTemplate mongoTemplate;
-	
+
 	@Mock
 	private VideoStatisticsRepository videoStatisticsRepository;
-	
+
 	@Mock
 	private PasswordEncoder passwordEncoder;
 
 	private void setUpPrivateField(String name, Object value) throws NoSuchFieldException, IllegalAccessException {
 		Field fromEmailField = createTestDataService.getClass().getDeclaredField(name);
 		fromEmailField.setAccessible(true);
-		fromEmailField.set(createTestDataService,value);
+		fromEmailField.set(createTestDataService, value);
 	}
-	
+
 	@Test
-	public final void testCreateTestDataIfNecessaryWithRecreateFalseAndFullDb() throws Exception{
-		setUpPrivateField("mongoRecreateDb",false);
+	public final void testCreateTestDataIfNecessaryWithRecreateFalseAndFullDb() throws Exception {
+		setUpPrivateField("mongoRecreateDb", false);
 		when(mongoTemplate.count(null, Company.class)).thenReturn(100L);
 		when(mongoTemplate.count(null, User.class)).thenReturn(100L);
 		when(mongoTemplate.count(null, Video.class)).thenReturn(100L);
 		createTestDataService.createTestDataIfNecessary();
 		verifyZeroInteractions(videoStatisticsRepository);
 		verifyZeroInteractions(passwordEncoder);
-		verify(mongoTemplate,times(0)).remove(any());
-		verify(mongoTemplate,times(0)).insert(any());
+		verify(mongoTemplate, times(0)).remove(any());
+		verify(mongoTemplate, times(0)).insert(any());
 	}
 
 	@Test
-	public final void testCreateTestDataIfNecessaryWithRecreateTrue() throws Exception{
-		setUpPrivateField("mongoRecreateDb",true);
+	public final void testCreateTestDataIfNecessaryWithRecreateTrue() throws Exception {
+		setUpPrivateField("mongoRecreateDb", true);
 		testRecreateData();
 	}
 
 	@Test
-	public final void testCreateTestDataIfNecessaryWithRecreateFalseAndEmptyCompanyDb() throws Exception{
-		setUpPrivateField("mongoRecreateDb",false);
+	public final void testCreateTestDataIfNecessaryWithRecreateFalseAndEmptyCompanyDb() throws Exception {
+		setUpPrivateField("mongoRecreateDb", false);
 		when(mongoTemplate.count(null, Company.class)).thenReturn(0L);
 		when(mongoTemplate.count(null, User.class)).thenReturn(100L);
 		when(mongoTemplate.count(null, Video.class)).thenReturn(100L);
@@ -73,8 +73,8 @@ public class CreateTestDataServiceTest {
 	}
 
 	@Test
-	public final void testCreateTestDataIfNecessaryWithRecreateFalseAndEmptyUserDb() throws Exception{
-		setUpPrivateField("mongoRecreateDb",false);
+	public final void testCreateTestDataIfNecessaryWithRecreateFalseAndEmptyUserDb() throws Exception {
+		setUpPrivateField("mongoRecreateDb", false);
 		when(mongoTemplate.count(null, Company.class)).thenReturn(100L);
 		when(mongoTemplate.count(null, User.class)).thenReturn(0L);
 		when(mongoTemplate.count(null, Video.class)).thenReturn(100L);
@@ -82,8 +82,8 @@ public class CreateTestDataServiceTest {
 	}
 
 	@Test
-	public final void testCreateTestDataIfNecessaryWithRecreateFalseAndEmptyVideoDb() throws Exception{
-		setUpPrivateField("mongoRecreateDb",false);
+	public final void testCreateTestDataIfNecessaryWithRecreateFalseAndEmptyVideoDb() throws Exception {
+		setUpPrivateField("mongoRecreateDb", false);
 		when(mongoTemplate.count(null, Company.class)).thenReturn(100L);
 		when(mongoTemplate.count(null, User.class)).thenReturn(100L);
 		when(mongoTemplate.count(null, Video.class)).thenReturn(0L);
@@ -92,12 +92,13 @@ public class CreateTestDataServiceTest {
 
 	private void testRecreateData() {
 		createTestDataService.createTestDataIfNecessary();
-		verify(videoStatisticsRepository).deleteAll();;
-		verify(passwordEncoder,times(6)).encode(any(CharSequence.class));
-		verify(mongoTemplate,times(4)).remove(any(Query.class),any(Class.class));
-		verify(mongoTemplate).insert(anyCollectionOf(Company.class),eq(Company.class));
-		verify(mongoTemplate).insert(anyCollectionOf(User.class),eq(User.class));
-		verify(mongoTemplate).insert(anyCollectionOf(Video.class),eq(Video.class));
+		verify(videoStatisticsRepository).deleteAll();
+		;
+		verify(passwordEncoder, times(6)).encode(any(CharSequence.class));
+		verify(mongoTemplate, times(4)).remove(any(Query.class), any(Class.class));
+		verify(mongoTemplate).insert(anyCollectionOf(Company.class), eq(Company.class));
+		verify(mongoTemplate).insert(anyCollectionOf(User.class), eq(User.class));
+		verify(mongoTemplate).insert(anyCollectionOf(Video.class), eq(Video.class));
 	}
 
 }

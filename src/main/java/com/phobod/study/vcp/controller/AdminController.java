@@ -22,16 +22,16 @@ import com.phobod.study.vcp.service.VideoStatisticsService;
 @RestController
 @RequestMapping("/admin")
 public class AdminController {
-	
+
 	@Autowired
 	private AdminService adminService;
-	
+
 	@Autowired
 	private AvatarService avatarService;
-	
+
 	@Autowired
 	private VideoStatisticsService videoStatisticsService;
-	
+
 	@RequestMapping(value = "/account", method = RequestMethod.GET)
 	public Page<User> listAllUsers(Pageable pageable) {
 		return adminService.listAllUsers(pageable);

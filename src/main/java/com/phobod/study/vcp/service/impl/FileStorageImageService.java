@@ -16,7 +16,7 @@ import com.phobod.study.vcp.service.ImageService;
 public class FileStorageImageService implements ImageService {
 	@Value("${media.dir}")
 	private String mediaDir;
-	
+
 	@Override
 	public String saveImageData(byte[] imageBytes) throws CantProcessMediaContentException {
 		try {

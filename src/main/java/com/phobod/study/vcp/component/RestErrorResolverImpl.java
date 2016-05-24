@@ -71,13 +71,11 @@ public class RestErrorResolverImpl implements RestErrorResolver {
 	}
 
 	private RestError handleHttpMediaTypeNotSupported(Exception ex, HttpServletRequest request, Object handler) {
-		return new RestError(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE, "Unsupported Media Type",
-				"The request entity has a media type which the server or resource does not support.");
+		return new RestError(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE, "Unsupported Media Type", "The request entity has a media type which the server or resource does not support.");
 	}
 
 	private RestError handleHttpMediaTypeNotAcceptable(Exception ex, HttpServletRequest request, Object handler) {
-		return new RestError(HttpServletResponse.SC_NOT_ACCEPTABLE, "Not Acceptable",
-				"The requested resource is capable of generating only content not acceptable according to the Accept headers sent in the request.");
+		return new RestError(HttpServletResponse.SC_NOT_ACCEPTABLE, "Not Acceptable", "The requested resource is capable of generating only content not acceptable according to the Accept headers sent in the request.");
 	}
 
 	private RestError handleBadRequest(Exception ex, HttpServletRequest request, Object handler) {
@@ -110,7 +108,7 @@ public class RestErrorResolverImpl implements RestErrorResolver {
 	private RestError handleInternalServerError(Exception ex, HttpServletRequest request, Object handler) {
 		return new RestError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal Server Error", "We're sorry! The server encountered an internal error and was unable to complete your request.");
 	}
-	
+
 	private String getDescriptionFromDuplicateKeyException(Exception ex) throws IOException, JsonParseException, JsonMappingException {
 		ObjectMapper mapper = new ObjectMapper();
 		String errorText = mapper.readValue(ex.getCause().getMessage(), JsonNode.class).get("err").textValue();

@@ -6,5 +6,6 @@ import com.phobod.study.vcp.domain.Video;
 import com.phobod.study.vcp.form.VideoUploadForm;
 
 public interface VideoProcessorService {
-	@Nonnull Video processVideo(@Nonnull VideoUploadForm uploadForm);
+	@Nonnull
+	Video processVideo(@Nonnull VideoUploadForm uploadForm);
 }

@@ -6,6 +6,6 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 
 import com.phobod.study.vcp.domain.Company;
 
-public interface CompanyRepository extends PagingAndSortingRepository<Company, String>{
+public interface CompanyRepository extends PagingAndSortingRepository<Company, String> {
 	Page<Company> findAllByOrderByNameAsc(Pageable pageable);
 }

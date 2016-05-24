@@ -1,6 +1,6 @@
 package com.phobod.study.vcp.exception;
 
-public class ApplicationException extends RuntimeException{
+public class ApplicationException extends RuntimeException {
 	private static final long serialVersionUID = 7224178428118540495L;
 
 	public ApplicationException(String message, Throwable cause) {
@@ -15,5 +15,4 @@ public class ApplicationException extends RuntimeException{
 		super(cause);
 	}
 
-	
 }

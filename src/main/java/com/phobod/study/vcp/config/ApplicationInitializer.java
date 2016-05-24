@@ -17,6 +17,8 @@ import org.springframework.web.filter.DelegatingFilterProxy;
 import org.springframework.web.filter.RequestContextFilter;
 import org.springframework.web.servlet.DispatcherServlet;
 
+import com.phobod.study.vcp.component.ApplicationListener;
+
 public class ApplicationInitializer implements WebApplicationInitializer {
 
 	@Override
@@ -25,6 +27,7 @@ public class ApplicationInitializer implements WebApplicationInitializer {
 
 		container.setSessionTrackingModes(EnumSet.of(SessionTrackingMode.COOKIE));
 		container.addListener(new ContextLoaderListener(context));
+		container.addListener(context.getBean(ApplicationListener.class));
 
 		registerFilters(container);
 		registerDispatcherServlet(container, context);
@@ -43,8 +46,8 @@ public class ApplicationInitializer implements WebApplicationInitializer {
 		registerFilter(container, new RequestContextFilter());
 		registerFilter(container, new DelegatingFilterProxy("springSecurityFilterChain"), "springSecurityFilterChain");
 	}
-	
-	private void registerFilter(ServletContext container, Filter filter, String... filterNames){
+
+	private void registerFilter(ServletContext container, Filter filter, String... filterNames) {
 		String filterName = filterNames.length > 0 ? filterNames[0] : filter.getClass().getSimpleName();
 		container.addFilter(filterName, filter).addMappingForUrlPatterns(null, true, "/*");
 	}

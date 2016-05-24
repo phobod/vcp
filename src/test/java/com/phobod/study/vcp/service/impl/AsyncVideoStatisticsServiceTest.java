@@ -20,7 +20,7 @@ import com.phobod.study.vcp.repository.statistics.VideoStatisticsRepository;
 import com.phobod.study.vcp.service.VideoStatisticsService;
 
 @RunWith(MockitoJUnitRunner.class)
-public class AsyncVideoStatisticsServiceTest{
+public class AsyncVideoStatisticsServiceTest {
 	@InjectMocks
 	private VideoStatisticsService videoStatisticsService = new AsyncVideoStatisticsService();
 
@@ -39,24 +39,25 @@ public class AsyncVideoStatisticsServiceTest{
 	}
 
 	@Test(timeout = 300)
-	public void testSaveVideoViewStatisticsForExistVideo() throws Exception {		
-		VideoStatistics videoStatistics = new VideoStatistics(videoId,TestUtils.getTestVideoWithId(videoId).getTitle(),100);
+	public void testSaveVideoViewStatisticsForExistVideo() throws Exception {
+		VideoStatistics videoStatistics = new VideoStatistics(videoId, TestUtils.getTestVideoWithId(videoId).getTitle(), 100);
 		when(videoStatisticsRepository.findOne(videoId)).thenReturn(videoStatistics);
 		videoStatisticsService.saveVideoViewStatistics(TestUtils.getTestVideoWithId(videoId), TestUtils.getTestUserWithId(userId), ip);
 		Thread.sleep(100);
 		verify(videoStatisticsRepository).findOne(videoId);
-		verify(videoStatisticsRepository).save(argThat(new VideoStatisticsArgumentMatcher(101)));;
+		verify(videoStatisticsRepository).save(argThat(new VideoStatisticsArgumentMatcher(101)));
+		;
 	}
 
 	@Test(timeout = 200)
-	public void testSaveVideoViewStatisticsForNewVideo() throws Exception {		
+	public void testSaveVideoViewStatisticsForNewVideo() throws Exception {
 		when(videoStatisticsRepository.findOne(videoId)).thenReturn(null);
 		videoStatisticsService.saveVideoViewStatistics(TestUtils.getTestVideoWithId(videoId), TestUtils.getTestUserWithId(userId), ip);
 		Thread.sleep(100);
 		verify(videoStatisticsRepository).findOne(videoId);
 		verify(videoStatisticsRepository).save(argThat(new VideoStatisticsArgumentMatcher(1)));
 	}
-	
+
 	@Test(expected = CantProcessStatisticsException.class)
 	public void testListVideoStatisticsWithException() {
 		when(videoStatisticsRepository.findByDate(anyString())).thenThrow(new IllegalArgumentException("Exception"));
@@ -69,8 +70,8 @@ public class AsyncVideoStatisticsServiceTest{
 		verify(videoStatisticsRepository).findByDate(anyString());
 	}
 
-	private class VideoStatisticsArgumentMatcher extends ArgumentMatcher<VideoStatistics>{
-		private long viewCount; 
+	private class VideoStatisticsArgumentMatcher extends ArgumentMatcher<VideoStatistics> {
+		private long viewCount;
 
 		public VideoStatisticsArgumentMatcher(long viewCount) {
 			super();
@@ -80,9 +81,9 @@ public class AsyncVideoStatisticsServiceTest{
 		@Override
 		public boolean matches(Object argument) {
 			if (argument instanceof VideoStatistics) {
-				VideoStatistics statistics = (VideoStatistics)argument;
-				if (videoId.equals(statistics.getVideoId()) && TestUtils.getTestVideoWithId(videoId).getTitle().equals(statistics.getTitle()) && statistics.getUserIdSet().contains(userId) 
-						&& statistics.getIpAddressSet().contains(ip) && statistics.getViewCount() == viewCount) {
+				VideoStatistics statistics = (VideoStatistics) argument;
+				if (videoId.equals(statistics.getVideoId()) && TestUtils.getTestVideoWithId(videoId).getTitle().equals(statistics.getTitle())
+						&& statistics.getUserIdSet().contains(userId) && statistics.getIpAddressSet().contains(ip) && statistics.getViewCount() == viewCount) {
 					return true;
 				}
 			}

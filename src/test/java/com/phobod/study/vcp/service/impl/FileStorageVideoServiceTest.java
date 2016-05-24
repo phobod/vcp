@@ -21,19 +21,19 @@ public class FileStorageVideoServiceTest {
 	private VideoService videoService = new FileStorageVideoService();
 
 	private String mediaDir;
-	
+
 	@Before
 	public void setUp() throws Exception {
-        mediaDir = TestUtils.getProperties().getProperty("media.dir");
-		setUpPrivateField("mediaDir",mediaDir);
+		mediaDir = TestUtils.getProperties().getProperty("media.dir");
+		setUpPrivateField("mediaDir", mediaDir);
 	}
-	
+
 	private void setUpPrivateField(String name, Object value) throws NoSuchFieldException, IllegalAccessException {
 		Field fromEmailField = videoService.getClass().getDeclaredField(name);
 		fromEmailField.setAccessible(true);
-		fromEmailField.set(videoService,value);
-	}	
-	
+		fromEmailField.set(videoService, value);
+	}
+
 	@Test(expected = CantProcessMediaContentException.class)
 	public final void testSaveVideoWithNull() {
 		videoService.saveVideo(null);

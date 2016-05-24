@@ -34,9 +34,9 @@ public class RestErrorResolverImplTest {
 
 	@Test
 	public final void testResolveErrorNotFound() throws IOException {
-		RestError restError = restErrorResolver.resolveError(null, null, new NoSuchRequestHandlingMethodException("",CommonController.class));
+		RestError restError = restErrorResolver.resolveError(null, null, new NoSuchRequestHandlingMethodException("", CommonController.class));
 		assertEquals(HttpServletResponse.SC_NOT_FOUND, restError.getStatus());
-		restError = restErrorResolver.resolveError(null, null, new NoHandlerFoundException("","",null));
+		restError = restErrorResolver.resolveError(null, null, new NoHandlerFoundException("", "", null));
 		assertEquals(HttpServletResponse.SC_NOT_FOUND, restError.getStatus());
 	}
 
@@ -60,11 +60,11 @@ public class RestErrorResolverImplTest {
 
 	@Test
 	public final void testResolveErrorBadRequest() throws IOException {
-		RestError restError = restErrorResolver.resolveError(null, null, new MissingServletRequestParameterException("",""));
+		RestError restError = restErrorResolver.resolveError(null, null, new MissingServletRequestParameterException("", ""));
 		assertEquals(HttpServletResponse.SC_BAD_REQUEST, restError.getStatus());
 		restError = restErrorResolver.resolveError(null, null, new ServletRequestBindingException(""));
 		assertEquals(HttpServletResponse.SC_BAD_REQUEST, restError.getStatus());
-		restError = restErrorResolver.resolveError(null, null, new TypeMismatchException("",Object.class));
+		restError = restErrorResolver.resolveError(null, null, new TypeMismatchException("", Object.class));
 		assertEquals(HttpServletResponse.SC_BAD_REQUEST, restError.getStatus());
 		restError = restErrorResolver.resolveError(null, null, new HttpMessageNotReadableException(""));
 		assertEquals(HttpServletResponse.SC_BAD_REQUEST, restError.getStatus());
@@ -75,7 +75,7 @@ public class RestErrorResolverImplTest {
 	@Test
 	public final void testResolveErrorInternalServerError() throws IOException {
 		Throwable cause = new DuplicateKeyException("{ \"serverUsed\" : \"localhost:27017\" , \"ok\" : 1 , \"n\" : 0 , \"err\" : \"E11000 duplicate key error collection: vcp.company index: name dup key: { : \\\"VCP\\\" }\" , \"code\" : 11000}");
-		RestError restError = restErrorResolver.resolveError(null, null, new ValidationException("ValidationException",cause));
+		RestError restError = restErrorResolver.resolveError(null, null, new ValidationException("ValidationException", cause));
 		assertEquals(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, restError.getStatus());
 		restError = restErrorResolver.resolveError(null, null, new CantProcessUserException(""));
 		assertEquals(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, restError.getStatus());

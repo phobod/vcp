@@ -17,29 +17,29 @@ import com.phobod.study.vcp.service.ImageProcessorService;
 @RunWith(MockitoJUnitRunner.class)
 public class ImageMagickImageProcessorServiceTest {
 	private ImageProcessorService imageProcessorService = new ImageMagickImageProcessorService();
-	
+
 	private String sourceFile;
 	private String targerFile;
 
 	@Before
 	public void setUp() throws Exception {
-		setUpPrivateField("imageMagicConvert",TestUtils.getProperties().getProperty("imageMagicConvert"));
-		setUpPrivateField("jpegtran",TestUtils.getProperties().getProperty("jpegtran"));
+		setUpPrivateField("imageMagicConvert", TestUtils.getProperties().getProperty("imageMagicConvert"));
+		setUpPrivateField("jpegtran", TestUtils.getProperties().getProperty("jpegtran"));
 		sourceFile = System.getProperty("user.dir") + "/src/test/resources/img/image-stub.jpg";
-		targerFile = System.getProperty("user.dir") + "/src/test/resources/img/test-image-stub.jpg";		
+		targerFile = System.getProperty("user.dir") + "/src/test/resources/img/test-image-stub.jpg";
 	}
-	
+
 	private void setUpPrivateField(String name, Object value) throws NoSuchFieldException, IllegalAccessException {
 		Field fromEmailField = imageProcessorService.getClass().getDeclaredField(name);
 		fromEmailField.setAccessible(true);
-		fromEmailField.set(imageProcessorService,value);
-	}	
+		fromEmailField.set(imageProcessorService, value);
+	}
 
 	@Test(expected = CantProcessMediaContentException.class)
 	public final void testResizeImageFileWithNullSource() {
 		imageProcessorService.resizeImageFile(null, targerFile, "100x100");
 	}
-	
+
 	@Test(expected = CantProcessMediaContentException.class)
 	public final void testResizeImageFileWithNullTagert() {
 		imageProcessorService.resizeImageFile(sourceFile, null, "100x100");
@@ -49,7 +49,7 @@ public class ImageMagickImageProcessorServiceTest {
 	public final void testResizeImageFileWithNullSize() {
 		imageProcessorService.resizeImageFile(sourceFile, targerFile, null);
 	}
-	
+
 	@Test
 	public final void testResizeImageFileSuccess() {
 		imageProcessorService.resizeImageFile(sourceFile, targerFile, "100x100");

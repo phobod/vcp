@@ -20,7 +20,7 @@ import com.phobod.study.vcp.service.VideoProcessorService;
 public class AsyncVideoProcessorServiceTest {
 	@InjectMocks
 	private VideoProcessorService videoProcessorService = new AsyncVideoProcessorService();
-	
+
 	@Mock
 	private VideoRepository videoRepository;
 
@@ -35,13 +35,14 @@ public class AsyncVideoProcessorServiceTest {
 		verify(simpleVideoProcessorService).processVideo(TestUtils.getVideoUploadForm());
 		verify(videoRepository).save(argThat(new VideoArgumentMatcher()));
 	}
-	
-	private class VideoArgumentMatcher extends ArgumentMatcher<Video>{
+
+	private class VideoArgumentMatcher extends ArgumentMatcher<Video> {
 		@Override
 		public boolean matches(Object argument) {
 			if (argument instanceof Video) {
-				Video video = (Video)argument;
-				if (TestUtils.getTestVideoWithoutId().getThumbnailUrl().equals(video.getThumbnailUrl()) && TestUtils.getTestVideoWithoutId().getVideoUrl().equals(video.getVideoUrl())) {
+				Video video = (Video) argument;
+				if (TestUtils.getTestVideoWithoutId().getThumbnailUrl().equals(video.getThumbnailUrl())
+						&& TestUtils.getTestVideoWithoutId().getVideoUrl().equals(video.getVideoUrl())) {
 					return true;
 				}
 			}

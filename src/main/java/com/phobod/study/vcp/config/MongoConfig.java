@@ -13,13 +13,13 @@ import com.mongodb.MongoClient;
 @Configuration
 @EnableMongoRepositories("com.phobod.study.vcp.repository.storage")
 public class MongoConfig {
-	
+
 	@Value("${mongo.host}")
 	private String mongoHost;
-	
+
 	@Value("${mongo.port}")
 	private int mongoPort;
-	
+
 	public @Bean MongoClient mongoClient() throws UnknownHostException {
 		return new MongoClient(mongoHost, mongoPort);
 	}

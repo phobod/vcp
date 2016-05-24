@@ -7,9 +7,9 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document
-public class Company implements Serializable{
+public class Company implements Serializable {
 	private static final long serialVersionUID = 2191784145785106818L;
-	
+
 	@Id
 	private String id;
 	@Indexed(unique = true)

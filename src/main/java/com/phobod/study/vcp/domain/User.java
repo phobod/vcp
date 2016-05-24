@@ -11,9 +11,9 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import com.phobod.study.vcp.Constants.Role;
 
 @Document
-public class User implements Serializable{
+public class User implements Serializable {
 	private static final long serialVersionUID = -6804101990746982838L;
-	
+
 	@Id
 	private String id;
 	private String name;

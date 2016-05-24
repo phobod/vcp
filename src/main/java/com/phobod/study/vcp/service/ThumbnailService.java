@@ -7,5 +7,6 @@ import javax.annotation.Nonnull;
 import com.phobod.study.vcp.exception.CantProcessMediaContentException;
 
 public interface ThumbnailService {
-	@Nonnull byte[] createThumbnail(@Nonnull Path videoFilePath) throws CantProcessMediaContentException;
+	@Nonnull
+	byte[] createThumbnail(@Nonnull Path videoFilePath) throws CantProcessMediaContentException;
 }

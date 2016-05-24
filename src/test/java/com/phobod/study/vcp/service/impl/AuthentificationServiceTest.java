@@ -20,7 +20,7 @@ import com.phobod.study.vcp.repository.storage.UserRepository;
 public class AuthentificationServiceTest {
 	@InjectMocks
 	private UserDetailsService userDetailsService = new AuthentificationService();
-	
+
 	@Mock
 	private UserRepository userRepository;
 
@@ -37,5 +37,5 @@ public class AuthentificationServiceTest {
 		verify(userRepository).findByLogin(TestUtils.getTestUserWithoutId().getLogin());
 		assertEquals(TestUtils.getTestUserWithoutId().getLogin(), userDetails.getUsername());
 	}
-	
+
 }

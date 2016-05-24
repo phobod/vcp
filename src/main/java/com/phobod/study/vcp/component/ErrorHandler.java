@@ -14,10 +14,10 @@ import org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolv
 public class ErrorHandler extends DefaultHandlerExceptionResolver {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ErrorHandler.class);
 	private static final String message = "{\"message\":\"%s\", \"description\":\"%s\"}";
-	
+
 	@Autowired
 	RestErrorResolver restErrorResolver;
-	
+
 	public ErrorHandler() {
 		setOrder(0);
 	}
@@ -32,7 +32,7 @@ public class ErrorHandler extends DefaultHandlerExceptionResolver {
 			response.getWriter().write(String.format(message, restError.getMessage(), restError.getDescription()));
 			response.setStatus(restError.getStatus());
 		} catch (Exception e) {
-			LOGGER.error("Error: "+e.getMessage(), e);
+			LOGGER.error("Error: " + e.getMessage(), e);
 		}
 		return new ModelAndView();
 	}

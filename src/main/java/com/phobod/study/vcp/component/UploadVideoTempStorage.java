@@ -22,13 +22,13 @@ import com.phobod.study.vcp.form.VideoUploadForm;
 public class UploadVideoTempStorage {
 	private static final Logger LOGGER = LoggerFactory.getLogger(UploadVideoTempStorage.class);
 	private Map<VideoUploadForm, Path> tempUploadedVideoPathStorage = new HashMap<>();
-	
+
 	public Path getTempUploadedVideoPath(VideoUploadForm videoUploadForm) {
 		return tempUploadedVideoPathStorage.get(videoUploadForm);
 	}
-	
+
 	@Before("execution(* com.phobod.study.vcp.service.impl.AsyncVideoProcessorService.processVideo(..)) && args(videoUploadForm,..)")
-	public void copyDataToTempStorage(JoinPoint joinPoint, VideoUploadForm videoUploadForm) throws Throwable{
+	public void copyDataToTempStorage(JoinPoint joinPoint, VideoUploadForm videoUploadForm) throws Throwable {
 		Path tempUploadedVideoPath = null;
 		try {
 			tempUploadedVideoPath = Files.createTempFile("upload", ".video");
@@ -38,9 +38,9 @@ public class UploadVideoTempStorage {
 			throw new CantProcessMediaContentException("Can't save video content to temp file: " + e.getMessage(), e);
 		}
 	}
-	
+
 	@After("execution(* com.phobod.study.vcp.service.impl.SimpleVideoProcessorService.processVideo(..)) && args(videoUploadForm,..)")
-	public void releaseTempStorage(JoinPoint joinPoint, VideoUploadForm videoUploadForm){
+	public void releaseTempStorage(JoinPoint joinPoint, VideoUploadForm videoUploadForm) {
 		Path tempUploadedVideoPath = getTempUploadedVideoPath(videoUploadForm);
 		tempUploadedVideoPathStorage.remove(videoUploadForm);
 		if (tempUploadedVideoPath != null) {
@@ -51,5 +51,5 @@ public class UploadVideoTempStorage {
 			}
 		}
 	}
-	
+
 }

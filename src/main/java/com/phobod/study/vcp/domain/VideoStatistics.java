@@ -34,7 +34,8 @@ public class VideoStatistics {
 		super();
 		this.videoId = videoId;
 		this.title = title;
-		this.viewCount = viewCount;;
+		this.viewCount = viewCount;
+		;
 	}
 
 	public String getVideoId() {

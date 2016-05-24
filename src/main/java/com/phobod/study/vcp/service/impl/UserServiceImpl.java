@@ -26,7 +26,7 @@ import com.phobod.study.vcp.service.VideoProcessorService;
 @Service
 public class UserServiceImpl implements UserService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
-	
+
 	@Value("${media.dir}")
 	private String mediaDir;
 
@@ -35,19 +35,19 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private VideoSearchRepository videoSearchRepository;
-	
+
 	@Autowired
 	@Qualifier("asyncVideoProcessorService")
 	private VideoProcessorService videoProcessorService;
 
 	@Override
 	public Page<Video> listVideosByUser(Pageable pageable, String userId) {
-		return videoRepository.findByOwnerIdOrderByViewsDesc(pageable, userId); 
+		return videoRepository.findByOwnerIdOrderByViewsDesc(pageable, userId);
 	}
 
 	@Override
 	public Page<Video> listVideosByUserExcludeOne(Pageable pageable, String excludedVideoId, String userId) {
-		return videoRepository.findByIdNotAndOwnerIdOrderByViewsDesc(pageable, excludedVideoId, userId); 
+		return videoRepository.findByIdNotAndOwnerIdOrderByViewsDesc(pageable, excludedVideoId, userId);
 	}
 
 	@Override
@@ -60,7 +60,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void updateVideo(String videoId, VideoUploadForm form, User user) throws AccessDeniedException{
+	public void updateVideo(String videoId, VideoUploadForm form, User user) throws AccessDeniedException {
 		Video video = videoRepository.findOne(videoId);
 		if (!video.getOwner().getId().equals(user.getId())) {
 			throw new AccessDeniedException(String.format("User %s denied access to edit video %s. This user is not the owner of the video.", user.getLogin(), video.getId()));
@@ -71,12 +71,12 @@ public class UserServiceImpl implements UserService {
 	}
 
 	private void saveVideoToRepositories(Video video) {
-		videoRepository.save(video);	
+		videoRepository.save(video);
 		videoSearchRepository.save(video);
 	}
 
 	@Override
-	public void deleteVideo(String videoId, User user) throws AccessDeniedException{
+	public void deleteVideo(String videoId, User user) throws AccessDeniedException {
 		Video video = videoRepository.findOne(videoId);
 		if (!video.getOwner().getId().equals(user.getId())) {
 			throw new AccessDeniedException(String.format("User %s denied access to delete video %s. This user is not the owner of the video.", user.getLogin(), video.getId()));
@@ -94,15 +94,15 @@ public class UserServiceImpl implements UserService {
 		videoRepository.deleteByOwnerId(userId);
 		videoSearchRepository.deleteByOwnerId(userId);
 	}
-	
-	private void deleteMediaData(Video video){
-		deleteFile(video.getVideoUrl()); 
-		deleteFile(video.getThumbnailUrl()); 
-		deleteFile(video.getThumbnailUrlMedium()); 
-		deleteFile(video.getThumbnailUrlSmall()); 
+
+	private void deleteMediaData(Video video) {
+		deleteFile(video.getVideoUrl());
+		deleteFile(video.getThumbnailUrl());
+		deleteFile(video.getThumbnailUrlMedium());
+		deleteFile(video.getThumbnailUrlSmall());
 	}
-	
-	private void deleteFile(String fileUrl){
+
+	private void deleteFile(String fileUrl) {
 		if (!fileUrl.startsWith("/media/thumbnail/") && !fileUrl.startsWith("/media/video/")) {
 			return;
 		}
