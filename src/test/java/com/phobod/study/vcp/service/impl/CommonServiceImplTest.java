@@ -21,7 +21,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import com.phobod.study.vcp.component.TestUtils;
 import com.phobod.study.vcp.domain.Video;
 import com.phobod.study.vcp.exception.CantProcessAccessRecoveryException;
-import com.phobod.study.vcp.form.RecoveryForm;
 import com.phobod.study.vcp.repository.search.VideoSearchRepository;
 import com.phobod.study.vcp.repository.storage.UserRepository;
 import com.phobod.study.vcp.repository.storage.VideoRepository;
@@ -119,43 +118,49 @@ public class CommonServiceImplTest {
 		verify(userRepository).findByLogin(login);
 		verify(userRepository).save(TestUtils.getTestUserWithId(userId));
 		assertNotNull(TestUtils.getTestUserWithId(userId).getHash());
-		String restoreLink = vcpUrl + "/#/recovery/acsess/" + userId + "/" + TestUtils.getTestUserWithId(userId).getHash();
+		String restoreLink = vcpUrl + "/recovery/acsess/" + userId + "/" + TestUtils.getTestUserWithId(userId).getHash();
 		verify(notificationService).sendRestoreAccessLink(TestUtils.getTestUserWithId(userId), restoreLink);
 	}
 
 	@Test(expected = CantProcessAccessRecoveryException.class)
-	public final void testRestorePasswordWithIncorrectHash() {
+	public final void testCheckRestorePasswordLinkWithIncorrectHash() {
 		when(userRepository.findOne(userId)).thenReturn(TestUtils.getTestUserWithId(userId));
-		commonService.restorePassword(new RecoveryForm(userId, testHash + "01", correctPassword));
+		commonService.checkRestorePasswordLink(userId, testHash + "01");
 		;
 	}
 
 	@Test(expected = CantProcessAccessRecoveryException.class)
-	public final void testRestorePasswordWithNullHash() {
+	public final void testCheckRestorePasswordLinkWithNullHash() {
 		when(userRepository.findOne(userId)).thenReturn(TestUtils.getTestUserWithId(userId));
-		commonService.restorePassword(new RecoveryForm(userId, null, correctPassword));
+		commonService.checkRestorePasswordLink(userId, null);
 		;
 	}
 
 	@Test(expected = CantProcessAccessRecoveryException.class)
-	public final void testRestorePasswordWithUserWithoutHash() {
+	public final void testCheckRestorePasswordLinkWithUserWithoutHash() {
 		TestUtils.getTestUserWithId(userId).setHash(null);
 		when(userRepository.findOne(userId)).thenReturn(TestUtils.getTestUserWithId(userId));
-		commonService.restorePassword(new RecoveryForm(userId, testHash, correctPassword));
+		commonService.checkRestorePasswordLink(userId, testHash);
 		;
+	}
+
+	@Test
+	public final void testCheckRestorePasswordLinkSuccess() {
+		TestUtils.getTestUserWithId(userId).setHash(testHash);
+		when(userRepository.findOne(userId)).thenReturn(TestUtils.getTestUserWithId(userId));
+		commonService.checkRestorePasswordLink(userId, testHash);
+		verify(userRepository).findOne(userId);
+		verify(userRepository).save(TestUtils.getTestUserWithId(userId));		
 	}
 
 	@Test(expected = CantProcessAccessRecoveryException.class)
 	public final void testRestorePasswordWithIncorrectPassword() {
-		commonService.restorePassword(new RecoveryForm(userId, testHash, "1111"));
+		commonService.restorePassword(TestUtils.getTestUserWithId(userId), "1111");
 	}
 
 	@Test
 	public final void testRestorePasswordSuccess() {
-		TestUtils.getTestUserWithId(userId).setHash(testHash);
-		when(userRepository.findOne(userId)).thenReturn(TestUtils.getTestUserWithId(userId));
-		commonService.restorePassword(new RecoveryForm(userId, testHash, correctPassword));
-		verify(userRepository).findOne(userId);
+		commonService.restorePassword(TestUtils.getTestUserWithId(userId), correctPassword);
 		verify(passwordEncoder).encode(correctPassword);
 		verify(userRepository).save(TestUtils.getTestUserWithId(userId));
 	}

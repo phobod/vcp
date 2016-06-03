@@ -59,8 +59,8 @@ angular.module('app-services', [ 'ngResource', 'ngFileUpload' ])
 		sendRestoreEmail : function(login){
 			return $resource('recovery/:login',{login:login}).save();
 		},
-		restorePassword : function(userId, hash, password){
-			return $resource('recovery/password').save({},{'id': userId, 'hash': hash, 'password': password});
+		restorePassword : function(password){
+			return $resource('recovery/password').save({},{value: password});
 		}
 	}
 }])
@@ -77,8 +77,7 @@ angular.module('app-services', [ 'ngResource', 'ngFileUpload' ])
 			return $resource('admin/account').save({},user);
 		},
 		getAvatarUrl : function(email){
-			var form = {email: email};
-			return $resource('admin/emailhash').save({},{email: email});
+			return $resource('admin/emailhash').save({},{value: email});
 		},
 		saveCompany : function(company) {
 			return $resource('admin/company').save({},company);

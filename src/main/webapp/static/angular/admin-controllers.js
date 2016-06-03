@@ -20,8 +20,9 @@ angular.module('admin-controllers', ['ngRoute'])
 		$scope.allCompanies = adminService.listAllCompanies(0,maxInt);
 		$scope.clearData = function(){
 			$scope.error = false;
-			$scope.selectedAccount = null;
-			$scope.company = null;
+			delete $scope.selectedAccount;
+			delete $scope.confirmPassword;
+			delete $scope.company;
 			$scope.avatarPreview = 'http://www.gravatar.com/avatar/00000000000000000000000000000000?d=mm&s=300';
 			$scope.selectedAccountIndex = -1;	
 			$scope.passwordRegExp = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,12}$/;
@@ -29,7 +30,7 @@ angular.module('admin-controllers', ['ngRoute'])
 		$scope.getAvatarUrl = function(value){
 			if (value) {
 				adminService.getAvatarUrl($scope.selectedAccount.email).$promise.then(function(data){
-					$scope.selectedAccount.avatarUrl = data.url;
+					$scope.selectedAccount.avatarUrl = data.value;
 					$scope.avatarPreview = $scope.selectedAccount.avatarUrl + '&s=300';
 				});
 			}
@@ -52,6 +53,7 @@ angular.module('admin-controllers', ['ngRoute'])
 			$scope.selectedAccountIndex = idx;
 			$scope.passwordRegExp = /.*/;
 			$scope.selectedAccount = angular.copy($scope.records.content[idx]);
+			$scope.confirmPassword = $scope.records.content[idx].password;
 			$scope.company = $scope.allCompanies.content.find(function(item){
 				return item.id == $scope.selectedAccount.company.id;
 			});

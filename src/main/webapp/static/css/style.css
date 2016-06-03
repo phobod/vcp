@@ -147,6 +147,7 @@ form.navbar-form.navbar-right {
 }
 .resent-grid {
 	padding-left: 0.1em;
+	padding-bottom: 1.0em;
 }
 .resent-grid-img{
 	position:relative;
@@ -286,7 +287,7 @@ form.navbar-form.navbar-right {
 }
 /*-- shows --*/
 .show-top-grids {
-  padding: 0 1em 0 0;
+  padding: 0 0 1em 0;
 }
 .single-right{
 	background: #f7f7f7;

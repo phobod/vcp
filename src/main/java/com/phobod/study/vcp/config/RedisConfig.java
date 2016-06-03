@@ -30,8 +30,8 @@ public class RedisConfig {
 	}
 
 	@Bean
-	public RedisTemplate<VideoStatistics, String> redisTemplate() {
-		RedisTemplate<VideoStatistics, String> template = new RedisTemplate<VideoStatistics, String>();
+	public RedisTemplate<String, VideoStatistics> redisTemplate() {
+		RedisTemplate<String, VideoStatistics> template = new RedisTemplate<String, VideoStatistics>();
 		template.setConnectionFactory(connectionFactory());
 		return template;
 	}

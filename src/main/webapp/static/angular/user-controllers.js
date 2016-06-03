@@ -39,10 +39,10 @@ angular.module('user-controllers', ['ngRoute'])
 			});
 		};
 		$scope.clearData = function(){
-	        $scope.title = null;
-	        $scope.description = null;
-	        $scope.file = null;	
-	        $scope.progressPercentage = null;
+			delete $scope.title;
+			delete $scope.description;
+			delete $scope.file;	
+			delete $scope.progressPercentage;
 		};
 	}])
 	

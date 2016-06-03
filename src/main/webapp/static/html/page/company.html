@@ -57,7 +57,7 @@
 						<td>
 							<div class="btn-group">
 								<button class="btn btn-primary btn-mini" ng-click="editCompany($index)">Edit</button>
-								<button class="btn btn-danger btn-mini" ng-click="deleteCompany($index)">Delete</button>
+								<button class="btn btn-danger btn-mini" ng-confirm-click="Are you sure you want to remove this company?" confirmed-click="deleteCompany($index)">Delete</button>
 							</div>
 						</td>
 					</tr>

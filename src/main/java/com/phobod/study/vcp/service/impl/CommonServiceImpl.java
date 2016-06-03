@@ -2,7 +2,6 @@ package com.phobod.study.vcp.service.impl;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.regex.Pattern;
 
 import org.elasticsearch.common.unit.Fuzziness;
 import org.elasticsearch.index.query.MatchQueryBuilder.Operator;
@@ -19,13 +18,14 @@ import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.phobod.study.vcp.component.Utils;
 import com.phobod.study.vcp.domain.User;
 import com.phobod.study.vcp.domain.Video;
 import com.phobod.study.vcp.exception.CantProcessAccessRecoveryException;
-import com.phobod.study.vcp.form.RecoveryForm;
 import com.phobod.study.vcp.repository.search.VideoSearchRepository;
 import com.phobod.study.vcp.repository.storage.UserRepository;
 import com.phobod.study.vcp.repository.storage.VideoRepository;
+import com.phobod.study.vcp.security.SecurityUtils;
 import com.phobod.study.vcp.service.CommonService;
 import com.phobod.study.vcp.service.NotificationService;
 import com.phobod.study.vcp.service.VideoStatisticsService;
@@ -110,7 +110,7 @@ public class CommonServiceImpl implements CommonService {
 	private void sendRestoreEmailInternal(String login) {
 		User user = userRepository.findByLogin(login);
 		addHashToUser(user);
-		String restoreLink = vcpUrl + "/#/recovery/acsess/" + user.getId() + "/" + user.getHash();
+		String restoreLink = vcpUrl + "/recovery/acsess/" + user.getId() + "/" + user.getHash();
 		notificationService.sendRestoreAccessLink(user, restoreLink);
 	}
 
@@ -124,30 +124,31 @@ public class CommonServiceImpl implements CommonService {
 	}
 
 	@Override
-	public void restorePassword(RecoveryForm form) throws CantProcessAccessRecoveryException {
-		try {
-			restorePasswordInternal(form);
-		} catch (CantProcessAccessRecoveryException e) {
-			throw new CantProcessAccessRecoveryException("The password recovery process failed for userId: " + form.getId() + ". " + e.getMessage(), e);
-		}
-	}
-
-	private void restorePasswordInternal(RecoveryForm form) {
-		if (!checkPasswordWithRegExp(form.getPassword())) {
-			throw new CantProcessAccessRecoveryException("Password is not correct.");
-		}
-		User user = userRepository.findOne(form.getId());
-		if (user.getHash() == null || form.getHash() == null || !user.getHash().equals(form.getHash())) {
+	public void checkRestorePasswordLink(String userId, String hash) throws CantProcessAccessRecoveryException {
+		User user = userRepository.findOne(userId);
+		if (user.getHash() == null || hash == null || !user.getHash().equals(hash)) {
 			throw new CantProcessAccessRecoveryException("Hash is Null or is not correct.");
 		}
-		user.setPassword(passwordEncoder.encode(form.getPassword()));
+		SecurityUtils.authenticateAccount(user);
 		user.setHash(null);
-		userRepository.save(user);
+		userRepository.save(user);		
 	}
 
-	private boolean checkPasswordWithRegExp(String password) {
-		Pattern p = Pattern.compile("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{6,12}$");
-		return p.matcher(password).matches();
+	@Override
+	public void restorePassword(User user, String password) throws CantProcessAccessRecoveryException {
+		try {
+			restorePasswordInternal(user, password);
+		} catch (CantProcessAccessRecoveryException e) {
+			throw new CantProcessAccessRecoveryException("The password recovery process failed for user login: " + user.getLogin() + ". " + e.getMessage(), e);
+		}
+	}
+
+	private void restorePasswordInternal(User user, String password) {
+		if (!Utils.checkPasswordWithRegExp(password)) {
+			throw new CantProcessAccessRecoveryException("Password is not correct.");
+		}
+		user.setPassword(passwordEncoder.encode(password));
+		userRepository.save(user);
 	}
 
 }

@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.phobod.study.vcp.component.StringWrapper;
 import com.phobod.study.vcp.domain.Company;
 import com.phobod.study.vcp.domain.User;
 import com.phobod.study.vcp.domain.VideoStatistics;
-import com.phobod.study.vcp.form.AvatarUrlGenerationForm;
 import com.phobod.study.vcp.service.AdminService;
 import com.phobod.study.vcp.service.AvatarService;
 import com.phobod.study.vcp.service.VideoStatisticsService;
@@ -63,9 +63,8 @@ public class AdminController {
 	}
 
 	@RequestMapping(value = "/emailhash", method = RequestMethod.POST)
-	public AvatarUrlGenerationForm getAvatarUrl(@RequestBody AvatarUrlGenerationForm form) {
-		form.setUrl(avatarService.generateAvatarUrl(form.getEmail()));
-		return form;
+	public StringWrapper getAvatarUrl(@RequestBody StringWrapper email) {
+		return new StringWrapper(avatarService.generateAvatarUrl(email.getValue()));
 	}
 
 	@RequestMapping(value = "/statistics", method = RequestMethod.GET)

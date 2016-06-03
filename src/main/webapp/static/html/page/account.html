@@ -29,16 +29,22 @@
 							</div>
 						</div>
 						<div class="row">
-							<div class="form-group col-md-6">
+							<div class="form-group col-md-4">
 								<label for="inputLogin">Login</label>
 								<input type="text" class="form-control" id="inputLogin" placeholder="Login" ng-model="selectedAccount.login" name="login" ng-disabled="selectedAccountIndex > -1" required>
 								<i ng-show="form.login.$error.required">*required</i>
 							</div>
-							<div class="form-group col-md-6">
+							<div class="form-group col-md-4">
 								<label for="inputPassword">Password</label>
-								<input type="password" class="form-control" id="inputPassword" placeholder="Password" ng-model="selectedAccount.password"  name="password" ng-disabled="selectedAccountIndex > -1" required ng-pattern="passwordRegExp">
-								<span class="text-error" data-ng-show="form.password.$error.pattern">Password must be at least 6 characters, no more than 12 characters, and must include at least one upper case letter, one lower case letter, and one numeric digit.{{passwordRegExp}}</span>
+								<input type="password" class="form-control" id="inputPassword" placeholder="Password" ng-model="selectedAccount.password"  name="password" ng-disabled="selectedAccountIndex > -1" data-ng-class="{'ng-invalid':form.confirmPassword.$error.match}" required ng-pattern="passwordRegExp">
+								<span class="text-error" data-ng-show="form.password.$error.pattern">Password must be at least 6 characters, no more than 12 characters, and must include at least one upper case letter, one lower case letter, and one numeric digit.</span>
 								<i ng-show="form.password.$error.required">*required</i>
+							</div>
+							<div class="form-group col-md-4">
+								<label for="confirmInputPassword">Confirm Password</label>
+								<input type="password" class="form-control" id="confirmInputPassword" placeholder="Repeat Password" data-match="selectedAccount.password" ng-model="confirmPassword"  name="confirmPassword" ng-disabled="selectedAccountIndex > -1" required>
+								<span class="text-error" data-ng-show="form.confirmPassword.$error.match">Passwords don't match!</span>
+	 							<i ng-show="form.confirmPassword.$error.required">*required</i>	
 							</div>
 						</div>
 						<div class="row">
@@ -93,7 +99,7 @@
 						<td>
 							<div class="btn-group">
 								<button class="btn btn-primary btn-mini" ng-click="editUser($index)">Edit</button>
-								<button class="btn btn-danger btn-mini" ng-click="deleteUser($index)">Delete</button>
+								<button class="btn btn-danger btn-mini" ng-confirm-click="Are you sure you want to remove this account?" confirmed-click="deleteUser($index)">Delete</button>
 							</div>
 						</td>
 					</tr>

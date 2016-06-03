@@ -107,6 +107,7 @@
 										<include>**/js/ng-file-upload.js</include>
 										<include>**/js/angular-validation-match.js</include>
 										<include>**/angular/app.js</include>
+										<include>**/angular/app-directives.js</include>
 										<include>**/angular/app-interceptors.js</include>
 										<include>**/angular/app-filters.js</include>
 										<include>**/angular/app-services.js</include>

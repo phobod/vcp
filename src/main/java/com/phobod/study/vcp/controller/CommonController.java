@@ -7,18 +7,17 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
+import com.phobod.study.vcp.component.StringWrapper;
 import com.phobod.study.vcp.domain.Video;
-import com.phobod.study.vcp.form.RecoveryForm;
 import com.phobod.study.vcp.security.CurrentUser;
 import com.phobod.study.vcp.service.CommonService;
 import com.phobod.study.vcp.service.UserService;
@@ -62,15 +61,19 @@ public class CommonController {
 	}
 
 	@RequestMapping(value = "/recovery/{login}", method = RequestMethod.POST)
-	@ResponseStatus(value = HttpStatus.OK)
 	public void sendRestoreEmail(@PathVariable String login) {
 		commonService.sendRestoreEmail(login);
 	}
 
+	@RequestMapping(value = "/recovery/acsess/{userId}/{hash}", method = RequestMethod.GET)
+	public ModelAndView checkRestorePasswordLink(@PathVariable String userId, @PathVariable String hash) {
+		commonService.checkRestorePasswordLink(userId, hash);
+		return new ModelAndView("redirect:/#/recovery/password-recovery");
+	}
+
 	@RequestMapping(value = "/recovery/password", method = RequestMethod.POST)
-	@ResponseStatus(value = HttpStatus.OK)
-	public void restorePassword(@RequestBody RecoveryForm form) {
-		commonService.restorePassword(form);
+	public void restorePassword(@AuthenticationPrincipal CurrentUser currentUser, @RequestBody StringWrapper password) {
+		commonService.restorePassword(currentUser.getUser(), password.getValue());
 	}
 
 }

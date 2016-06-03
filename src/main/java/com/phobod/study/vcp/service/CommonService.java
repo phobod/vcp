@@ -10,7 +10,6 @@ import org.springframework.data.domain.Pageable;
 import com.phobod.study.vcp.domain.User;
 import com.phobod.study.vcp.domain.Video;
 import com.phobod.study.vcp.exception.CantProcessAccessRecoveryException;
-import com.phobod.study.vcp.form.RecoveryForm;
 
 public interface CommonService {
 	@Nonnull
@@ -26,6 +25,8 @@ public interface CommonService {
 	Page<Video> listVideosBySearchQuery(@Nonnull String query, @Nonnull Pageable pageable);
 
 	void sendRestoreEmail(@Nonnull String login) throws CantProcessAccessRecoveryException;
+	
+	void checkRestorePasswordLink(@Nonnull String userId, @Nonnull String hash) throws CantProcessAccessRecoveryException;
 
-	void restorePassword(@Nonnull RecoveryForm form) throws CantProcessAccessRecoveryException;
+	void restorePassword(@Nonnull User user, @Nonnull String password) throws CantProcessAccessRecoveryException;
 }

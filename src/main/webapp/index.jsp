@@ -42,6 +42,7 @@
 			<script type="text/javascript" src="/static/angular/user-controllers.js"></script>
 			<script type="text/javascript" src="/static/angular/app-services.js"></script>
 			<script type="text/javascript" src="/static/angular/app-interceptors.js"></script>
+			<script type="text/javascript" src="/static/angular/app-directives.js"></script>
 			<script type="text/javascript" src="/static/angular/app.js"></script>
 			<script type="text/javascript" src="/static/js/bootstrap.js"></script>
 		  	<script type="text/javascript" src="/static/js/ng-file-upload.js"></script>

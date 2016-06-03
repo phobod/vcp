@@ -1,8 +1,11 @@
 <div class="main">
+	<div class="page-header">
+		<h3 class="center">Your Videos</h3>
+	</div>
 	<div class="show-top-grids" ng-repeat="video in records.content">
 		<div class="col-sm-3 col-sm-offset-2 resent-grid recommended-grid slider-top-grids">
 			<div class="resent-grid-img recommended-grid-img">
-				<a ng-href="#/my-account/video/{{video.id}}"><img ng-src="{{video.thumbnailUrlMedium | trusted}}" alt="{{video.title}}" /></a>
+				<a ng-href="#/user/{{video.owner.id}}/video/{{video.id}}"><img ng-src="{{video.thumbnailUrlMedium | trusted}}" alt="{{video.title}}" /></a>
 			</div>
 		</div>
 		<div class="col-md-5 single-right detail-info">
@@ -14,7 +17,7 @@
 			<div>
 				<p class="control-button">
 					<a ng-href="#/my-account/video/{{video.id}}" class="btn btn-primary" role="button">Edit</a> 
-					<button type="submit" class="btn btn-danger" role="button" ng-click="deleteVideo($index)">Delete</button>
+					<button type="submit" class="btn btn-danger" role="button" ng-confirm-click="Are you sure you want to remove this video?" confirmed-click="deleteVideo($index)">Delete</button>
 				</p>					
 			</div>
 		</div>

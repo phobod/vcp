@@ -6,7 +6,6 @@ angular.module('app-interceptors', [])
 .factory("httpResponseInterceptor", ['$q','$location', '$rootScope', function($q, $location, $rootScope){
 	$rootScope.principal = {
 			auth : false,
-			id : '', 
 			name : '',
 			role : 'anonym'
 	};
@@ -17,20 +16,17 @@ angular.module('app-interceptors', [])
 	};
 	return {
         response: function(response){
-        	var id = response.headers('PrimcipalId');
         	var name = response.headers('PrimcipalName');
         	var role = response.headers('PrimcipalRole');
-        	if(id != undefined && name != undefined && role != undefined) {
+        	if(name != undefined && role != undefined) {
         		$rootScope.principal = {
                 	auth : true,
-                	id : id,
         			name : name,
                 	role : role
                 };
         	} else{
         		$rootScope.principal = {
         			auth : false,
-        			id : '',
         			name : '',
                 	role : 'anonym'
                 };
